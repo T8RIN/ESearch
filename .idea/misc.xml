@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/malik/.gradle/caches/transforms-3/678f8f90516713ab9a21055c8d2ba99f/transformed/appcompat-1.4.0/res/layout/abc_search_view.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_amazon_logo.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_baseline_fast_forward_24.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_baseline_fast_rewind_24.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_bing_logo.xml" value="0.19722222222222222" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_google_logo.xml" value="0.19722222222222222" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_outline_keyboard_arrow_down_24.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_twitter_logo.xml" value="0.13958333333333334" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_vk_logo.xml" value="0.13958333333333334" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_main.xml" value="0.152" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/app_bar_layout.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/app_bar_main.xml" value="0.2" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/bottom_app_bar.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/bottom_bar.xml" value="0.1" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/content_main.xml" value="0.152" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/fragment_home.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/toolbar_item.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/menu/bottom_app_bar.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
