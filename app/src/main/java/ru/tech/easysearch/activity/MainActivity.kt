@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognizerIntent
+import android.view.View
 import android.widget.ImageButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.R.drawable.*
@@ -74,6 +76,9 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
+        displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
+
         val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
         val labelList =
             listOf(
@@ -110,7 +115,21 @@ class MainActivity : AppCompatActivity() {
             startSpeechRecognize(resultLauncher)
         }
 
-        adapter = ToolbarAdapter(this, labelList, findViewById(R.id.labelSuggestionCard), fab)
+        val card: MaterialCardView = findViewById(R.id.labelSuggestionCard)
+        card.translationY = displayOffsetY
+        val manageList: ImageButton = findViewById(R.id.manageList)
+        manageList.translationX = displayOffsetX
+
+        val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
+
+        val forward: ImageButton = findViewById(R.id.forward)
+        val backward: ImageButton = findViewById(R.id.backward)
+
+        recursiveClickForward(forward, layoutManager, recycler)
+        recursiveClickBackward(backward, layoutManager, recycler)
+
+        adapter =
+            ToolbarAdapter(this, labelList, card, fab, labelRecycler, recycler, forward, backward, manageList)
         recycler.adapter = adapter
 
         searchView = findViewById(R.id.searchView)
@@ -133,19 +152,17 @@ class MainActivity : AppCompatActivity() {
         helper.attachToRecyclerView(recycler)
 
 
-        val forward: ImageButton = findViewById(R.id.forward)
-        val backward: ImageButton = findViewById(R.id.backward)
-
-        recursiveClickForward(forward, layoutManager, recycler)
-        recursiveClickBackward(backward, layoutManager, recycler)
-
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val key =
                     adapter?.labelList?.get((recyclerView.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())
                 prefix = prefixDict[key]!!
-
+                card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
+                    .withEndAction { fab.show() }.start()
+                forward.animate().y(0f).setDuration(300).start()
+                backward.animate().y(0f).setDuration(300).start()
+                manageList.animate().x(displayOffsetX).setDuration(200).start()
             }
         })
 
@@ -254,6 +271,34 @@ class MainActivity : AppCompatActivity() {
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
         resultLauncher.launch(intent)
+    }
+
+    companion object {
+        var displayOffsetY = -5000f
+        var displayOffsetX = -1000f
+    }
+
+    override fun onBackPressed(){
+        val card = findViewById<MaterialCardView>(R.id.labelSuggestionCard)
+        val labelRecycler = findViewById<RecyclerView>(R.id.labelRecycler)
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        val forward = findViewById<ImageButton>(R.id.forward)
+        val backward = findViewById<ImageButton>(R.id.backward)
+        val manageList = findViewById<ImageButton>(R.id.manageList)
+        if(card.translationY == 0f) {
+            card.animate()
+                .y(displayOffsetY)
+                .setDuration(350)
+                .withEndAction {
+                    labelRecycler.adapter = null
+                    fab?.show()
+                    card.visibility = View.GONE
+                }
+                .start()
+            forward.animate().y(0f).setDuration(300).start()
+            backward.animate().y(0f).setDuration(300).start()
+            manageList.animate().x(displayOffsetX).setDuration(200).start()
+        }
     }
 
 }

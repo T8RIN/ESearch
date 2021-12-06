@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.BrowserActivity">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/manualBackground"
+        android:layoutDirection="rtl" />
+
+    <WebView
+        android:id="@+id/webBrowser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="104dp"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/labelSuggestionCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationY="0dp"
+        app:cardElevation="0dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/labelRecycler"
+            android:nestedScrollingEnabled="false"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <include
         layout="@layout/app_bar_browser"
@@ -31,5 +63,17 @@
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
         android:src="@drawable/ic_baseline_fast_forward_24" />
+
+    <ImageButton
+        android:id="@+id/manageList"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:translationX="100dp"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_manage" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

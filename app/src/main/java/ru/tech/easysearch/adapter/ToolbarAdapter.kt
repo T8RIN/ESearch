@@ -1,21 +1,31 @@
 package ru.tech.easysearch.adapter
 
 import android.content.Context
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
+import ru.tech.easysearch.activity.MainActivity
+import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
+import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 
 
 class ToolbarAdapter(
-    val context: Context,
+    private val context: Context,
     var labelList: List<Int>,
-    val card: MaterialCardView? = null,
-    val fab: FloatingActionButton? = null
+    private val card: MaterialCardView,
+    private val fab: FloatingActionButton?,
+    private val labelRecycler: RecyclerView,
+    private val toolbarRecycler: RecyclerView,
+    private val forward: ImageButton,
+    private val backward: ImageButton,
+    private val manageList: ImageButton
 ) :
     RecyclerView.Adapter<ToolbarAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,20 +37,44 @@ class ToolbarAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
         holder.itemView.setOnClickListener {
-            when (card?.translationY) {
-                -2222f -> {
+            when (card.translationY) {
+                displayOffsetY -> {
                     card.animate()
                         .y(0f)
-                        .setDuration(200)
-                        .withStartAction { fab?.hide() }
+                        .setDuration(350)
+                        .withStartAction {
+                            labelRecycler.adapter = LabelListAdapter(
+                                context,
+                                labelList,
+                                card,
+                                fab,
+                                labelRecycler,
+                                toolbarRecycler,
+                                forward,
+                                backward,
+                                manageList
+                            )
+                            fab?.hide()
+                            card.visibility = View.VISIBLE
+                            manageList.animate().x(0f).setDuration(200).start()
+                        }
                         .start()
+                    forward.animate().y(displayOffsetY).setDuration(1000).start()
+                    backward.animate().y(displayOffsetY).setDuration(1000).start()
                 }
                 else -> {
-                    card?.animate()
-                        ?.y(-2222f)
-                        ?.setDuration(200)
-                        ?.withEndAction { fab?.show() }
-                        ?.start()
+                    card.animate()
+                        .y(displayOffsetY)
+                        .setDuration(350)
+                        .withEndAction {
+                            labelRecycler.adapter = null
+                            fab?.show()
+                            card.visibility = View.GONE
+                        }
+                        .start()
+                    manageList.animate().x(displayOffsetX).setDuration(200).start()
+                    forward.animate().y(0f).setDuration(300).start()
+                    backward.animate().y(0f).setDuration(300).start()
                 }
             }
         }

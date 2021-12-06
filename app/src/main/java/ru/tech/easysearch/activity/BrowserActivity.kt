@@ -3,6 +3,7 @@ package ru.tech.easysearch.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.webkit.WebView
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.ToolbarAdapter
@@ -30,8 +33,12 @@ class BrowserActivity : AppCompatActivity() {
 
         browser = findViewById(R.id.webBrowser)
         browser!!.webViewClient = WebClient()
-        browser!!.settings.javaScriptEnabled = true
-        browser!!.settings.builtInZoomControls = true
+        val settings = browser!!.settings
+        settings.javaScriptEnabled = true
+        settings.builtInZoomControls = true
+        settings.allowFileAccess = true
+        settings.allowContentAccess = true
+        settings.supportMultipleWindows()
 
         if (savedInstanceState != null) browser!!.restoreState(savedInstanceState.getBundle("webViewState")!!)
 
@@ -70,7 +77,20 @@ class BrowserActivity : AppCompatActivity() {
         )
         recycler.layoutManager = layoutManager
 
-        adapter = ToolbarAdapter(this, labelList)
+        val card: MaterialCardView = findViewById(R.id.labelSuggestionCard)
+        card.translationY = MainActivity.displayOffsetY
+        val manageList: ImageButton = findViewById(R.id.manageList)
+        manageList.translationX = MainActivity.displayOffsetX
+
+        val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
+
+        val forward: ImageButton = findViewById(R.id.forward)
+        val backward: ImageButton = findViewById(R.id.backward)
+
+        recursiveClickForward(forward, layoutManager, recycler)
+        recursiveClickBackward(backward, layoutManager, recycler)
+
+        adapter = ToolbarAdapter(this, labelList, card, null, labelRecycler, recycler, forward, backward, manageList)
         recycler.adapter = adapter
 
         layoutManager.scrollToPosition(
@@ -100,12 +120,6 @@ class BrowserActivity : AppCompatActivity() {
         val helper = PagerSnapHelper()
         helper.attachToRecyclerView(recycler)
 
-        val forward: ImageButton = findViewById(R.id.forward)
-        val backward: ImageButton = findViewById(R.id.backward)
-
-        recursiveClickForward(forward, layoutManager, recycler)
-        recursiveClickBackward(backward, layoutManager, recycler)
-
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -113,6 +127,10 @@ class BrowserActivity : AppCompatActivity() {
                     adapter?.labelList?.get((recyclerView.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())
                 prefix = DataArrays.prefixDict[key]!!
                 if (uriLast.isNotEmpty()) onGetUri(uriLast)
+                card.animate().y(MainActivity.displayOffsetY).setStartDelay(100).setDuration(300).start()
+                forward.animate().y(0f).setDuration(300).start()
+                backward.animate().y(0f).setDuration(300).start()
+                manageList.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
             }
         })
     }
@@ -123,6 +141,26 @@ class BrowserActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        val card = findViewById<MaterialCardView>(R.id.labelSuggestionCard)
+        val labelRecycler = findViewById<RecyclerView>(R.id.labelRecycler)
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        val forward = findViewById<ImageButton>(R.id.forward)
+        val backward = findViewById<ImageButton>(R.id.backward)
+        val manageList = findViewById<ImageButton>(R.id.manageList)
+        if(card.translationY == 0f) {
+            card.animate()
+                .y(MainActivity.displayOffsetY)
+                .setDuration(350)
+                .withEndAction {
+                    labelRecycler.adapter = null
+                    fab?.show()
+                    card.visibility = View.GONE
+                }
+                .start()
+            forward.animate().y(0f).setDuration(300).start()
+            backward.animate().y(0f).setDuration(300).start()
+            manageList.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
+        }
         if (browser?.canGoBack() == true) browser?.goBack()
         else {
             super.onBackPressed()

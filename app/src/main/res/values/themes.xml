@@ -9,6 +9,8 @@
 
         <item name="windowActionModeOverlay">true</item>
 
+        <item name="fontFamily">@font/comfortaa_medium</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>

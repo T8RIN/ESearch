@@ -12,6 +12,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_google_logo.xml" value="0.19722222222222222" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2625" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_mailru_logo.xml" value="0.2153846153846154" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_manage.xml" value="0.2153846153846154" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_outline_keyboard_arrow_down_24.xml" value="0.2625" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_twitter_logo.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_vk_logo.xml" value="0.13958333333333334" />
@@ -30,6 +31,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/content_main.xml" value="0.152" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/fragment_home.xml" value="0.24635416666666668" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/history_fragment.xml" value="0.20213675213675214" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/label_item.xml" value="0.264" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/recent_fragment.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/settings_fragment.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/toolbar_item.xml" value="0.264" />

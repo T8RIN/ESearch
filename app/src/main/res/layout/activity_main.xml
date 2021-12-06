@@ -90,14 +90,17 @@
         android:id="@+id/labelSuggestionCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:translationY="-2222dp"
+        android:translationY="0dp"
         app:cardElevation="0dp">
 
-        <ImageView
-            android:layout_width="match_parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/labelRecycler"
+            android:nestedScrollingEnabled="false"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_launcher_background"
-            android:contentDescription="@string/none" />
+            android:layout_width="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
     </com.google.android.material.card.MaterialCardView>
 
     <include
@@ -126,6 +129,17 @@
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
         android:src="@drawable/ic_baseline_fast_forward_24" />
+
+    <ImageButton
+        android:id="@+id/manageList"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_manage" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
