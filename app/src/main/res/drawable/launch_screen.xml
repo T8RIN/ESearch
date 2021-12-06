@@ -3,6 +3,7 @@
     android:opacity="opaque">
 
     <item android:drawable="@color/manualBackground" />
+
     <item
         android:drawable="@drawable/ic_browser_144"
         android:gravity="center" />
