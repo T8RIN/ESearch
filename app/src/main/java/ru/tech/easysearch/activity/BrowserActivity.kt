@@ -1,4 +1,4 @@
-package ru.tech.easysearch
+package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,8 +10,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
+import ru.tech.easysearch.R
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.ToolbarAdapter
+import ru.tech.easysearch.data.DataArrays
+import ru.tech.easysearch.helper.client.WebClient
 
 class BrowserActivity : AppCompatActivity() {
 
@@ -20,6 +23,7 @@ class BrowserActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
+        overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_browser)
 

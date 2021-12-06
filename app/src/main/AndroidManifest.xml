@@ -26,10 +26,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ESearch">
         <activity
-            android:name=".BrowserActivity"
+            android:name=".activity.BrowserActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>

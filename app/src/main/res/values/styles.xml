@@ -5,4 +5,19 @@
         <item name="colorControlNormal">?attr/mainColor</item>
     </style>
 
+    <style name="Theme.App.Dialog.FullScreen"
+        parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">
+            @anim/enter_slide_up
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/exit_slide_down
+        </item>
+    </style>
+
 </resources>

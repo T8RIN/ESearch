@@ -1,4 +1,4 @@
-package ru.tech.easysearch
+package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import ru.tech.easysearch.DataArrays.prefixDict
+import ru.tech.easysearch.R
+import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.ToolbarAdapter
+import ru.tech.easysearch.fragment.history.HistoryFragment
 import java.util.*
 
 
@@ -137,6 +139,10 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
+        
+        val history: ImageButton = findViewById(R.id.historyButton)
+        history.setOnClickListener { HistoryFragment().show(supportFragmentManager, "custom")}
+        
     }
 
     private var prefix = ""

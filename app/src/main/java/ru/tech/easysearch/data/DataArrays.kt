@@ -1,4 +1,4 @@
-package ru.tech.easysearch
+package ru.tech.easysearch.data
 
 import ru.tech.easysearch.R.drawable.*
 

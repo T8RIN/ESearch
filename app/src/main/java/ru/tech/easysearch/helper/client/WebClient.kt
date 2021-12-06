@@ -1,4 +1,4 @@
-package ru.tech.easysearch
+package ru.tech.easysearch.helper.client
 
 import android.annotation.TargetApi
 import android.os.Build
