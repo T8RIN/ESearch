@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BrowserActivity">
+
+    <include
+        layout="@layout/app_bar_browser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/backward"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="start"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_fast_rewind_24" />
+
+    <ImageButton
+        android:id="@+id/forward"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_fast_forward_24" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,17 +11,23 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_bing_logo.xml" value="0.19722222222222222" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_google_logo.xml" value="0.19722222222222222" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2625" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_mailru_logo.xml" value="0.2153846153846154" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_outline_keyboard_arrow_down_24.xml" value="0.2625" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_twitter_logo.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_vk_logo.xml" value="0.13958333333333334" />
-        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_main.xml" value="0.152" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_wikipedia_logo.xml" value="0.8800000000000001" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ripple.xml" value="0.2153846153846154" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/rounded_corners.xml" value="0.2153846153846154" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_browser.xml" value="0.2" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/app_bar_browser.xml" value="0.2" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/app_bar_layout.xml" value="0.24635416666666668" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/app_bar_main.xml" value="0.2" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/bottom_app_bar.xml" value="0.24635416666666668" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/bottom_bar.xml" value="0.1" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/content_main.xml" value="0.152" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/fragment_home.xml" value="0.24635416666666668" />
-        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/toolbar_item.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/toolbar_item.xml" value="0.264" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/menu/bottom_app_bar.xml" value="0.1" />
       </map>
     </option>

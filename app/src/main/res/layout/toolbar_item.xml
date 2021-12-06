@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@android:color/transparent"
+    android:layout_height="?attr/actionBarSize">
 
     <ImageView
         android:id="@+id/label"
@@ -10,8 +11,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:contentDescription="@string/none"
-        android:padding="10dp"
-        android:src="@drawable/ic_launcher_background"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        android:src="@drawable/ic_bing_logo"
         app:tint="?attr/colorControlNormal" />
 
 </FrameLayout>

@@ -5,7 +5,7 @@
     android:id="@+id/main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_browser">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -16,8 +16,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/toolbarRecycler"
             android:layout_width="match_parent"
-            android:elevation="10dp"
             android:layout_height="?attr/actionBarSize"
+            android:elevation="10dp"
             android:orientation="horizontal" />
 
         <androidx.appcompat.widget.SearchView
@@ -30,5 +30,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <WebView
+        android:id="@+id/webBrowser"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

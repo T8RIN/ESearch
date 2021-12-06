@@ -11,14 +11,99 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageButton
+        android:id="@+id/backward"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="start"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_fast_rewind_24" />
+
+    <ImageButton
+        android:id="@+id/forward"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_fast_forward_24" />
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:hideOnScroll="true"
-        app:menu="@menu/bottom_menu"
-        app:navigationIcon="@drawable/ic_baseline_more_horiz_24" />
+        app:hideOnScroll="true" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom">
+
+        <ImageButton
+            android:id="@+id/vpnButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_vpn_lock_24"
+            app:layout_constraintEnd_toStartOf="@id/historyButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <ImageButton
+            android:id="@+id/historyButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_history_24"
+            app:layout_constraintEnd_toEndOf="@id/fabDividerLeft"
+            app:layout_constraintStart_toEndOf="@id/vpnButton"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/fabDividerLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.41" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/fabDividerRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.59" />
+
+        <ImageButton
+            android:id="@+id/bookmarkButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_bookmark_24"
+            app:layout_constraintEnd_toStartOf="@id/settingsButton"
+            app:layout_constraintStart_toEndOf="@id/fabDividerRight"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_settings_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/bookmarkButton"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"

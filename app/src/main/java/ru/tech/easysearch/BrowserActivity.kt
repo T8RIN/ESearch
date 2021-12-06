@@ -1,69 +1,37 @@
 package ru.tech.easysearch
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.speech.RecognizerIntent
+import android.webkit.WebView
 import android.widget.ImageButton
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import ru.tech.easysearch.DataArrays.prefixDict
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.ToolbarAdapter
-import java.util.*
 
-
-class MainActivity : AppCompatActivity() {
+class BrowserActivity : AppCompatActivity() {
 
     private var searchView: SearchView? = null
     private var adapter: ToolbarAdapter? = null
 
-    private val resultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                recognized(data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS))
-            }
-        }
-
-    private fun recognized(stringArrayListExtra: ArrayList<String>?) {
-        var uriString = ""
-        if (stringArrayListExtra != null) {
-            for (i in stringArrayListExtra) {
-                uriString += "$i+"
-            }
-        }
-        val result: String = stringArrayListExtra.toString().drop(1).dropLast(1)
-        searchView?.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_button)
-            ?.performClick()
-        searchView?.setQuery(result, true)
-        searchView?.clearFocus()
-
-        uriString.dropLast(1)
-        startBrowserWithUri(uriString)
-    }
-
-    private fun startBrowserWithUri(uriString: String) {
-        val intent = Intent(this, BrowserActivity::class.java)
-        intent.putExtra("url", prefix + uriString)
-        intent.putExtra("prefix", prefix)
-        startActivity(intent)
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_ESearch)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_browser)
+
+        browser = findViewById(R.id.webBrowser)
+        browser!!.webViewClient = WebClient()
+        browser!!.settings.javaScriptEnabled = true
+
+        if (savedInstanceState != null) browser!!.restoreState(savedInstanceState.getBundle("webViewState")!!)
+
+        prefix = intent.extras?.get("prefix").toString()
+
+        onGetUri(intent.extras?.get("url").toString().removePrefix(prefix))
 
         val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
         val labelList =
@@ -99,17 +67,25 @@ class MainActivity : AppCompatActivity() {
         adapter = ToolbarAdapter(this, labelList)
         recycler.adapter = adapter
 
+        layoutManager.scrollToPosition(
+            adapter!!.labelList.indexOf(
+                DataArrays.prefixDict.filterValues { it == prefix }.keys.elementAt(
+                    0
+                )
+            )
+        )
+
         searchView = findViewById(R.id.searchView)
         searchView!!.isSubmitButtonEnabled = true
         searchView?.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String): Boolean {
-
+                    if (newText.isNotEmpty()) uriLast = newText
                     return true
                 }
 
                 override fun onQueryTextSubmit(query: String): Boolean {
-
+                    onGetUri(query)
                     return true
                 }
             })
@@ -118,10 +94,6 @@ class MainActivity : AppCompatActivity() {
         val helper = PagerSnapHelper()
         helper.attachToRecyclerView(recycler)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener {
-            startSpeechRecognize(resultLauncher)
-        }
         val forward: ImageButton = findViewById(R.id.forward)
         val backward: ImageButton = findViewById(R.id.backward)
 
@@ -133,13 +105,37 @@ class MainActivity : AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
                 val key =
                     adapter?.labelList?.get((recyclerView.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())
-                prefix = prefixDict[key]!!
-
+                prefix = DataArrays.prefixDict[key]!!
+                if (uriLast.isNotEmpty()) onGetUri(uriLast)
             }
         })
     }
 
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        var browser: WebView? = null
+    }
+
+    override fun onBackPressed() {
+        if (browser?.canGoBack() == true) browser?.goBack()
+        else super.onBackPressed()
+    }
+
     private var prefix = ""
+
+    private fun onGetUri(uriLast: String) {
+        this.uriLast = uriLast
+        browser?.loadUrl(prefix + uriLast)
+    }
+
+    private var uriLast: String = ""
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        val bundle = Bundle()
+        browser?.saveState(bundle)
+        outState.putBundle("webViewState", bundle)
+        super.onSaveInstanceState(outState)
+    }
 
     private fun recursiveClickForward(
         forward: ImageButton,
@@ -181,14 +177,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startSpeechRecognize(resultLauncher: ActivityResultLauncher<Intent>) {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        resultLauncher.launch(intent)
-    }
 
 }
