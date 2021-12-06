@@ -17,10 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.ToolbarAdapter
-import ru.tech.easysearch.fragment.history.HistoryFragment
+import ru.tech.easysearch.data.DataArrays.prefixDict
+import ru.tech.easysearch.fragment.bookmark.BookmarkFragment
+import ru.tech.easysearch.fragment.recent.RecentFragment
+import ru.tech.easysearch.fragment.settings.SettingsFragment
+import ru.tech.easysearch.fragment.vpn.VpnFragment
 import java.util.*
 
 
@@ -63,8 +66,12 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_ESearch)
+
+        super.onCreate(savedInstanceState)
+
+        overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
+
         setContentView(R.layout.activity_main)
 
         val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
@@ -98,7 +105,12 @@ class MainActivity : AppCompatActivity() {
         )
         recycler.layoutManager = layoutManager
 
-        adapter = ToolbarAdapter(this, labelList)
+        val fab: FloatingActionButton = findViewById(R.id.fab)
+        fab.setOnClickListener {
+            startSpeechRecognize(resultLauncher)
+        }
+
+        adapter = ToolbarAdapter(this, labelList, findViewById(R.id.labelSuggestionCard), fab)
         recycler.adapter = adapter
 
         searchView = findViewById(R.id.searchView)
@@ -120,10 +132,7 @@ class MainActivity : AppCompatActivity() {
         val helper = PagerSnapHelper()
         helper.attachToRecyclerView(recycler)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener {
-            startSpeechRecognize(resultLauncher)
-        }
+
         val forward: ImageButton = findViewById(R.id.forward)
         val backward: ImageButton = findViewById(R.id.backward)
 
@@ -139,10 +148,60 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
-        
+
         val history: ImageButton = findViewById(R.id.historyButton)
-        history.setOnClickListener { HistoryFragment().show(supportFragmentManager, "custom")}
-        
+        val vpn: ImageButton = findViewById(R.id.vpnButton)
+        val bookmarks: ImageButton = findViewById(R.id.bookmarkButton)
+        val settings: ImageButton = findViewById(R.id.settingsButton)
+        recursiveBottomNavigationClick(history, vpn, bookmarks, settings)
+    }
+
+    private fun recursiveBottomNavigationClick(
+        history: ImageButton,
+        vpn: ImageButton,
+        bookmarks: ImageButton,
+        settings: ImageButton
+    ) {
+        history.setOnClickListener {
+            RecentFragment().show(supportFragmentManager, "custom")
+            delayBeforeNextClick(history, vpn, bookmarks, settings)
+        }
+        vpn.setOnClickListener {
+            VpnFragment().show(supportFragmentManager, "custom")
+            delayBeforeNextClick(history, vpn, bookmarks, settings)
+        }
+        bookmarks.setOnClickListener {
+            BookmarkFragment().show(supportFragmentManager, "custom")
+            delayBeforeNextClick(history, vpn, bookmarks, settings)
+        }
+        settings.setOnClickListener {
+            SettingsFragment().show(supportFragmentManager, "custom")
+            delayBeforeNextClick(history, vpn, bookmarks, settings)
+        }
+    }
+
+    private fun delayBeforeNextClick(
+        history: ImageButton,
+        vpn: ImageButton,
+        bookmarks: ImageButton,
+        settings: ImageButton
+    ) {
+        clearListeners(history, vpn, bookmarks, settings)
+        Handler(mainLooper).postDelayed({
+            recursiveBottomNavigationClick(history, vpn, bookmarks, settings)
+        }, 300)
+    }
+
+    private fun clearListeners(
+        history: ImageButton,
+        vpn: ImageButton,
+        bookmarks: ImageButton,
+        settings: ImageButton
+    ) {
+        history.setOnClickListener {}
+        vpn.setOnClickListener {}
+        bookmarks.setOnClickListener {}
+        settings.setOnClickListener {}
     }
 
     private var prefix = ""
@@ -156,7 +215,7 @@ class MainActivity : AppCompatActivity() {
             val newPos = layoutManager.findLastCompletelyVisibleItemPosition() + 1
             if (newPos == adapter!!.itemCount) recycler.scrollToPosition(0)
             else recycler.smoothScrollToPosition(newPos)
-            forward.setOnClickListener {}
+            it.setOnClickListener {}
             Handler(mainLooper).postDelayed({
                 recursiveClickForward(
                     forward,

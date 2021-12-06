@@ -23,13 +23,15 @@ class BrowserActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
-        overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_browser)
+
+        overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
 
         browser = findViewById(R.id.webBrowser)
         browser!!.webViewClient = WebClient()
         browser!!.settings.javaScriptEnabled = true
+        browser!!.settings.builtInZoomControls = true
 
         if (savedInstanceState != null) browser!!.restoreState(savedInstanceState.getBundle("webViewState")!!)
 
@@ -122,7 +124,10 @@ class BrowserActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (browser?.canGoBack() == true) browser?.goBack()
-        else super.onBackPressed()
+        else {
+            super.onBackPressed()
+            overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
+        }
     }
 
     private var prefix = ""

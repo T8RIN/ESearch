@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 
 
 class ToolbarAdapter(
-    var context: Context,
-    var labelList: List<Int>
+    val context: Context,
+    var labelList: List<Int>,
+    val card: MaterialCardView? = null,
+    val fab: FloatingActionButton? = null
 ) :
     RecyclerView.Adapter<ToolbarAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,6 +26,24 @@ class ToolbarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
+        holder.itemView.setOnClickListener {
+            when (card?.translationY) {
+                -2222f -> {
+                    card.animate()
+                        .y(0f)
+                        .setDuration(200)
+                        .withStartAction { fab?.hide() }
+                        .start()
+                }
+                else -> {
+                    card?.animate()
+                        ?.y(-2222f)
+                        ?.setDuration(200)
+                        ?.withEndAction { fab?.show() }
+                        ?.start()
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {

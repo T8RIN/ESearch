@@ -9,6 +9,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
+        android:elevation="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
@@ -16,19 +17,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/toolbarRecycler"
             android:layout_width="match_parent"
-            android:elevation="10dp"
             android:layout_height="?attr/actionBarSize"
             android:orientation="horizontal" />
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/manualBackground"
-            android:elevation="4dp"
-            android:layoutDirection="rtl" />
-
     </com.google.android.material.appbar.AppBarLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

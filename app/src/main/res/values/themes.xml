@@ -18,4 +18,8 @@
         <!-- Customize your theme here. -->
         <item name="mainColor">#00D00A</item>
     </style>
+
+    <style name="Theme.ESearch.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
 </resources>

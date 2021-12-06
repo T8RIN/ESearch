@@ -6,32 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-    <include
-        layout="@layout/app_bar_main"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageButton
-        android:id="@+id/backward"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="start"
-        android:background="@drawable/ripple"
-        android:contentDescription="@string/none"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_fast_rewind_24" />
-
-    <ImageButton
-        android:id="@+id/forward"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="end"
-        android:background="@drawable/ripple"
-        android:contentDescription="@string/none"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_fast_forward_24" />
+        android:layout_height="48dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/manualBackground"
+        android:layoutDirection="rtl" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -104,6 +85,47 @@
             app:layout_constraintVertical_chainStyle="spread" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/labelSuggestionCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationY="-2222dp"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_launcher_background"
+            android:contentDescription="@string/none" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/backward"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="start"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_fast_rewind_24" />
+
+    <ImageButton
+        android:id="@+id/forward"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_fast_forward_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
