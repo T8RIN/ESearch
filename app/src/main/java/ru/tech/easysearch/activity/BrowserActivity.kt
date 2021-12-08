@@ -2,11 +2,11 @@ package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -14,10 +14,13 @@ import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.R.drawable.*
-import ru.tech.easysearch.adapter.ToolbarAdapter
+import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
+import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
+import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.helper.client.WebClient
+import java.util.*
 
 class BrowserActivity : AppCompatActivity() {
 
@@ -44,32 +47,15 @@ class BrowserActivity : AppCompatActivity() {
 
         prefix = intent.extras?.get("prefix").toString()
 
-        onGetUri(intent.extras?.get("url").toString().removePrefix(prefix))
+        val query = intent.extras?.get("url").toString().removePrefix(prefix)
+
+        onGetUri(query)
 
         val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
-        val labelList =
-            listOf(
-                ic_google_logo,
-                ic_bing_logo,
-                ic_yandex_logo,
-                ic_amazon_logo,
-                ic_avito_logo,
-                ic_yahoo_logo,
-                ic_translate_logo,
-                ic_duckduckgo_logo,
-                ic_ebay_logo,
-                ic_ekatalog_logo,
-                ic_facebook_logo,
-                ic_imdb_logo,
-                ic_mailru_logo,
-                ic_ozon_logo,
-                ic_twitter_logo,
-                ic_vk_logo,
-                ic_wikipedia_logo,
-                ic_youla_logo,
-                ic_youtube_logo,
-                ic_github_logo
-            )
+
+        val labelList: ArrayList<Int> = ArrayList()
+        for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
+
         val layoutManager = LoopingLayoutManager(
             this,
             LoopingLayoutManager.HORIZONTAL,
@@ -78,19 +64,26 @@ class BrowserActivity : AppCompatActivity() {
         recycler.layoutManager = layoutManager
 
         val card: MaterialCardView = findViewById(R.id.labelSuggestionCard)
-        card.translationY = MainActivity.displayOffsetY
+        card.translationY = displayOffsetY
         val manageList: ImageButton = findViewById(R.id.manageList)
-        manageList.translationX = MainActivity.displayOffsetX
+        manageList.translationY = displayOffsetY
+        val close: ImageButton = findViewById(R.id.closeButton)
+        close.translationX = displayOffsetX
 
         val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
 
-        val forward: ImageButton = findViewById(R.id.forward)
-        val backward: ImageButton = findViewById(R.id.backward)
-
-        recursiveClickForward(forward, layoutManager, recycler)
-        recursiveClickBackward(backward, layoutManager, recycler)
-
-        adapter = ToolbarAdapter(this, labelList, card, null, labelRecycler, recycler, forward, backward, manageList)
+        adapter = ToolbarAdapter(
+            this,
+            labelList,
+            card,
+            null,
+            labelRecycler,
+            recycler,
+            null,
+            null,
+            manageList,
+            close
+        )
         recycler.adapter = adapter
 
         layoutManager.scrollToPosition(
@@ -116,6 +109,11 @@ class BrowserActivity : AppCompatActivity() {
                 }
             })
 
+        searchView?.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_button)
+            ?.performClick()
+        searchView?.setQuery(query, false)
+        searchView?.clearFocus()
+
 
         val helper = PagerSnapHelper()
         helper.attachToRecyclerView(recycler)
@@ -127,12 +125,19 @@ class BrowserActivity : AppCompatActivity() {
                     adapter?.labelList?.get((recyclerView.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())
                 prefix = DataArrays.prefixDict[key]!!
                 if (uriLast.isNotEmpty()) onGetUri(uriLast)
-                card.animate().y(MainActivity.displayOffsetY).setStartDelay(100).setDuration(300).start()
-                forward.animate().y(0f).setDuration(300).start()
-                backward.animate().y(0f).setDuration(300).start()
-                manageList.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
+                card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
+                    .start()
+                close.animate().x(displayOffsetX).setDuration(200).start()
+                manageList.animate().y(displayOffsetY).setDuration(200).start()
             }
         })
+
+        close.setOnClickListener {
+            card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300).start()
+            close.animate().x(displayOffsetX).setDuration(200).start()
+            manageList.animate().y(displayOffsetY).setDuration(200).start()
+        }
+
     }
 
     companion object {
@@ -144,12 +149,11 @@ class BrowserActivity : AppCompatActivity() {
         val card = findViewById<MaterialCardView>(R.id.labelSuggestionCard)
         val labelRecycler = findViewById<RecyclerView>(R.id.labelRecycler)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
-        val forward = findViewById<ImageButton>(R.id.forward)
-        val backward = findViewById<ImageButton>(R.id.backward)
         val manageList = findViewById<ImageButton>(R.id.manageList)
+        val close = findViewById<ImageButton>(R.id.closeButton)
         if(card.translationY == 0f) {
             card.animate()
-                .y(MainActivity.displayOffsetY)
+                .y(displayOffsetY)
                 .setDuration(350)
                 .withEndAction {
                     labelRecycler.adapter = null
@@ -157,9 +161,8 @@ class BrowserActivity : AppCompatActivity() {
                     card.visibility = View.GONE
                 }
                 .start()
-            forward.animate().y(0f).setDuration(300).start()
-            backward.animate().y(0f).setDuration(300).start()
-            manageList.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
+            close.animate().x(displayOffsetX).setDuration(200).start()
+            manageList.animate().y(displayOffsetY).setDuration(200).start()
         }
         if (browser?.canGoBack() == true) browser?.goBack()
         else {
@@ -183,46 +186,5 @@ class BrowserActivity : AppCompatActivity() {
         outState.putBundle("webViewState", bundle)
         super.onSaveInstanceState(outState)
     }
-
-    private fun recursiveClickForward(
-        forward: ImageButton,
-        layoutManager: LoopingLayoutManager,
-        recycler: RecyclerView
-    ) {
-        forward.setOnClickListener {
-            val newPos = layoutManager.findLastCompletelyVisibleItemPosition() + 1
-            if (newPos == adapter!!.itemCount) recycler.scrollToPosition(0)
-            else recycler.smoothScrollToPosition(newPos)
-            forward.setOnClickListener {}
-            Handler(mainLooper).postDelayed({
-                recursiveClickForward(
-                    forward,
-                    layoutManager,
-                    recycler
-                )
-            }, 200)
-        }
-    }
-
-    private fun recursiveClickBackward(
-        backward: ImageButton,
-        layoutManager: LoopingLayoutManager,
-        recycler: RecyclerView
-    ) {
-        backward.setOnClickListener {
-            val newPos = layoutManager.findLastCompletelyVisibleItemPosition() - 1
-            if (newPos == -1) recycler.scrollToPosition(adapter!!.itemCount)
-            else recycler.smoothScrollToPosition(newPos)
-            backward.setOnClickListener {}
-            Handler(mainLooper).postDelayed({
-                recursiveClickBackward(
-                    backward,
-                    layoutManager,
-                    recycler
-                )
-            }, 200)
-        }
-    }
-
 
 }

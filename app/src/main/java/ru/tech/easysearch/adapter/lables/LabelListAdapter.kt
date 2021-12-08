@@ -1,4 +1,4 @@
-package ru.tech.easysearch.adapter
+package ru.tech.easysearch.adapter.lables
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -20,9 +20,10 @@ class LabelListAdapter(
     private val fab: FloatingActionButton?,
     private val labelRecycler: RecyclerView,
     private val toolbarRecycler: RecyclerView,
-    private val forward: ImageButton,
-    private val backward: ImageButton,
-    private val manageList: ImageButton
+    private val forward: ImageButton?,
+    private val backward: ImageButton?,
+    private val manageList: ImageButton,
+    private val close: ImageButton
 ) :
     RecyclerView.Adapter<LabelListAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,10 +44,11 @@ class LabelListAdapter(
                     card.visibility = View.GONE
                 }
                 .withStartAction {
-                    forward.animate().y(0f).setDuration(300).start()
-                    backward.animate().y(0f).setDuration(300).start()
+                    forward?.animate()?.y(0f)?.setDuration(300)?.start()
+                    backward?.animate()?.y(0f)?.setDuration(300)?.start()
                     toolbarRecycler.scrollToPosition(position)
-                    manageList.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
+                    close.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
+                    manageList.animate().y(MainActivity.displayOffsetY).setDuration(300).start()
                 }
                 .start()
         }

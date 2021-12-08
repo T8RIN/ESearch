@@ -8,6 +8,7 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
+        app:queryHint="@string/typeHere"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="?attr/actionBarSize"
@@ -23,8 +24,20 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        app:layout_anchor="@id/bottomAppBar"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom">
+        app:layout_anchorGravity="bottom">
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_settings_24"
+            app:layout_constraintEnd_toStartOf="@id/vpnButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
 
         <ImageButton
             android:id="@+id/vpnButton"
@@ -33,19 +46,8 @@
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
             android:src="@drawable/ic_baseline_vpn_lock_24"
-            app:layout_constraintEnd_toStartOf="@id/historyButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_chainStyle="spread" />
-
-        <ImageButton
-            android:id="@+id/historyButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/ripple"
-            android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_history_24"
             app:layout_constraintEnd_toEndOf="@id/fabDividerLeft"
-            app:layout_constraintStart_toEndOf="@id/vpnButton"
+            app:layout_constraintStart_toEndOf="@id/settingsButton"
             app:layout_constraintVertical_chainStyle="spread" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -63,25 +65,25 @@
             app:layout_constraintGuide_percent="0.59" />
 
         <ImageButton
-            android:id="@+id/bookmarkButton"
+            android:id="@+id/historyButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_bookmark_24"
-            app:layout_constraintEnd_toStartOf="@id/settingsButton"
+            android:src="@drawable/ic_baseline_history_24"
+            app:layout_constraintEnd_toStartOf="@id/searchButton"
             app:layout_constraintStart_toEndOf="@id/fabDividerRight"
             app:layout_constraintVertical_chainStyle="spread" />
 
         <ImageButton
-            android:id="@+id/settingsButton"
+            android:id="@+id/searchButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_settings_24"
+            android:src="@drawable/ic_baseline_search_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/bookmarkButton"
+            app:layout_constraintStart_toEndOf="@id/historyButton"
             app:layout_constraintVertical_chainStyle="spread" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -90,7 +92,7 @@
         android:id="@+id/labelSuggestionCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:translationY="0dp"
+        android:translationY="1000dp"
         app:cardElevation="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -140,6 +142,17 @@
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
         android:src="@drawable/ic_manage" />
+
+    <ImageButton
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_close_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"

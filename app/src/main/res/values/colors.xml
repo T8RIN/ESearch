@@ -8,5 +8,38 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="lred">#FF5B8A</color>
+    <color name="red">#FD2A66</color>
+    <color name="dred">#C50038</color>
+
+    <color name="lred2">#FF5B5B</color>
+    <color name="red2">#FF0000</color>
+    <color name="dred2">#C50000</color>
+
+    <color name="lorange">#FFB84F</color>
+    <color name="orange">#FFAA00</color>
+    <color name="dorange">#CA6F00</color>
+
+    <color name="lyellow">#FFF163</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="dyellow">#C5B41D</color>
+
+    <color name="llgreen">#B7EC9A</color>
+    <color name="lgreen">#9BEC6F</color>
+    <color name="green">#59FF00</color>
+    <color name="dgreen">#55CA24</color>
+    <color name="ddgreen">#2D8000</color>
+
+    <color name="manualGreen">#2D8000</color>
+
+    <color name="llblue">#C8DCDF</color>
+    <color name="lblue">#00E1FF</color>
+    <color name="blue">#007BFF</color>
+    <color name="dblue">#015DBF</color>
+
+    <color name="lviolet">#E7ABED</color>
+    <color name="violet">#F076FD</color>
+    <color name="dviolet">#9F05B0</color>
+
     <color name="manualBackground">#FFFFFF</color>
 </resources>

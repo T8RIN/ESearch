@@ -19,20 +19,23 @@ import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.R.drawable.*
-import ru.tech.easysearch.adapter.ToolbarAdapter
+import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
-import ru.tech.easysearch.fragment.bookmark.BookmarkFragment
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.fragment.recent.RecentFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.vpn.VpnFragment
+import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private var searchView: SearchView? = null
-    private var adapter: ToolbarAdapter? = null
+    private var toolbarAdapter: ToolbarAdapter? = null
+    private var layoutManager: LoopingLayoutManager? = null
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -43,25 +46,23 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun recognized(stringArrayListExtra: ArrayList<String>?) {
-        var uriString = ""
-        if (stringArrayListExtra != null) {
-            for (i in stringArrayListExtra) {
-                uriString += "$i+"
-            }
-        }
+
         val result: String = stringArrayListExtra.toString().drop(1).dropLast(1)
         searchView?.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_button)
             ?.performClick()
         searchView?.setQuery(result, true)
         searchView?.clearFocus()
 
-        uriString.dropLast(1)
-        startBrowserWithUri(uriString)
+        startBrowserWithQuery(result)
     }
 
-    private fun startBrowserWithUri(uriString: String) {
+    private fun startBrowserWithQuery(query: String) {
         val intent = Intent(this, BrowserActivity::class.java)
-        intent.putExtra("url", prefix + uriString)
+        val key =
+            layoutManager?.findLastCompletelyVisibleItemPosition()
+                ?.let { toolbarAdapter?.labelList?.get(it) }
+        val prefix = prefixDict[key]!!
+        intent.putExtra("url", prefix + query)
         intent.putExtra("prefix", prefix)
         startActivity(intent)
     }
@@ -80,30 +81,11 @@ class MainActivity : AppCompatActivity() {
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
 
         val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
-        val labelList =
-            listOf(
-                ic_google_logo,
-                ic_bing_logo,
-                ic_yandex_logo,
-                ic_amazon_logo,
-                ic_avito_logo,
-                ic_yahoo_logo,
-                ic_translate_logo,
-                ic_duckduckgo_logo,
-                ic_ebay_logo,
-                ic_ekatalog_logo,
-                ic_facebook_logo,
-                ic_imdb_logo,
-                ic_mailru_logo,
-                ic_ozon_logo,
-                ic_twitter_logo,
-                ic_vk_logo,
-                ic_wikipedia_logo,
-                ic_youla_logo,
-                ic_youtube_logo,
-                ic_github_logo
-            )
-        val layoutManager = LoopingLayoutManager(
+
+        val labelList: ArrayList<Int> = ArrayList()
+        for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
+
+        layoutManager = LoopingLayoutManager(
             this,
             LoopingLayoutManager.HORIZONTAL,
             false
@@ -118,19 +100,49 @@ class MainActivity : AppCompatActivity() {
         val card: MaterialCardView = findViewById(R.id.labelSuggestionCard)
         card.translationY = displayOffsetY
         val manageList: ImageButton = findViewById(R.id.manageList)
-        manageList.translationX = displayOffsetX
+        manageList.translationY = displayOffsetY
+        val close: ImageButton = findViewById(R.id.closeButton)
+        close.translationX = displayOffsetX
 
         val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
 
         val forward: ImageButton = findViewById(R.id.forward)
         val backward: ImageButton = findViewById(R.id.backward)
 
-        recursiveClickForward(forward, layoutManager, recycler)
-        recursiveClickBackward(backward, layoutManager, recycler)
+        recursiveClickForward(forward, layoutManager!!, recycler)
+        recursiveClickBackward(backward, layoutManager!!, recycler)
 
-        adapter =
-            ToolbarAdapter(this, labelList, card, fab, labelRecycler, recycler, forward, backward, manageList)
-        recycler.adapter = adapter
+        toolbarAdapter =
+            ToolbarAdapter(
+                this,
+                labelList,
+                card,
+                fab,
+                labelRecycler,
+                recycler,
+                forward,
+                backward,
+                manageList,
+                close
+            )
+        recycler.adapter = toolbarAdapter
+
+        val selectLabelsFragment = SelectLabels(this)
+        manageList.setOnClickListener {
+            if (!selectLabelsFragment.isAdded) selectLabelsFragment.show(
+                supportFragmentManager,
+                "custom"
+            )
+        }
+
+        close.setOnClickListener {
+            card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
+                .withEndAction { fab.show() }.start()
+            forward.animate().y(0f).setDuration(300).start()
+            backward.animate().y(0f).setDuration(300).start()
+            close.animate().x(displayOffsetX).setDuration(200).start()
+            manageList.animate().y(displayOffsetY).setDuration(200).start()
+        }
 
         searchView = findViewById(R.id.searchView)
         searchView!!.isSubmitButtonEnabled = true
@@ -142,86 +154,93 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onQueryTextSubmit(query: String): Boolean {
-
+                    startBrowserWithQuery(query)
                     return true
                 }
             })
+
+        searchView?.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_button)
+            ?.performClick()
+        searchView?.clearFocus()
 
 
         val helper = PagerSnapHelper()
         helper.attachToRecyclerView(recycler)
 
+        var animating = false
 
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val key =
-                    adapter?.labelList?.get((recyclerView.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())
-                prefix = prefixDict[key]!!
-                card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
-                    .withEndAction { fab.show() }.start()
-                forward.animate().y(0f).setDuration(300).start()
-                backward.animate().y(0f).setDuration(300).start()
-                manageList.animate().x(displayOffsetX).setDuration(200).start()
+                if(!animating && card.translationY == 0f){
+                    card.animate().y(displayOffsetY).setDuration(300)
+                        .withStartAction { animating = true }
+                        .withEndAction {
+                            fab.show()
+                            animating = false
+                        }.start()
+                    forward.animate().y(0f).setDuration(300).start()
+                    backward.animate().y(0f).setDuration(300).start()
+                    close.animate().x(displayOffsetX).setDuration(200).start()
+                    manageList.animate().y(displayOffsetY).setDuration(200).start()
+                }
             }
         })
 
         val history: ImageButton = findViewById(R.id.historyButton)
         val vpn: ImageButton = findViewById(R.id.vpnButton)
-        val bookmarks: ImageButton = findViewById(R.id.bookmarkButton)
+        val search: ImageButton = findViewById(R.id.searchButton)
         val settings: ImageButton = findViewById(R.id.settingsButton)
-        recursiveBottomNavigationClick(history, vpn, bookmarks, settings)
+        recursiveBottomNavigationClick(history, vpn, search, settings)
     }
 
     private fun recursiveBottomNavigationClick(
         history: ImageButton,
         vpn: ImageButton,
-        bookmarks: ImageButton,
+        search: ImageButton,
         settings: ImageButton
     ) {
         history.setOnClickListener {
             RecentFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, bookmarks, settings)
+            delayBeforeNextClick(history, vpn, search, settings)
         }
         vpn.setOnClickListener {
             VpnFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, bookmarks, settings)
+            delayBeforeNextClick(history, vpn, search, settings)
         }
-        bookmarks.setOnClickListener {
-            BookmarkFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, bookmarks, settings)
+        search.setOnClickListener {
+            startBrowserWithQuery(searchView!!.query.toString())
+            delayBeforeNextClick(history, vpn, search, settings)
         }
         settings.setOnClickListener {
             SettingsFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, bookmarks, settings)
+            delayBeforeNextClick(history, vpn, search, settings)
         }
     }
 
     private fun delayBeforeNextClick(
         history: ImageButton,
         vpn: ImageButton,
-        bookmarks: ImageButton,
+        search: ImageButton,
         settings: ImageButton
     ) {
-        clearListeners(history, vpn, bookmarks, settings)
+        clearListeners(history, vpn, search, settings)
         Handler(mainLooper).postDelayed({
-            recursiveBottomNavigationClick(history, vpn, bookmarks, settings)
+            recursiveBottomNavigationClick(history, vpn, search, settings)
         }, 300)
     }
 
     private fun clearListeners(
         history: ImageButton,
         vpn: ImageButton,
-        bookmarks: ImageButton,
+        search: ImageButton,
         settings: ImageButton
     ) {
         history.setOnClickListener {}
         vpn.setOnClickListener {}
-        bookmarks.setOnClickListener {}
+        search.setOnClickListener {}
         settings.setOnClickListener {}
     }
-
-    private var prefix = ""
 
     private fun recursiveClickForward(
         forward: ImageButton,
@@ -230,7 +249,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         forward.setOnClickListener {
             val newPos = layoutManager.findLastCompletelyVisibleItemPosition() + 1
-            if (newPos == adapter!!.itemCount) recycler.scrollToPosition(0)
+            if (newPos == toolbarAdapter!!.itemCount) recycler.scrollToPosition(0)
             else recycler.smoothScrollToPosition(newPos)
             it.setOnClickListener {}
             Handler(mainLooper).postDelayed({
@@ -250,7 +269,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         backward.setOnClickListener {
             val newPos = layoutManager.findLastCompletelyVisibleItemPosition() - 1
-            if (newPos == -1) recycler.scrollToPosition(adapter!!.itemCount)
+            if (newPos == -1) recycler.scrollToPosition(toolbarAdapter!!.itemCount)
             else recycler.smoothScrollToPosition(newPos)
             backward.setOnClickListener {}
             Handler(mainLooper).postDelayed({
@@ -285,6 +304,7 @@ class MainActivity : AppCompatActivity() {
         val forward = findViewById<ImageButton>(R.id.forward)
         val backward = findViewById<ImageButton>(R.id.backward)
         val manageList = findViewById<ImageButton>(R.id.manageList)
+        val close = findViewById<ImageButton>(R.id.closeButton)
         if(card.translationY == 0f) {
             card.animate()
                 .y(displayOffsetY)
@@ -297,8 +317,19 @@ class MainActivity : AppCompatActivity() {
                 .start()
             forward.animate().y(0f).setDuration(300).start()
             backward.animate().y(0f).setDuration(300).start()
-            manageList.animate().x(displayOffsetX).setDuration(200).start()
+            close.animate().x(displayOffsetX).setDuration(200).start()
+            manageList.animate().y(displayOffsetY).setDuration(200).start()
         }
+    }
+
+    override fun onEndList() {}
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onStartList(labelList: ArrayList<Int>) {
+        toolbarAdapter?.labelList = labelList
+        toolbarAdapter?.notifyDataSetChanged()
+        toolbarAdapter?.labelListAdapter?.labelList = labelList
+        toolbarAdapter?.labelListAdapter?.notifyDataSetChanged()
     }
 
 }

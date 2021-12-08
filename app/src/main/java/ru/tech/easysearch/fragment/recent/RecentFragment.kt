@@ -9,7 +9,7 @@ class RecentFragment : DialogFragment(R.layout.recent_fragment) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.Theme_App_Dialog_FullScreen)
+        setStyle(STYLE_NORMAL, R.style.Theme_ESearch_Fullscreen)
     }
 
     override fun onViewCreated(

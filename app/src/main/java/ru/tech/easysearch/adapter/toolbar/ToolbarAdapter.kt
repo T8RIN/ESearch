@@ -1,7 +1,6 @@
-package ru.tech.easysearch.adapter
+package ru.tech.easysearch.adapter.toolbar
 
 import android.content.Context
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
+import ru.tech.easysearch.adapter.lables.LabelListAdapter
 
 
 class ToolbarAdapter(
@@ -23,9 +22,10 @@ class ToolbarAdapter(
     private val fab: FloatingActionButton?,
     private val labelRecycler: RecyclerView,
     private val toolbarRecycler: RecyclerView,
-    private val forward: ImageButton,
-    private val backward: ImageButton,
-    private val manageList: ImageButton
+    private val forward: ImageButton?,
+    private val backward: ImageButton?,
+    private val manageList: ImageButton,
+    private val close: ImageButton
 ) :
     RecyclerView.Adapter<ToolbarAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,6 +33,8 @@ class ToolbarAdapter(
             LayoutInflater.from(parent.context).inflate(R.layout.toolbar_item, parent, false)
         )
     }
+
+    var labelListAdapter: LabelListAdapter? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
@@ -43,7 +45,7 @@ class ToolbarAdapter(
                         .y(0f)
                         .setDuration(350)
                         .withStartAction {
-                            labelRecycler.adapter = LabelListAdapter(
+                            labelListAdapter =  LabelListAdapter(
                                 context,
                                 labelList,
                                 card,
@@ -52,29 +54,34 @@ class ToolbarAdapter(
                                 toolbarRecycler,
                                 forward,
                                 backward,
-                                manageList
+                                manageList,
+                                close
                             )
+                            labelRecycler.adapter = labelListAdapter
                             fab?.hide()
                             card.visibility = View.VISIBLE
-                            manageList.animate().x(0f).setDuration(200).start()
+                            close.animate().x(0f).setDuration(200).start()
+                            manageList.animate().y(0f).setDuration(200).start()
                         }
                         .start()
-                    forward.animate().y(displayOffsetY).setDuration(1000).start()
-                    backward.animate().y(displayOffsetY).setDuration(1000).start()
+                    forward?.animate()?.y(displayOffsetY)?.setDuration(1000)?.start()
+                    backward?.animate()?.y(displayOffsetY)?.setDuration(1000)?.start()
                 }
-                else -> {
+                0f -> {
                     card.animate()
                         .y(displayOffsetY)
                         .setDuration(350)
                         .withEndAction {
-                            labelRecycler.adapter = null
+                            labelListAdapter = null
+                            labelRecycler.adapter = labelListAdapter
                             fab?.show()
                             card.visibility = View.GONE
                         }
                         .start()
-                    manageList.animate().x(displayOffsetX).setDuration(200).start()
-                    forward.animate().y(0f).setDuration(300).start()
-                    backward.animate().y(0f).setDuration(300).start()
+                    close.animate().x(displayOffsetX).setDuration(200).start()
+                    forward?.animate()?.y(0f)?.setDuration(300)?.start()
+                    backward?.animate()?.y(0f)?.setDuration(300)?.start()
+                    manageList.animate().y(displayOffsetY).setDuration(300).start()
                 }
             }
         }

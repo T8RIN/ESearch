@@ -4,4 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="none">None</string>
     <string name="manage">Manage List</string>
+    <string name="typeHere">Type here</string>
+    <string name="selectSearchEngine">Select search engines</string>
+    <string name="disabledService">Disabled engines</string>
+    <string name="activeServices">Active engines</string>
+    <string name="minIsTwo">The minimum of search engines is two</string>
 </resources>

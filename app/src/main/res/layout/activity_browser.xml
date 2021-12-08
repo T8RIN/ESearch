@@ -8,6 +8,7 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
+        app:queryHint="@string/typeHere"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="?attr/actionBarSize"
@@ -43,37 +44,25 @@
         android:layout_height="match_parent" />
 
     <ImageButton
-        android:id="@+id/backward"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="start"
-        android:background="@drawable/ripple"
-        android:contentDescription="@string/none"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_fast_rewind_24" />
-
-    <ImageButton
-        android:id="@+id/forward"
-        android:layout_width="wrap_content"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="end"
-        android:background="@drawable/ripple"
-        android:contentDescription="@string/none"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_fast_forward_24" />
-
-    <ImageButton
         android:id="@+id/manageList"
         android:layout_width="wrap_content"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="end"
-        android:translationX="100dp"
         android:background="@drawable/ripple"
         android:contentDescription="@string/none"
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
         android:src="@drawable/ic_manage" />
+
+    <ImageButton
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="end"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:src="@drawable/ic_baseline_close_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
