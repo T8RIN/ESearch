@@ -2,7 +2,7 @@ package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
+import android.view.View.GONE
 import android.webkit.WebView
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +28,12 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
     private var searchView: SearchView? = null
     private var toolbarAdapter: ToolbarAdapter? = null
     private var layoutManager: LoopingLayoutManager? = null
+    private var card: MaterialCardView? = null
+    private var labelRecycler: RecyclerView? = null
+    private var fab: FloatingActionButton? = null
+    private var manageList: ImageButton? = null
+    private var close: ImageButton? = null
+    private var backButton: ImageButton? = null
 
     override fun onStart() {
         super.onStart()
@@ -58,7 +64,7 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
 
         prefix = intent.extras?.get("prefix").toString()
 
-        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton = findViewById(R.id.backButton)
 
         val query = intent.extras?.get("url").toString().removePrefix(prefix)
 
@@ -76,26 +82,26 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
         )
         recycler.layoutManager = layoutManager
 
-        val card: MaterialCardView = findViewById(R.id.labelSuggestionCard)
-        card.translationY = displayOffsetY
-        val manageList: ImageButton = findViewById(R.id.manageList)
-        manageList.translationY = displayOffsetY
-        val close: ImageButton = findViewById(R.id.closeButton)
-        close.translationX = displayOffsetX
+        card = findViewById(R.id.labelSuggestionCard)
+        card!!.translationY = displayOffsetY
+        manageList = findViewById(R.id.manageList)
+        manageList!!.translationY = displayOffsetY
+        close = findViewById(R.id.closeButton)
+        close!!.translationX = displayOffsetX
 
         val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
 
         toolbarAdapter = ToolbarAdapter(
             this,
             labelList,
-            card,
+            card!!,
             null,
             labelRecycler,
             recycler,
             null,
             null,
-            manageList,
-            close
+            manageList!!,
+            close!!
         )
         recycler.adapter = toolbarAdapter
 
@@ -106,7 +112,7 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
         )
 
         val selectLabelsFragment = SelectLabels(this)
-        manageList.setOnClickListener {
+        manageList!!.setOnClickListener {
             if (!selectLabelsFragment.isAdded) selectLabelsFragment.show(
                 supportFragmentManager,
                 "custom"
@@ -147,25 +153,25 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
                         ?.let { toolbarAdapter?.labelList?.get(it) }
                 prefix = DataArrays.prefixDict[key]!!
                 if (uriLast.isNotEmpty()) onGetUri(uriLast)
-                if (!animating && card.translationY == 0f) {
-                    card.animate().y(displayOffsetY).setDuration(300)
+                if (!animating && card!!.translationY == 0f) {
+                    card!!.animate().y(displayOffsetY).setDuration(300)
                         .withStartAction { animating = true }
                         .withEndAction { animating = false }.start()
-                    close.animate().x(displayOffsetX).setDuration(200).start()
-                    manageList.animate().y(displayOffsetY).setDuration(200).start()
-                    backButton.animate().y(0f).setDuration(200).start()
+                    close!!.animate().x(displayOffsetX).setDuration(200).start()
+                    manageList!!.animate().y(displayOffsetY).setDuration(200).start()
+                    backButton!!.animate().y(0f).setDuration(200).start()
                 }
             }
         })
 
-        close.setOnClickListener {
-            card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300).start()
-            close.animate().x(displayOffsetX).setDuration(200).start()
-            manageList.animate().y(displayOffsetY).setDuration(200).start()
-            backButton.animate().y(0f).setDuration(200).start()
+        close!!.setOnClickListener {
+            card!!.animate().y(displayOffsetY).setStartDelay(100).setDuration(300).start()
+            close!!.animate().x(displayOffsetX).setDuration(200).start()
+            manageList!!.animate().y(displayOffsetY).setDuration(200).start()
+            backButton!!.animate().y(0f).setDuration(200).start()
         }
 
-        backButton.setOnClickListener { onBackPressed() }
+        backButton!!.setOnClickListener { onBackPressed() }
 
     }
 
@@ -175,27 +181,17 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
     }
 
     override fun onBackPressed() {
-        val card = findViewById<MaterialCardView>(R.id.labelSuggestionCard)
-        val labelRecycler = findViewById<RecyclerView>(R.id.labelRecycler)
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        val manageList = findViewById<ImageButton>(R.id.manageList)
-        val close = findViewById<ImageButton>(R.id.closeButton)
-        val backButton = findViewById<ImageButton>(R.id.backButton)
         when {
             browser?.canGoBack() == true -> browser?.goBack()
-            card.translationY == 0f -> {
-                card.animate()
-                    .y(displayOffsetY)
-                    .setDuration(350)
-                    .withEndAction {
-                        labelRecycler.adapter = null
-                        fab?.show()
-                        card.visibility = View.GONE
-                    }
-                    .start()
-                close.animate().x(displayOffsetX).setDuration(200).start()
-                manageList.animate().y(displayOffsetY).setDuration(200).start()
-                backButton.animate().y(0f).setDuration(200).start()
+            card?.translationY == 0f -> {
+                card?.animate()?.y(displayOffsetY)?.setDuration(350)?.withEndAction {
+                    labelRecycler?.adapter = null
+                    fab?.show()
+                    card?.visibility = GONE
+                }?.start()
+                close?.animate()?.x(displayOffsetX)?.setDuration(200)?.start()
+                manageList?.animate()?.y(displayOffsetY)?.setDuration(200)?.start()
+                backButton?.animate()?.y(0f)?.setDuration(200)?.start()
             }
             else -> {
                 super.onBackPressed()

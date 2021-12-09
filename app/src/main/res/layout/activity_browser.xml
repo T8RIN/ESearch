@@ -8,18 +8,18 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        app:queryHint="@string/typeHere"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/manualBackground"
-        android:layoutDirection="rtl" />
+        android:layoutDirection="rtl"
+        app:queryHint="@string/typeHere" />
 
     <WebView
         android:id="@+id/webBrowser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="104dp"/>
+        android:layout_marginTop="104dp" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/labelSuggestionCard"
@@ -30,10 +30,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/labelRecycler"
-            android:nestedScrollingEnabled="false"
-            android:layout_height="match_parent"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
+            android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </com.google.android.material.card.MaterialCardView>

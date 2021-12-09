@@ -36,6 +36,19 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private var searchView: SearchView? = null
     private var toolbarAdapter: ToolbarAdapter? = null
     private var layoutManager: LoopingLayoutManager? = null
+    private var card: MaterialCardView? = null
+    private var labelRecycler: RecyclerView? = null
+    private var toolbarRecycler: RecyclerView? = null
+    private var fab: FloatingActionButton? = null
+    private var forward: ImageButton? = null
+    private var backward: ImageButton? = null
+    private var manageList: ImageButton? = null
+    private var close: ImageButton? = null
+
+    private var history: ImageButton? = null
+    private var vpn: ImageButton? = null
+    private var search: ImageButton? = null
+    private var settings: ImageButton? = null
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -92,7 +105,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
 
-        val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
+        toolbarRecycler = findViewById(R.id.toolbarRecycler)
 
         val labelList: ArrayList<Int> = ArrayList()
         for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
@@ -102,58 +115,63 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             LoopingLayoutManager.HORIZONTAL,
             false
         )
-        recycler.layoutManager = layoutManager
+        toolbarRecycler!!.layoutManager = layoutManager
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener {
+        fab = findViewById(R.id.fab)
+        fab!!.setOnClickListener {
             startSpeechRecognize(resultLauncher)
         }
 
-        val card: MaterialCardView = findViewById(R.id.labelSuggestionCard)
-        card.translationY = displayOffsetY
-        val manageList: ImageButton = findViewById(R.id.manageList)
-        manageList.translationY = displayOffsetY
-        val close: ImageButton = findViewById(R.id.closeButton)
-        close.translationX = displayOffsetX
+        card = findViewById(R.id.labelSuggestionCard)
+        card!!.translationY = displayOffsetY
+        manageList = findViewById(R.id.manageList)
+        manageList!!.translationY = displayOffsetY
+        close = findViewById(R.id.closeButton)
+        close!!.translationX = displayOffsetX
 
-        val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
+        history = findViewById(R.id.historyButton)
+        vpn = findViewById(R.id.vpnButton)
+        search = findViewById(R.id.searchButton)
+        settings = findViewById(R.id.settingsButton)
 
-        val forward: ImageButton = findViewById(R.id.forward)
-        val backward: ImageButton = findViewById(R.id.backward)
+        labelRecycler = findViewById(R.id.labelRecycler)
 
-        recursiveClickForward(forward, layoutManager!!, recycler)
-        recursiveClickBackward(backward, layoutManager!!, recycler)
+        forward = findViewById(R.id.forward)
+        backward = findViewById(R.id.backward)
+
+        recursiveClickForward()
+        recursiveClickBackward()
 
         toolbarAdapter =
             ToolbarAdapter(
                 this,
                 labelList,
-                card,
+                card!!,
                 fab,
-                labelRecycler,
-                recycler,
+                labelRecycler!!,
+                toolbarRecycler!!,
                 forward,
                 backward,
-                manageList,
-                close
+                manageList!!,
+                close!!
             )
-        recycler.adapter = toolbarAdapter
+        toolbarRecycler!!.adapter = toolbarAdapter
 
         val selectLabelsFragment = SelectLabels(this)
-        manageList.setOnClickListener {
+        manageList!!.setOnClickListener {
             if (!selectLabelsFragment.isAdded) selectLabelsFragment.show(
                 supportFragmentManager,
                 "custom"
             )
         }
 
-        close.setOnClickListener {
-            card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
-                .withEndAction { fab.show() }.start()
-            forward.animate().y(0f).setDuration(300).start()
-            backward.animate().y(0f).setDuration(300).start()
-            close.animate().x(displayOffsetX).setDuration(200).start()
-            manageList.animate().y(displayOffsetY).setDuration(200).start()
+        close!!.setOnClickListener {
+            card!!.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
+                .withEndAction { fab!!.show() }.start()
+            forward!!.animate().y(0f).setDuration(300).start()
+            backward!!.animate().y(0f).setDuration(300).start()
+            close!!.animate().x(displayOffsetX).setDuration(200).start()
+            manageList!!.animate().y(displayOffsetY).setDuration(200).start()
         }
 
         searchView = findViewById(R.id.searchView)
@@ -177,119 +195,82 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
 
         val helper = PagerSnapHelper()
-        helper.attachToRecyclerView(recycler)
+        helper.attachToRecyclerView(toolbarRecycler!!)
 
         var animating = false
 
-        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        toolbarRecycler!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if(!animating && card.translationY == 0f){
-                    card.animate().y(displayOffsetY).setDuration(300)
+                if (!animating && card!!.translationY == 0f) {
+                    card!!.animate().y(displayOffsetY).setDuration(300)
                         .withStartAction { animating = true }
                         .withEndAction {
-                            fab.show()
+                            fab!!.show()
                             animating = false
                         }.start()
-                    forward.animate().y(0f).setDuration(300).start()
-                    backward.animate().y(0f).setDuration(300).start()
-                    close.animate().x(displayOffsetX).setDuration(200).start()
-                    manageList.animate().y(displayOffsetY).setDuration(200).start()
+                    forward!!.animate().y(0f).setDuration(300).start()
+                    backward!!.animate().y(0f).setDuration(300).start()
+                    close!!.animate().x(displayOffsetX).setDuration(200).start()
+                    manageList!!.animate().y(displayOffsetY).setDuration(200).start()
                 }
             }
         })
 
-        val history: ImageButton = findViewById(R.id.historyButton)
-        val vpn: ImageButton = findViewById(R.id.vpnButton)
-        val search: ImageButton = findViewById(R.id.searchButton)
-        val settings: ImageButton = findViewById(R.id.settingsButton)
-        recursiveBottomNavigationClick(history, vpn, search, settings)
+        recursiveBottomNavigationClick()
     }
 
-    private fun recursiveBottomNavigationClick(
-        history: ImageButton,
-        vpn: ImageButton,
-        search: ImageButton,
-        settings: ImageButton
-    ) {
-        history.setOnClickListener {
+    private fun recursiveBottomNavigationClick() {
+        history?.setOnClickListener {
             RecentFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, search, settings)
+            delayBeforeNextClick()
         }
-        vpn.setOnClickListener {
+        vpn?.setOnClickListener {
             VpnFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, search, settings)
+            delayBeforeNextClick()
         }
-        search.setOnClickListener {
+        search?.setOnClickListener {
             startBrowserWithQuery(searchView!!.query.toString())
-            delayBeforeNextClick(history, vpn, search, settings)
+            delayBeforeNextClick()
         }
-        settings.setOnClickListener {
+        settings?.setOnClickListener {
             SettingsFragment().show(supportFragmentManager, "custom")
-            delayBeforeNextClick(history, vpn, search, settings)
+            delayBeforeNextClick()
         }
     }
 
-    private fun delayBeforeNextClick(
-        history: ImageButton,
-        vpn: ImageButton,
-        search: ImageButton,
-        settings: ImageButton
-    ) {
-        clearListeners(history, vpn, search, settings)
+    private fun delayBeforeNextClick() {
+        clearListeners()
         Handler(mainLooper).postDelayed({
-            recursiveBottomNavigationClick(history, vpn, search, settings)
+            recursiveBottomNavigationClick()
         }, 300)
     }
 
-    private fun clearListeners(
-        history: ImageButton,
-        vpn: ImageButton,
-        search: ImageButton,
-        settings: ImageButton
-    ) {
-        history.setOnClickListener {}
-        vpn.setOnClickListener {}
-        search.setOnClickListener {}
-        settings.setOnClickListener {}
+    private fun clearListeners() {
+        history?.setOnClickListener {}
+        vpn?.setOnClickListener {}
+        search?.setOnClickListener {}
+        settings?.setOnClickListener {}
     }
 
-    private fun recursiveClickForward(
-        forward: ImageButton,
-        layoutManager: LoopingLayoutManager,
-        recycler: RecyclerView
-    ) {
-        forward.setOnClickListener {
-            val newPos = layoutManager.findLastCompletelyVisibleItemPosition() + 1
-            if (newPos == toolbarAdapter!!.itemCount) recycler.scrollToPosition(0)
-            else recycler.smoothScrollToPosition(newPos)
+    private fun recursiveClickForward() {
+        forward!!.setOnClickListener {
+            val newPos = layoutManager!!.findLastCompletelyVisibleItemPosition() + 1
+            if (newPos == toolbarAdapter!!.itemCount) toolbarRecycler!!.scrollToPosition(0)
+            else toolbarRecycler!!.smoothScrollToPosition(newPos)
             it.setOnClickListener {}
-            Handler(mainLooper).postDelayed({
-                recursiveClickForward(
-                    forward,
-                    layoutManager,
-                    recycler
-                )
-            }, 200)
+            Handler(mainLooper).postDelayed({ recursiveClickForward() }, 200)
         }
     }
 
-    private fun recursiveClickBackward(
-        backward: ImageButton,
-        layoutManager: LoopingLayoutManager,
-        recycler: RecyclerView
-    ) {
-        backward.setOnClickListener {
-            val newPos = layoutManager.findLastCompletelyVisibleItemPosition() - 1
-            if (newPos == -1) recycler.scrollToPosition(toolbarAdapter!!.itemCount)
-            else recycler.smoothScrollToPosition(newPos)
-            backward.setOnClickListener {}
+    private fun recursiveClickBackward() {
+        backward!!.setOnClickListener {
+            val newPos = layoutManager!!.findLastCompletelyVisibleItemPosition() - 1
+            if (newPos == -1) toolbarRecycler!!.scrollToPosition(toolbarAdapter!!.itemCount)
+            else toolbarRecycler!!.smoothScrollToPosition(newPos)
+            backward!!.setOnClickListener {}
             Handler(mainLooper).postDelayed({
-                recursiveClickBackward(
-                    backward,
-                    layoutManager,
-                    recycler
-                )
+                recursiveClickBackward()
             }, 200)
         }
     }
@@ -309,28 +290,17 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         var displayOffsetX = -1000f
     }
 
-    override fun onBackPressed(){
-        val card = findViewById<MaterialCardView>(R.id.labelSuggestionCard)
-        val labelRecycler = findViewById<RecyclerView>(R.id.labelRecycler)
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        val forward = findViewById<ImageButton>(R.id.forward)
-        val backward = findViewById<ImageButton>(R.id.backward)
-        val manageList = findViewById<ImageButton>(R.id.manageList)
-        val close = findViewById<ImageButton>(R.id.closeButton)
-        if(card.translationY == 0f) {
-            card.animate()
-                .y(displayOffsetY)
-                .setDuration(350)
-                .withEndAction {
-                    labelRecycler.adapter = null
-                    fab?.show()
-                    card.visibility = View.GONE
-                }
-                .start()
-            forward.animate().y(0f).setDuration(300).start()
-            backward.animate().y(0f).setDuration(300).start()
-            close.animate().x(displayOffsetX).setDuration(200).start()
-            manageList.animate().y(displayOffsetY).setDuration(200).start()
+    override fun onBackPressed() {
+        if (card?.translationY == 0f) {
+            card?.animate()?.y(displayOffsetY)?.setDuration(350)?.withEndAction {
+                labelRecycler?.adapter = null
+                fab?.show()
+                card?.visibility = View.GONE
+            }?.start()
+            forward?.animate()?.y(0f)?.setDuration(300)?.start()
+            backward?.animate()?.y(0f)?.setDuration(300)?.start()
+            close?.animate()?.x(displayOffsetX)?.setDuration(200)?.start()
+            manageList?.animate()?.y(displayOffsetY)?.setDuration(200)?.start()
         }
     }
 
