@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
+import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity
 
 
@@ -32,9 +33,14 @@ class LabelListAdapter(
         )
     }
 
+    private var backButton: ImageView? = null
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
         holder.itemView.setOnClickListener {
+            if(context is BrowserActivity){
+                backButton = context.findViewById(R.id.backButton)
+            }
             card.animate()
                 .y(MainActivity.displayOffsetY)
                 .setDuration(350)
@@ -49,6 +55,7 @@ class LabelListAdapter(
                     toolbarRecycler.scrollToPosition(position)
                     close.animate().x(MainActivity.displayOffsetX).setDuration(200).start()
                     manageList.animate().y(MainActivity.displayOffsetY).setDuration(300).start()
+                    backButton?.animate()?.y(0f)?.setDuration(200)?.start()
                 }
                 .start()
         }

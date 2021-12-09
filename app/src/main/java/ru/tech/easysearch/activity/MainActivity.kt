@@ -30,7 +30,7 @@ import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+@SuppressLint("NotifyDataSetChanged")
 class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private var searchView: SearchView? = null
@@ -65,6 +65,18 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         intent.putExtra("url", prefix + query)
         intent.putExtra("prefix", prefix)
         startActivity(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val labelList: ArrayList<Int> = ArrayList()
+        for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
+        toolbarAdapter?.labelList = labelList
+        toolbarAdapter?.notifyDataSetChanged()
+        toolbarAdapter?.labelListAdapter?.labelList = labelList
+        toolbarAdapter?.labelListAdapter?.notifyDataSetChanged()
+        displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
+        displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -324,7 +336,6 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     override fun onEndList() {}
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onStartList(labelList: ArrayList<Int>) {
         toolbarAdapter?.labelList = labelList
         toolbarAdapter?.notifyDataSetChanged()

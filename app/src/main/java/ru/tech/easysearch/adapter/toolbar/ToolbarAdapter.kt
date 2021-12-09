@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
+import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.adapter.lables.LabelListAdapter
@@ -35,10 +36,14 @@ class ToolbarAdapter(
     }
 
     var labelListAdapter: LabelListAdapter? = null
+    private var backButton: ImageView? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
         holder.itemView.setOnClickListener {
+            if(context is BrowserActivity){
+                backButton = context.findViewById(R.id.backButton)
+            }
             when (card.translationY) {
                 displayOffsetY -> {
                     card.animate()
@@ -62,6 +67,7 @@ class ToolbarAdapter(
                             card.visibility = View.VISIBLE
                             close.animate().x(0f).setDuration(200).start()
                             manageList.animate().y(0f).setDuration(200).start()
+                            backButton?.animate()?.y(displayOffsetY)?.setDuration(200)?.start()
                         }
                         .start()
                     forward?.animate()?.y(displayOffsetY)?.setDuration(1000)?.start()
@@ -82,6 +88,7 @@ class ToolbarAdapter(
                     forward?.animate()?.y(0f)?.setDuration(300)?.start()
                     backward?.animate()?.y(0f)?.setDuration(300)?.start()
                     manageList.animate().y(displayOffsetY).setDuration(300).start()
+                    backButton?.animate()?.y(0f)?.setDuration(200)?.start()
                 }
             }
         }

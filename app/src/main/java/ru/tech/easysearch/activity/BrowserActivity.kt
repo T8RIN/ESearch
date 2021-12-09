@@ -19,13 +19,21 @@ import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.helper.client.WebClient
-import java.util.*
+import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
-class BrowserActivity : AppCompatActivity() {
+class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private var searchView: SearchView? = null
-    private var adapter: ToolbarAdapter? = null
+    private var toolbarAdapter: ToolbarAdapter? = null
+    private var layoutManager: LoopingLayoutManager? = null
+
+    override fun onStart() {
+        super.onStart()
+        displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
+        displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +53,12 @@ class BrowserActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) browser!!.restoreState(savedInstanceState.getBundle("webViewState")!!)
 
+        displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
+        displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
+
         prefix = intent.extras?.get("prefix").toString()
+
+        val backButton: ImageButton = findViewById(R.id.backButton)
 
         val query = intent.extras?.get("url").toString().removePrefix(prefix)
 
@@ -56,7 +69,7 @@ class BrowserActivity : AppCompatActivity() {
         val labelList: ArrayList<Int> = ArrayList()
         for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
 
-        val layoutManager = LoopingLayoutManager(
+        layoutManager = LoopingLayoutManager(
             this,
             LoopingLayoutManager.HORIZONTAL,
             false
@@ -72,7 +85,7 @@ class BrowserActivity : AppCompatActivity() {
 
         val labelRecycler: RecyclerView = findViewById(R.id.labelRecycler)
 
-        adapter = ToolbarAdapter(
+        toolbarAdapter = ToolbarAdapter(
             this,
             labelList,
             card,
@@ -84,15 +97,21 @@ class BrowserActivity : AppCompatActivity() {
             manageList,
             close
         )
-        recycler.adapter = adapter
+        recycler.adapter = toolbarAdapter
 
-        layoutManager.scrollToPosition(
-            adapter!!.labelList.indexOf(
-                DataArrays.prefixDict.filterValues { it == prefix }.keys.elementAt(
-                    0
-                )
+        layoutManager!!.scrollToPosition(
+            toolbarAdapter!!.labelList.indexOf(
+                DataArrays.prefixDict.filterValues { it == prefix }.keys.elementAt(0)
             )
         )
+
+        val selectLabelsFragment = SelectLabels(this)
+        manageList.setOnClickListener {
+            if (!selectLabelsFragment.isAdded) selectLabelsFragment.show(
+                supportFragmentManager,
+                "custom"
+            )
+        }
 
         searchView = findViewById(R.id.searchView)
         searchView!!.isSubmitButtonEnabled = true
@@ -118,17 +137,24 @@ class BrowserActivity : AppCompatActivity() {
         val helper = PagerSnapHelper()
         helper.attachToRecyclerView(recycler)
 
+        var animating = false
+
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val key =
-                    adapter?.labelList?.get((recyclerView.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())
+                    layoutManager?.findLastCompletelyVisibleItemPosition()
+                        ?.let { toolbarAdapter?.labelList?.get(it) }
                 prefix = DataArrays.prefixDict[key]!!
                 if (uriLast.isNotEmpty()) onGetUri(uriLast)
-                card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
-                    .start()
-                close.animate().x(displayOffsetX).setDuration(200).start()
-                manageList.animate().y(displayOffsetY).setDuration(200).start()
+                if (!animating && card.translationY == 0f) {
+                    card.animate().y(displayOffsetY).setDuration(300)
+                        .withStartAction { animating = true }
+                        .withEndAction { animating = false }.start()
+                    close.animate().x(displayOffsetX).setDuration(200).start()
+                    manageList.animate().y(displayOffsetY).setDuration(200).start()
+                    backButton.animate().y(0f).setDuration(200).start()
+                }
             }
         })
 
@@ -136,7 +162,10 @@ class BrowserActivity : AppCompatActivity() {
             card.animate().y(displayOffsetY).setStartDelay(100).setDuration(300).start()
             close.animate().x(displayOffsetX).setDuration(200).start()
             manageList.animate().y(displayOffsetY).setDuration(200).start()
+            backButton.animate().y(0f).setDuration(200).start()
         }
+
+        backButton.setOnClickListener { onBackPressed() }
 
     }
 
@@ -151,23 +180,27 @@ class BrowserActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         val manageList = findViewById<ImageButton>(R.id.manageList)
         val close = findViewById<ImageButton>(R.id.closeButton)
-        if(card.translationY == 0f) {
-            card.animate()
-                .y(displayOffsetY)
-                .setDuration(350)
-                .withEndAction {
-                    labelRecycler.adapter = null
-                    fab?.show()
-                    card.visibility = View.GONE
-                }
-                .start()
-            close.animate().x(displayOffsetX).setDuration(200).start()
-            manageList.animate().y(displayOffsetY).setDuration(200).start()
-        }
-        if (browser?.canGoBack() == true) browser?.goBack()
-        else {
-            super.onBackPressed()
-            overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        when {
+            browser?.canGoBack() == true -> browser?.goBack()
+            card.translationY == 0f -> {
+                card.animate()
+                    .y(displayOffsetY)
+                    .setDuration(350)
+                    .withEndAction {
+                        labelRecycler.adapter = null
+                        fab?.show()
+                        card.visibility = View.GONE
+                    }
+                    .start()
+                close.animate().x(displayOffsetX).setDuration(200).start()
+                manageList.animate().y(displayOffsetY).setDuration(200).start()
+                backButton.animate().y(0f).setDuration(200).start()
+            }
+            else -> {
+                super.onBackPressed()
+                overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
+            }
         }
     }
 
@@ -185,6 +218,16 @@ class BrowserActivity : AppCompatActivity() {
         browser?.saveState(bundle)
         outState.putBundle("webViewState", bundle)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onEndList() {}
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onStartList(labelList: ArrayList<Int>) {
+        toolbarAdapter?.labelList = labelList
+        toolbarAdapter?.notifyDataSetChanged()
+        toolbarAdapter?.labelListAdapter?.labelList = labelList
+        toolbarAdapter?.labelListAdapter?.notifyDataSetChanged()
     }
 
 }
