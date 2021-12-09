@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity
+import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 
 
 class LabelListAdapter(
@@ -37,6 +39,9 @@ class LabelListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
+
+        holder.card.isChecked = position == (toolbarRecycler.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition()
+
         holder.itemView.setOnClickListener {
             if(context is BrowserActivity){
                 backButton = context.findViewById(R.id.backButton)
@@ -67,6 +72,7 @@ class LabelListAdapter(
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val label: ImageView = view.findViewById(R.id.label)
+        val card: MaterialCardView = view.findViewById(R.id.labelCard)
     }
 
 }

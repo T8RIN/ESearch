@@ -8,6 +8,7 @@ import android.os.Handler
 import android.speech.RecognizerIntent
 import android.view.View
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -199,6 +200,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         var animating = false
 
+
         toolbarRecycler!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -230,7 +232,12 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             delayBeforeNextClick()
         }
         search?.setOnClickListener {
-            startBrowserWithQuery(searchView!!.query.toString())
+            if(searchView!!.query.isNotEmpty()){
+                startBrowserWithQuery(searchView!!.query.toString())
+            }
+            else {
+                Toast.makeText(this, getString(R.string.emptyQuery), Toast.LENGTH_SHORT).show()
+            }
             delayBeforeNextClick()
         }
         settings?.setOnClickListener {

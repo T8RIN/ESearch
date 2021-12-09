@@ -1,10 +1,20 @@
 package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.util.Patterns
 import android.view.View.GONE
+import android.webkit.CookieManager
+import android.webkit.URLUtil
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SearchView
@@ -13,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.*
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
@@ -34,6 +46,7 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
     private var manageList: ImageButton? = null
     private var close: ImageButton? = null
     private var backButton: ImageButton? = null
+    private var progressBar: LinearProgressIndicator? = null
 
     override fun onStart() {
         super.onStart()
@@ -48,14 +61,53 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
 
         overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
 
+        searchView = findViewById(R.id.searchView)
+        progressBar = findViewById(R.id.progressIndicator)
+
         browser = findViewById(R.id.webBrowser)
-        browser!!.webViewClient = WebClient()
+        browser!!.webViewClient = WebClient(searchView!!, progressBar!!)
         val settings = browser!!.settings
         settings.javaScriptEnabled = true
-        settings.builtInZoomControls = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
         settings.supportMultipleWindows()
+        settings.userAgentString = DataArrays.userAgentString
+
+        browser!!.setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+            val request = DownloadManager.Request(Uri.parse(url))
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                .setMimeType(mimeType)
+                .addRequestHeader("cookie", CookieManager.getInstance().getCookie(url))
+                .addRequestHeader("User-Agent", userAgent)
+                .setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType))
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setAllowedOverMetered(true)
+                .setAllowedOverRoaming(false)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    URLUtil.guessFileName(url, contentDisposition, mimeType)
+                )
+            val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+            downloadManager.enqueue(request)
+
+            Toast.makeText(applicationContext, "Downloading File", Toast.LENGTH_LONG).show()
+        }
+
+        browser!!.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                progressBar?.progress = newProgress
+                if(newProgress == 100) {
+                    progressBar?.visibility = GONE
+                }
+            }
+
+            override fun onReceivedIcon(view: WebView?, icon: Bitmap?) {
+                super.onReceivedIcon(view, icon)
+            }
+        }
 
         if (savedInstanceState != null) browser!!.restoreState(savedInstanceState.getBundle("webViewState")!!)
 
@@ -119,7 +171,6 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
             )
         }
 
-        searchView = findViewById(R.id.searchView)
         searchView!!.isSubmitButtonEnabled = true
         searchView?.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
@@ -130,6 +181,7 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
 
                 override fun onQueryTextSubmit(query: String): Boolean {
                     onGetUri(query)
+                    searchView!!.clearFocus()
                     return true
                 }
             })
@@ -148,11 +200,6 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val key =
-                    layoutManager?.findLastCompletelyVisibleItemPosition()
-                        ?.let { toolbarAdapter?.labelList?.get(it) }
-                prefix = DataArrays.prefixDict[key]!!
-                if (uriLast.isNotEmpty()) onGetUri(uriLast)
                 if (!animating && card!!.translationY == 0f) {
                     card!!.animate().y(displayOffsetY).setDuration(300)
                         .withStartAction { animating = true }
@@ -160,6 +207,15 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
                     close!!.animate().x(displayOffsetX).setDuration(200).start()
                     manageList!!.animate().y(displayOffsetY).setDuration(200).start()
                     backButton!!.animate().y(0f).setDuration(200).start()
+                }
+                job?.cancel()
+                job = CoroutineScope(Dispatchers.Main).launch {
+                    waitFor(300)
+                    val key =
+                        layoutManager?.findLastCompletelyVisibleItemPosition()
+                            ?.let { toolbarAdapter?.labelList?.get(it) }
+                    prefix = DataArrays.prefixDict[key]!!
+                    if (uriLast.isNotEmpty()) onGetUri(uriLast)
                 }
             }
         })
@@ -174,6 +230,10 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
         backButton!!.setOnClickListener { onBackPressed() }
 
     }
+
+    private var job: Job? = null
+
+    private suspend fun waitFor(time: Long) = withContext(Dispatchers.IO) { delay(time) }
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -204,7 +264,16 @@ class BrowserActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private fun onGetUri(uriLast: String) {
         this.uriLast = uriLast
-        browser?.loadUrl(prefix + uriLast)
+        val tempUrl = when {
+            !uriLast.contains("https://") && !uriLast.contains("http://") -> "https://$uriLast"
+            else -> uriLast
+        }
+        if (URLUtil.isValidUrl(tempUrl) && Patterns.WEB_URL.matcher(tempUrl).matches()) {
+            browser?.loadUrl(tempUrl)
+        } else {
+            browser?.loadUrl(prefix + uriLast)
+        }
+
     }
 
     private var uriLast: String = ""
