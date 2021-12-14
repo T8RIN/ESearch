@@ -10,4 +10,5 @@
     <string name="activeServices">Active engines</string>
     <string name="minIsTwo">The minimum of search engines is two</string>
     <string name="emptyQuery">Empty query!</string>
+    <string name="downloading">Download started</string>
 </resources>

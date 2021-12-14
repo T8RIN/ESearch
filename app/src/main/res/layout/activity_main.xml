@@ -12,7 +12,9 @@
         android:layout_height="48dp"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/manualBackground"
+        android:imeOptions="actionSearch"
         android:layoutDirection="rtl"
+        app:iconifiedByDefault="false"
         app:queryHint="@string/typeHere" />
 
     <com.google.android.material.bottomappbar.BottomAppBar

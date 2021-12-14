@@ -1,48 +1,53 @@
 package ru.tech.easysearch.helper.client
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.view.View.VISIBLE
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
+import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.textfield.TextInputEditText
+import ru.tech.easysearch.R
+import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.activity.SearchResultsActivity
+import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
 
 class WebClient(
-    private val searchView: SearchView,
+    private val context: Context,
+    private val toolbar: RecyclerView? = null,
     private val progressBar: LinearProgressIndicator
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-        view.loadUrl(request.url.toString())
+        val url = request.url.toString()
+
+        val currentEngine =
+            prefixDict[(toolbar?.adapter as ToolbarAdapter?)?.labelList?.get((toolbar?.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())]
+        val temp = Uri.parse(url).host!!
+
+        if (currentEngine?.contains(temp) == false && context is SearchResultsActivity) {
+            val intent = Intent(context, BrowserActivity::class.java)
+            intent.putExtra("url", url)
+            context.startActivity(intent)
+        } else {
+            if(context is BrowserActivity){
+                val searchView: TextInputEditText = context.findViewById(R.id.searchView)
+                searchView.setText(url)
+            }
+            view.loadUrl(url)
+        }
         return true
     }
 
-    override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-        view.loadUrl(url)
-        return true
-    }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         progressBar.visibility = VISIBLE
-
-        if (url != null) {
-            var shouldSetUrl = true
-            val temp = ArrayList(url.split("/"))
-            val prefix = temp.let { "${it[0]}//${it[2]}" }
-
-            for (i in prefixDict.values) {
-                if (prefix.let { i.contains(it) }) {
-                    shouldSetUrl = false
-                    break
-                }
-            }
-            if (shouldSetUrl) {
-                searchView.setQuery(url.removePrefix("https://"), false)
-            }
-        }
-
         super.onPageStarted(view, url, favicon)
     }
 }

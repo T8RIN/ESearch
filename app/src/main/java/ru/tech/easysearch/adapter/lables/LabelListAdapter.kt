@@ -11,9 +11,8 @@ import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.activity.MainActivity
-import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 
 
 class LabelListAdapter(
@@ -40,10 +39,11 @@ class LabelListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
 
-        holder.card.isChecked = position == (toolbarRecycler.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition()
+        holder.card.isChecked =
+            position == (toolbarRecycler.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition()
 
         holder.itemView.setOnClickListener {
-            if(context is BrowserActivity){
+            if (context is SearchResultsActivity) {
                 backButton = context.findViewById(R.id.backButton)
             }
             card.animate()

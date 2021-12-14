@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     }
 
     private fun startBrowserWithQuery(query: String) {
-        val intent = Intent(this, BrowserActivity::class.java)
+        val intent = Intent(this, SearchResultsActivity::class.java)
         val key =
             layoutManager?.findLastCompletelyVisibleItemPosition()
                 ?.let { toolbarAdapter?.labelList?.get(it) }
@@ -232,10 +232,9 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             delayBeforeNextClick()
         }
         search?.setOnClickListener {
-            if(searchView!!.query.isNotEmpty()){
+            if (searchView!!.query.isNotEmpty()) {
                 startBrowserWithQuery(searchView!!.query.toString())
-            }
-            else {
+            } else {
                 Toast.makeText(this, getString(R.string.emptyQuery), Toast.LENGTH_SHORT).show()
             }
             delayBeforeNextClick()
