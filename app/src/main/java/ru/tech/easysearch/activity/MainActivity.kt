@@ -29,7 +29,6 @@ import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
-import kotlin.collections.ArrayList
 
 @SuppressLint("NotifyDataSetChanged")
 class MainActivity : AppCompatActivity(), LabelListChangedInterface {

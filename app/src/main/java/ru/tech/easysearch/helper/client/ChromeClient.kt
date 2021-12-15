@@ -7,9 +7,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.ImageView
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.google.android.material.textfield.TextInputEditText
-import ru.tech.easysearch.R
-import ru.tech.easysearch.activity.BrowserActivity
 
 class ChromeClient(
     private val context: Context,
@@ -18,23 +15,16 @@ class ChromeClient(
 ) :
     WebChromeClient() {
 
-    val backStack: ArrayList<String> = ArrayList()
-
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
         super.onProgressChanged(view, newProgress)
         progressBar.progress = newProgress
         if (newProgress == 100) {
             progressBar.visibility = View.GONE
         }
-        view?.url?.let {
-            backStack.add(it)
-            if(context is BrowserActivity){
-                context.findViewById<TextInputEditText>(R.id.searchView).setText(it)
-            }
-        }
     }
 
     override fun onReceivedIcon(view: WebView?, icon: Bitmap?) {
+        iconView?.visibility = View.VISIBLE
         iconView?.setImageBitmap(icon)
         super.onReceivedIcon(view, icon)
     }

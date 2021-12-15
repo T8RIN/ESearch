@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
-import kotlin.collections.ArrayList
 
 class RecyclerItemTouchAdapter(
     context: Context,
@@ -63,7 +62,8 @@ class RecyclerItemTouchAdapter(
         ItemTouchHelper(simpleItemTouchCallback)
     }
 
-    var adapter: SelectedLabelsAdapter = SelectedLabelsAdapter(context, labelList, disAdapter, labelListChangedInterface)
+    var adapter: SelectedLabelsAdapter =
+        SelectedLabelsAdapter(context, labelList, disAdapter, labelListChangedInterface)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

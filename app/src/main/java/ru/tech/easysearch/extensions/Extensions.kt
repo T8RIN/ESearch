@@ -1,4 +1,4 @@
-package ru.tech.easysearch.data
+package ru.tech.easysearch.extensions
 
 import android.content.Context
 import android.content.res.ColorStateList

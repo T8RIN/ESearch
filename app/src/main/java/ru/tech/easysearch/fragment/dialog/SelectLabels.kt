@@ -57,7 +57,7 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
         val disAdapter = DeSelectedLabelsAdapter(requireContext(), disLabelList, this)
         val nestedAdapter = RecyclerItemTouchAdapter(requireContext(), labelList, disAdapter, this)
 
-        adapter = if(disLabelList.isNotEmpty()){
+        adapter = if (disLabelList.isNotEmpty()) {
             ConcatAdapter(
                 nestedAdapter,
                 TextAdapter(getString(R.string.disabledService)),

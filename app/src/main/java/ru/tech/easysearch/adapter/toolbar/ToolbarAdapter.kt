@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
+import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.lables.LabelListAdapter
 
 
@@ -41,7 +41,7 @@ class ToolbarAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
         holder.itemView.setOnClickListener {
-            if(context is SearchResultsActivity){
+            if (context is SearchResultsActivity) {
                 backButton = context.findViewById(R.id.backButton)
             }
             when (card.translationY) {
@@ -50,7 +50,7 @@ class ToolbarAdapter(
                         .y(0f)
                         .setDuration(350)
                         .withStartAction {
-                            labelListAdapter =  LabelListAdapter(
+                            labelListAdapter = LabelListAdapter(
                                 context,
                                 labelList,
                                 card,

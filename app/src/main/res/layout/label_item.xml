@@ -2,15 +2,15 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/labelCard"
-    android:checkable="true"
-    app:checkedIcon="@drawable/ic_baseline_arrow_circle_left_24"
-    app:checkedIconTint="?colorControlNormal"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
+    android:checkable="true"
     android:clickable="true"
     android:focusable="true"
     android:outlineProvider="none"
-    app:cardBackgroundColor="@android:color/transparent">
+    app:cardBackgroundColor="@android:color/transparent"
+    app:checkedIcon="@drawable/ic_baseline_arrow_circle_left_24"
+    app:checkedIconTint="?colorControlNormal">
 
     <ImageView
         android:id="@+id/label"

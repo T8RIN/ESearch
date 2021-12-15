@@ -8,14 +8,14 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        app:iconifiedByDefault="false"
-        android:imeOptions="actionSearch"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/manualBackground"
+        android:imeOptions="actionSearch"
         android:layoutDirection="rtl"
-        app:queryHint="@string/typeHere"/>
+        app:iconifiedByDefault="false"
+        app:queryHint="@string/typeHere" />
 
     <WebView
         android:id="@+id/webBrowser"

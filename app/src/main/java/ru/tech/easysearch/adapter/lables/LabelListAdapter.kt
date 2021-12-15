@@ -11,8 +11,8 @@ import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
-import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.activity.MainActivity
+import ru.tech.easysearch.activity.SearchResultsActivity
 
 
 class LabelListAdapter(

@@ -11,4 +11,6 @@
     <string name="minIsTwo">The minimum of search engines is two</string>
     <string name="emptyQuery">Empty query!</string>
     <string name="downloading">Download started</string>
+    <string name="appError">You have no app to open this url</string>
+    <string name="searchInGoogle">Search in google</string>
 </resources>

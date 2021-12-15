@@ -20,7 +20,8 @@
             android:layout_height="48dp"
             android:contentDescription="@string/none"
             android:padding="12dp"
-            android:src="@drawable/ic_browser_144" />
+            android:src="@drawable/ic_browser_144"
+            android:visibility="gone" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchView"
@@ -28,8 +29,10 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:hint="@string/typeHere"
+            android:hint="@string/searchInGoogle"
             android:imeOptions="actionSearch"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:singleLine="true"
             android:textSize="14sp" />
 
@@ -41,7 +44,8 @@
             android:contentDescription="@string/none"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
-            android:src="@drawable/ic_baseline_search_24" />
+            android:src="@drawable/ic_baseline_search_24"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -56,10 +60,10 @@
         app:layout_constraintTop_toBottomOf="@id/appBar" />
 
     <WebView
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/webBrowser"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressIndicator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

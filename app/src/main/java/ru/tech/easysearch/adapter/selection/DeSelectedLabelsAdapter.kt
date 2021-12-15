@@ -10,7 +10,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
-import ru.tech.easysearch.data.Extensions.setTint
+import ru.tech.easysearch.extensions.Extensions.setTint
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
 
