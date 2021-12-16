@@ -49,8 +49,8 @@ class BrowserActivity : AppCompatActivity() {
         iconView = findViewById(R.id.icon)
 
         browser = findViewById(R.id.webBrowser)
-        webClient = WebClient(this, null, progressBar!!)
         chromeClient = ChromeClient(this, progressBar!!, iconView)
+        webClient = WebClient(this, null, progressBar!!, chromeClient!!)
 
         browser!!.webViewClient = webClient!!
         browser!!.webChromeClient = chromeClient!!
@@ -105,7 +105,7 @@ class BrowserActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            browser?.canGoBack() == true -> {
+            browser?.canGoBack() == true && webClient?.backStack!!.isNotEmpty() -> {
                 searchView?.setText(webClient?.backStack?.last())
                 webClient?.backStack?.removeLast()
                 browser?.goBack()

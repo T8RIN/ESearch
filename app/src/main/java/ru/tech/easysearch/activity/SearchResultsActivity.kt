@@ -1,6 +1,7 @@
 package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View.GONE
@@ -59,15 +60,17 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
         val recycler: RecyclerView = findViewById(R.id.toolbarRecycler)
 
         browser = findViewById(R.id.webBrowser)
-        browser!!.webViewClient = WebClient(this, recycler, progressBar!!)
+
+        val chromeClient = ChromeClient(this, progressBar!!)
+        browser!!.webViewClient = WebClient(this, recycler, progressBar!!, chromeClient)
+        browser!!.webChromeClient = chromeClient
+
         val settings = browser!!.settings
         settings.javaScriptEnabled = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
         settings.supportMultipleWindows()
         settings.userAgentString = DataArrays.userAgentString
-
-        browser!!.webChromeClient = ChromeClient(this, progressBar!!)
 
         prefix = intent.extras?.get("prefix").toString()
         val query = intent.extras?.get("url").toString().removePrefix(prefix)
@@ -223,7 +226,9 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
             else -> uriLast
         }
         if (URLUtil.isValidUrl(tempUrl) && Patterns.WEB_URL.matcher(tempUrl).matches()) {
-            browser?.loadUrl(tempUrl)
+            val intent = Intent(this, BrowserActivity::class.java)
+            intent.putExtra("url", tempUrl)
+            startActivity(intent)
         } else {
             browser?.loadUrl(prefix + uriLast)
         }

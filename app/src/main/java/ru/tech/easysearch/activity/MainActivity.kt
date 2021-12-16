@@ -6,7 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognizerIntent
+import android.util.Patterns
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -75,9 +77,20 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             layoutManager?.findLastCompletelyVisibleItemPosition()
                 ?.let { toolbarAdapter?.labelList?.get(it) }
         val prefix = prefixDict[key]!!
-        intent.putExtra("url", prefix + query)
-        intent.putExtra("prefix", prefix)
-        startActivity(intent)
+
+        val tempUrl = when {
+            !query.contains("https://") && !query.contains("http://") -> "https://$query"
+            else -> query
+        }
+        if (URLUtil.isValidUrl(tempUrl) && Patterns.WEB_URL.matcher(tempUrl).matches()) {
+            val intentBrowser = Intent(this, BrowserActivity::class.java)
+            intentBrowser.putExtra("url", tempUrl)
+            startActivity(intentBrowser)
+        } else {
+            intent.putExtra("url", prefix + query)
+            intent.putExtra("prefix", prefix)
+            startActivity(intent)
+        }
     }
 
     override fun onStart() {

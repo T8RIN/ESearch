@@ -17,7 +17,7 @@ import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 class DeSelectedLabelsAdapter(
     private val context: Context,
     var labelList: ArrayList<Int>,
-    var labelListChangedInterface: LabelListChangedInterface
+    private var labelListChangedInterface: LabelListChangedInterface
 ) :
     RecyclerView.Adapter<DeSelectedLabelsAdapter.ViewHolder>() {
 
@@ -37,7 +37,7 @@ class DeSelectedLabelsAdapter(
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(labelList[position])
-        holder.icon.setImageResource(R.drawable.ic_baseline_check_circle_24)
+        holder.icon.setImageResource(R.drawable.ic_baseline_add_circle_24)
         holder.icon.setTint(R.color.dgreen)
         holder.dragger.visibility = GONE
         holder.icon.setOnClickListener {
