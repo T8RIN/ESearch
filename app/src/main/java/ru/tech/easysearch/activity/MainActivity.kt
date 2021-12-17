@@ -25,6 +25,7 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.extensions.Extensions.getResId
 import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.fragment.recent.RecentFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
@@ -95,8 +96,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     override fun onStart() {
         super.onStart()
-        val labelList: ArrayList<Int> = ArrayList()
-        for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
+        val labelList: ArrayList<String> = ArrayList(loadLabelList(this)!!.split("+"))
+
         toolbarAdapter?.labelList = labelList
         toolbarAdapter?.notifyDataSetChanged()
         toolbarAdapter?.labelListAdapter?.labelList = labelList
@@ -120,8 +121,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         toolbarRecycler = findViewById(R.id.toolbarRecycler)
 
-        val labelList: ArrayList<Int> = ArrayList()
-        for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
+        val labelList: ArrayList<String> = ArrayList(loadLabelList(this)!!.split("+"))
 
         layoutManager = LoopingLayoutManager(
             this,
@@ -324,7 +324,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     override fun onEndList() {}
 
-    override fun onStartList(labelList: ArrayList<Int>) {
+    override fun onStartList(labelList: ArrayList<String>) {
         toolbarAdapter?.labelList = labelList
         toolbarAdapter?.notifyDataSetChanged()
         toolbarAdapter?.labelListAdapter?.labelList = labelList

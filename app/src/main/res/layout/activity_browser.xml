@@ -28,6 +28,8 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
+            android:focusedByDefault="false"
+            tools:targetApi="O"
             android:background="@android:color/transparent"
             android:hint="@string/searchInGoogle"
             android:imeOptions="actionSearch"
@@ -63,6 +65,14 @@
         android:id="@+id/webBrowser"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressIndicator" />
+
+    <WebView
+        android:id="@+id/errorDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressIndicator" />
 

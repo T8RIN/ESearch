@@ -27,12 +27,13 @@ import ru.tech.easysearch.helper.client.WebClient
 
 class BrowserActivity : AppCompatActivity() {
 
-    private var searchView: TextInputEditText? = null
+    var searchView: TextInputEditText? = null
     private var progressBar: LinearProgressIndicator? = null
     private var iconView: ImageView? = null
     private var webClient: WebClient? = null
     private var chromeClient: ChromeClient? = null
     private var goButton: ImageButton? = null
+    private var errorView: WebView? = null
 
     var lastUrl = ""
     var clickedGo = false
@@ -47,10 +48,12 @@ class BrowserActivity : AppCompatActivity() {
         searchView = findViewById(R.id.searchView)
         progressBar = findViewById(R.id.progressIndicator)
         iconView = findViewById(R.id.icon)
+        errorView = findViewById(R.id.errorDisplay)
+        errorView?.settings?.javaScriptEnabled = true
 
         browser = findViewById(R.id.webBrowser)
         chromeClient = ChromeClient(this, progressBar!!, iconView)
-        webClient = WebClient(this, null, progressBar!!, chromeClient!!)
+        webClient = WebClient(this, null, progressBar!!, chromeClient!!, errorView)
 
         browser!!.webViewClient = webClient!!
         browser!!.webChromeClient = chromeClient!!
@@ -64,9 +67,7 @@ class BrowserActivity : AppCompatActivity() {
 
         val url = dispatchIntent(intent)
 
-        url?.let { onGetUri(searchView!!, it) }
-
-        searchView?.setText(url)
+        url?.let { searchView?.let { it1 -> onGetUri(it1, it) } }
 
         searchView?.setOnFocusChangeListener { _, focused ->
             goButton?.visibility = when (focused) {
@@ -77,10 +78,12 @@ class BrowserActivity : AppCompatActivity() {
         }
 
         searchView?.setOnKeyListener { _, _, keyEvent ->
+            var handled = false
             if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
-                onGetUri(searchView!!, searchView!!.text.toString())
+                onGetUri(searchView!!, searchView!!.text.toString(), false)
+                handled = true
             }
-            true
+            handled
         }
 
         goButton = findViewById(R.id.goButton)
@@ -105,10 +108,9 @@ class BrowserActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            browser?.canGoBack() == true && webClient?.backStack!!.isNotEmpty() -> {
-                searchView?.setText(webClient?.backStack?.last())
-                webClient?.backStack?.removeLast()
+            browser?.canGoBack() == true -> {
                 browser?.goBack()
+                errorView?.visibility = GONE
             }
             else -> {
                 super.onBackPressed()
@@ -118,7 +120,7 @@ class BrowserActivity : AppCompatActivity() {
     }
 
 
-    private fun onGetUri(it: TextInputEditText, uriLast: String) {
+    private fun onGetUri(it: TextInputEditText, uriLast: String, clearFocus: Boolean = true) {
         clickedGo = true
         val prefix = "https://www.google.com/search?q="
         val tempUrl = when {
@@ -130,11 +132,13 @@ class BrowserActivity : AppCompatActivity() {
         } else {
             browser?.loadUrl(prefix + uriLast)
         }
+
         (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
-            it.windowToken,
+            browser?.windowToken,
             0
         )
-        it.clearFocus()
+
+        if (clearFocus) it.clearFocus()
     }
 
 }
