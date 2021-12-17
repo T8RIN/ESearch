@@ -30,6 +30,10 @@ class BrowserView : WebView {
         settings.allowContentAccess = true
         settings.userAgentString = DataArrays.userAgentString
         settings.javaScriptCanOpenWindowsAutomatically = true
+        settings.builtInZoomControls = true
+        settings.displayZoomControls = false
+        //settings.setSupportMultipleWindows(true)
+
 
         setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
             val request = DownloadManager.Request(Uri.parse(url))
