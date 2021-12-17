@@ -10,13 +10,14 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
+import ru.tech.easysearch.extensions.Extensions.getResId
 import ru.tech.easysearch.extensions.Extensions.setTint
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
 
 class DeSelectedLabelsAdapter(
     private val context: Context,
-    var labelList: ArrayList<Int>,
+    var labelList: ArrayList<String>,
     private var labelListChangedInterface: LabelListChangedInterface
 ) :
     RecyclerView.Adapter<DeSelectedLabelsAdapter.ViewHolder>() {
@@ -36,7 +37,7 @@ class DeSelectedLabelsAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(labelList[position])
+        holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
         holder.icon.setImageResource(R.drawable.ic_baseline_add_circle_24)
         holder.icon.setTint(R.color.dgreen)
         holder.dragger.visibility = GONE

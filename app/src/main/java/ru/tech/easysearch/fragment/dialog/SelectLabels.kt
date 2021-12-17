@@ -12,7 +12,7 @@ import ru.tech.easysearch.adapter.selection.DeSelectedLabelsAdapter
 import ru.tech.easysearch.adapter.selection.RecyclerItemTouchAdapter
 import ru.tech.easysearch.adapter.text.TextAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
-import ru.tech.easysearch.data.SharedPreferencesAccess
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.data.SharedPreferencesAccess.saveLabelList
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
@@ -46,10 +46,8 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
             requireDialog().dismiss()
         }
 
-        val labelList: ArrayList<Int> = ArrayList()
-        val disLabelList: ArrayList<Int> = ArrayList()
-        for (i in SharedPreferencesAccess.loadLabelList(requireContext())!!
-            .split("+")) labelList.add(i.toInt())
+        val labelList: ArrayList<String> = ArrayList(loadLabelList(requireContext())!!.split("+"))
+        val disLabelList: ArrayList<String> = ArrayList()
 
         for (i in prefixDict) if (!labelList.contains(i.key)) disLabelList.add(i.key)
 
@@ -73,11 +71,8 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
         recycler.adapter = adapter
 
         requireDialog().setOnDismissListener {
-            var labelString = ""
             val list = ((adapter!!.adapters[0] as RecyclerItemTouchAdapter).adapter.labelList)
-            for (i in list)
-                labelString += "$i+"
-            saveLabelList(requireContext(), labelString.removeSuffix("+"))
+            saveLabelList(requireContext(), list.joinToString("+"))
             mainInterface.onStartList(list)
             this.dismiss()
         }
@@ -86,7 +81,7 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
     override fun onEndList() {
         val view = requireView()
 
-        val labelList: ArrayList<Int> = ArrayList()
+        val labelList: ArrayList<String> = ArrayList()
         for (i in prefixDict) labelList.add(i.key)
 
         val recycler: RecyclerView = view.findViewById(R.id.labelSelectionRecycler)
@@ -101,10 +96,10 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
         recycler.adapter = adapter
     }
 
-    override fun onStartList(labelList: ArrayList<Int>) {
+    override fun onStartList(labelList: ArrayList<String>) {
         val view = requireView()
 
-        val disLabelList: ArrayList<Int> = ArrayList()
+        val disLabelList: ArrayList<String> = ArrayList()
         for (i in prefixDict) if (!labelList.contains(i.key)) disLabelList.add(i.key)
 
         val recycler: RecyclerView = view.findViewById(R.id.labelSelectionRecycler)

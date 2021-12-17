@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.View.GONE
 import android.webkit.URLUtil
-import android.webkit.WebView
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
@@ -22,8 +21,10 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
+import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
@@ -65,13 +66,6 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
         browser!!.webViewClient = WebClient(this, recycler, progressBar!!, chromeClient)
         browser!!.webChromeClient = chromeClient
 
-        val settings = browser!!.settings
-        settings.javaScriptEnabled = true
-        settings.allowFileAccess = true
-        settings.allowContentAccess = true
-        settings.supportMultipleWindows()
-        settings.userAgentString = DataArrays.userAgentString
-
         prefix = intent.extras?.get("prefix").toString()
         val query = intent.extras?.get("url").toString().removePrefix(prefix)
         onGetUri(query)
@@ -84,8 +78,7 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
 
         backButton = findViewById(R.id.backButton)
 
-        val labelList: ArrayList<Int> = ArrayList()
-        for (i in loadLabelList(this)!!.split("+")) labelList.add(i.toInt())
+        val labelList: ArrayList<String> = ArrayList(loadLabelList(this)!!.split("+"))
 
         layoutManager = LoopingLayoutManager(
             this,
@@ -176,6 +169,8 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
                             ?.let { toolbarAdapter?.labelList?.get(it) }
                     prefix = DataArrays.prefixDict[key]!!
                     if (uriLast.isNotEmpty()) onGetUri(uriLast)
+                    searchView?.clearFocus()
+                    browser?.hideKeyboard(this@SearchResultsActivity)
                 }
             }
         })
@@ -195,7 +190,7 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private suspend fun waitFor(time: Long) = withContext(Dispatchers.IO) { delay(time) }
 
-    private var browser: WebView? = null
+    private var browser: BrowserView? = null
 
     override fun onBackPressed() {
         when {
@@ -247,7 +242,7 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
     override fun onEndList() {}
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onStartList(labelList: ArrayList<Int>) {
+    override fun onStartList(labelList: ArrayList<String>) {
         toolbarAdapter?.labelList = labelList
         toolbarAdapter?.notifyDataSetChanged()
         toolbarAdapter?.labelListAdapter?.labelList = labelList

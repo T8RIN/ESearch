@@ -2,7 +2,6 @@ package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity
 import android.app.SearchManager
 import android.content.Intent
 import android.content.Intent.*
@@ -12,7 +11,6 @@ import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
 import android.webkit.WebView
 import android.widget.ImageButton
@@ -21,7 +19,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
-import ru.tech.easysearch.data.DataArrays
+import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
@@ -30,8 +29,6 @@ class BrowserActivity : AppCompatActivity() {
     var searchView: TextInputEditText? = null
     private var progressBar: LinearProgressIndicator? = null
     private var iconView: ImageView? = null
-    private var webClient: WebClient? = null
-    private var chromeClient: ChromeClient? = null
     private var goButton: ImageButton? = null
     private var errorView: WebView? = null
 
@@ -52,18 +49,10 @@ class BrowserActivity : AppCompatActivity() {
         errorView?.settings?.javaScriptEnabled = true
 
         browser = findViewById(R.id.webBrowser)
-        chromeClient = ChromeClient(this, progressBar!!, iconView)
-        webClient = WebClient(this, null, progressBar!!, chromeClient!!, errorView)
 
-        browser!!.webViewClient = webClient!!
-        browser!!.webChromeClient = chromeClient!!
-
-        val settings = browser!!.settings
-        settings.javaScriptEnabled = true
-        settings.allowFileAccess = true
-        settings.allowContentAccess = true
-        settings.userAgentString = DataArrays.userAgentString
-        settings.javaScriptCanOpenWindowsAutomatically = true
+        val chromeClient = ChromeClient(this, progressBar!!, iconView)
+        browser!!.webViewClient = WebClient(this, null, progressBar!!, chromeClient, errorView)
+        browser!!.webChromeClient = chromeClient
 
         val url = dispatchIntent(intent)
 
@@ -104,7 +93,7 @@ class BrowserActivity : AppCompatActivity() {
         }
     }
 
-    private var browser: WebView? = null
+    private var browser: BrowserView? = null
 
     override fun onBackPressed() {
         when {
@@ -133,10 +122,7 @@ class BrowserActivity : AppCompatActivity() {
             browser?.loadUrl(prefix + uriLast)
         }
 
-        (getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
-            browser?.windowToken,
-            0
-        )
+        browser?.hideKeyboard(this)
 
         if (clearFocus) it.clearFocus()
     }

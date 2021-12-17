@@ -6,10 +6,7 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import ru.tech.easysearch.R
-import ru.tech.easysearch.extensions.Extensions.getBitmap
 
 class ChromeClient(
     private val context: Context,

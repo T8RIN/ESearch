@@ -1,6 +1,7 @@
 package ru.tech.easysearch.extensions
 
 import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -9,6 +10,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebResourceError
 import android.webkit.WebViewClient.*
 import android.widget.ImageView
@@ -88,6 +91,13 @@ object Extensions {
         } catch (e: Exception) {
             -1
         }
+    }
+
+    fun View.hideKeyboard(context: Context) {
+        (context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+            windowToken,
+            0
+        )
     }
 
 }

@@ -14,11 +14,12 @@ import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.lables.LabelListAdapter
+import ru.tech.easysearch.extensions.Extensions.getResId
 
 
 class ToolbarAdapter(
     private val context: Context,
-    var labelList: List<Int>,
+    var labelList: List<String>,
     private val card: MaterialCardView,
     private val fab: FloatingActionButton?,
     private val labelRecycler: RecyclerView,
@@ -39,7 +40,7 @@ class ToolbarAdapter(
     private var backButton: ImageView? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(labelList[position])
+        holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
         holder.itemView.setOnClickListener {
             if (context is SearchResultsActivity) {
                 backButton = context.findViewById(R.id.backButton)

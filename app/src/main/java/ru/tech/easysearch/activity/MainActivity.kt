@@ -25,7 +25,6 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
-import ru.tech.easysearch.extensions.Extensions.getResId
 import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.fragment.recent.RecentFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment

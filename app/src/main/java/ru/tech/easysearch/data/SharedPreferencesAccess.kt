@@ -1,13 +1,12 @@
 package ru.tech.easysearch.data
 
 import android.content.Context
-import ru.tech.easysearch.R.drawable.*
 
 object SharedPreferencesAccess {
 
     private const val mainSharedPrefsKey = "eSearch"
     private const val defLabels =
-        "${ic_google_logo}+${ic_bing_logo}+${ic_yandex_logo}+${ic_mailru_logo}+${ic_yahoo_logo}"
+        "ic_google_logo+ic_bing_logo+ic_yandex_logo+ic_mailru_logo+ic_yahoo_logo"
 
     fun loadLabelList(context: Context): String? {
         return context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)

@@ -10,13 +10,14 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
+import ru.tech.easysearch.extensions.Extensions.getResId
 import ru.tech.easysearch.extensions.Extensions.setTint
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
 
 class SelectedLabelsAdapter(
     private val context: Context,
-    var labelList: ArrayList<Int>,
+    var labelList: ArrayList<String>,
     private var disAdapter: DeSelectedLabelsAdapter,
     private val labelListChangedInterface: LabelListChangedInterface
 ) :
@@ -30,7 +31,7 @@ class SelectedLabelsAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(labelList[position])
+        holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
         holder.icon.setImageResource(R.drawable.ic_baseline_remove_circle_24)
         holder.icon.setTint(R.color.red)
         holder.icon.setOnClickListener {

@@ -12,7 +12,7 @@ import java.util.*
 
 class RecyclerItemTouchAdapter(
     context: Context,
-    labelList: ArrayList<Int>,
+    labelList: ArrayList<String>,
     private val disAdapter: DeSelectedLabelsAdapter,
     labelListChangedInterface: LabelListChangedInterface
 ) :
