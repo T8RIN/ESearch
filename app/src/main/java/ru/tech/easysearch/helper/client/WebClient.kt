@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.webkit.*
 import android.widget.Toast
@@ -28,8 +27,7 @@ class WebClient(
     private val context: Context,
     private val toolbar: RecyclerView? = null,
     private val progressBar: LinearProgressIndicator,
-    private val chromeClient: ChromeClient,
-    private val errorView: WebView? = null
+    private val chromeClient: ChromeClient
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -63,7 +61,6 @@ class WebClient(
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         progressBar.visibility = VISIBLE
-        errorView?.visibility = GONE
         super.onPageStarted(view, url, favicon)
     }
 
@@ -86,8 +83,6 @@ class WebClient(
     ) {
         error?.errorMessage().let {
             if (it != "Generic error") {
-                errorView?.visibility = VISIBLE
-                errorView?.loadUrl("file:///android_asset/www/error_page.html?errorCode=${it}&host=${request?.url?.host}")
                 chromeClient.onReceivedIcon(
                     view,
                     ContextCompat.getDrawable(context, R.drawable.ic_lightning)?.getBitmap()

@@ -13,4 +13,6 @@
     <string name="downloading">Download started</string>
     <string name="appError">You have no app to open this url</string>
     <string name="searchInGoogle">Search in google</string>
+    <string name="cantGoForward">Can\'t go forward</string>
+    <string name="cantGoBack">Can\'t go back</string>
 </resources>

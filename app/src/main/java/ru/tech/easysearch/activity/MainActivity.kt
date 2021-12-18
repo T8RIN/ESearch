@@ -25,6 +25,7 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.fragment.recent.RecentFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private var history: ImageButton? = null
     private var vpn: ImageButton? = null
-    private var search: ImageButton? = null
+    private var bookmarks: ImageButton? = null
     private var settings: ImageButton? = null
 
     private val resultLauncher =
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         history = findViewById(R.id.historyButton)
         vpn = findViewById(R.id.vpnButton)
-        search = findViewById(R.id.searchButton)
+        bookmarks = findViewById(R.id.bookmarksButton)
         settings = findViewById(R.id.settingsButton)
 
         labelRecycler = findViewById(R.id.labelRecycler)
@@ -242,12 +243,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             VpnFragment().show(supportFragmentManager, "custom")
             delayBeforeNextClick()
         }
-        search?.setOnClickListener {
-            if (searchView!!.query.isNotEmpty()) {
-                startBrowserWithQuery(searchView!!.query.toString())
-            } else {
-                Toast.makeText(this, getString(R.string.emptyQuery), Toast.LENGTH_SHORT).show()
-            }
+        bookmarks?.setOnClickListener {
+            BookmarksFragment().show(supportFragmentManager, "custom")
             delayBeforeNextClick()
         }
         settings?.setOnClickListener {
@@ -266,7 +263,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private fun clearListeners() {
         history?.setOnClickListener {}
         vpn?.setOnClickListener {}
-        search?.setOnClickListener {}
+        bookmarks?.setOnClickListener {}
         settings?.setOnClickListener {}
     }
 

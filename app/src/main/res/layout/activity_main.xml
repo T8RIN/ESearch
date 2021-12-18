@@ -73,17 +73,17 @@
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
             android:src="@drawable/ic_baseline_history_24"
-            app:layout_constraintEnd_toStartOf="@id/searchButton"
+            app:layout_constraintEnd_toStartOf="@id/bookmarksButton"
             app:layout_constraintStart_toEndOf="@id/fabDividerRight"
             app:layout_constraintVertical_chainStyle="spread" />
 
         <ImageButton
-            android:id="@+id/searchButton"
+            android:id="@+id/bookmarksButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_search_24"
+            android:src="@drawable/ic_baseline_bookmarks_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/historyButton"
             app:layout_constraintVertical_chainStyle="spread" />

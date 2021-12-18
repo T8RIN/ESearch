@@ -65,7 +65,7 @@ class ChromeClient(
     }
 
     private fun updateControls() {
-        (videoPlayer?.layoutParams as FrameLayout.LayoutParams).let{
+        (videoPlayer?.layoutParams as FrameLayout.LayoutParams).let {
             it.setMargins(0, 0, 0, 0)
             it.height = ViewGroup.LayoutParams.MATCH_PARENT
             it.width = ViewGroup.LayoutParams.MATCH_PARENT

@@ -49,6 +49,26 @@
             android:src="@drawable/ic_baseline_search_24"
             android:visibility="gone" />
 
+        <ImageButton
+            android:id="@+id/bookmarkButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:src="@drawable/ic_baseline_bookmark_border_24" />
+
+        <ImageButton
+            android:id="@+id/refreshButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:src="@drawable/ic_baseline_refresh_24" />
+
     </LinearLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -65,15 +85,68 @@
         android:id="@+id/webBrowser"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomAppBar"
         app:layout_constraintTop_toBottomOf="@id/progressIndicator" />
 
-    <WebView
-        android:id="@+id/errorDisplay"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/bottomAppBar"
+        android:elevation="5dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressIndicator" />
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/backwardBrowser"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple"
+                android:contentDescription="@string/none"
+                android:src="@drawable/ic_baseline_undo_24" />
+
+            <ImageButton
+                android:id="@+id/forwardBrowser"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple"
+                android:contentDescription="@string/none"
+                android:src="@drawable/ic_baseline_redo_24" />
+
+            <ImageButton
+                android:id="@+id/windowsBrowser"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple"
+                android:contentDescription="@string/none"
+                android:src="@drawable/ic_baseline_view_carousel_24" />
+
+            <ImageButton
+                android:id="@+id/bookmarkBrowser"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple"
+                android:contentDescription="@string/none"
+                android:src="@drawable/ic_baseline_bookmark_24" />
+
+            <ImageButton
+                android:id="@+id/historyBrowser"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple"
+                android:contentDescription="@string/none"
+                android:src="@drawable/ic_baseline_history_24" />
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
