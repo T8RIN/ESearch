@@ -1,13 +1,33 @@
 package ru.tech.easysearch.fragment.bookmarks
 
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
+import ru.tech.easysearch.application.ESearchApplication.Companion.bookmarkDatabase
+import ru.tech.easysearch.databinding.BookmarksFragmentBinding
 
-class BookmarksFragment : DialogFragment(R.layout.bookmarks_fragment) {
+class BookmarksFragment : DialogFragment() {
 
+    private var _binding: BookmarksFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = BookmarksFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onStart() {
         super.onStart()
@@ -29,6 +49,14 @@ class BookmarksFragment : DialogFragment(R.layout.bookmarks_fragment) {
         requireDialog().window?.setWindowAnimations(
             R.style.DialogAnimation
         )
+
+        val dao = bookmarkDatabase.bookmarkDao()
+
+        dao.getAllBookmarks().observe(this) {
+            Log.d("dao", it.toString())
+        }
+
+        //TODO: LIST TO ADAPTER
     }
 
 }

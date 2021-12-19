@@ -46,7 +46,6 @@
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -57,7 +56,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ESearch"
         android:usesCleartextTraffic="true"
-        tools:targetApi="s">
+        tools:targetApi="s"
+        android:dataExtractionRules="@xml/data_extraction_rules">
 
         <activity
             android:name=".activity.BrowserActivity"

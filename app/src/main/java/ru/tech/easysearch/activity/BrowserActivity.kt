@@ -20,6 +20,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
@@ -28,6 +29,8 @@ import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
 class BrowserActivity : AppCompatActivity() {
+    
+    private lateinit var binding: ActivityBrowserBinding
 
     var searchView: TextInputEditText? = null
     private var progressBar: LinearProgressIndicator? = null
@@ -46,21 +49,24 @@ class BrowserActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_browser)
+
+        binding = ActivityBrowserBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
 
-        searchView = findViewById(R.id.searchView)
-        progressBar = findViewById(R.id.progressIndicator)
-        iconView = findViewById(R.id.icon)
+        searchView = binding.searchView
+        progressBar = binding.progressIndicator
+        iconView = binding.icon
 
-        backwardBrowser = findViewById(R.id.backwardBrowser)
-        forwardBrowser = findViewById(R.id.forwardBrowser)
-        currentWindows = findViewById(R.id.windowsBrowser)
-        bookmarksBrowser = findViewById(R.id.bookmarkBrowser)
-        historyBrowser = findViewById(R.id.historyBrowser)
+        backwardBrowser = binding.backwardBrowser
+        forwardBrowser = binding.forwardBrowser
+        currentWindows = binding.windowsBrowser
+        bookmarksBrowser = binding.bookmarkBrowser
+        historyBrowser = binding.historyBrowser
 
-        browser = findViewById(R.id.webBrowser)
+        browser = binding.webBrowser
 
         val chromeClient = ChromeClient(this, progressBar!!, iconView)
         browser!!.webViewClient = WebClient(this, null, progressBar!!, chromeClient)
@@ -87,7 +93,7 @@ class BrowserActivity : AppCompatActivity() {
             handled
         }
 
-        goButton = findViewById(R.id.goButton)
+        goButton = binding.goButton
         goButton!!.setOnClickListener {
             onGetUri(searchView!!, searchView!!.text.toString())
         }

@@ -1,12 +1,31 @@
 package ru.tech.easysearch.fragment.current
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
+import ru.tech.easysearch.databinding.CurrentWindowsFragmentBinding
 
-class CurrentWindowsFragment : DialogFragment(R.layout.current_windows_fragment) {
+class CurrentWindowsFragment : DialogFragment() {
+
+    private var _binding: CurrentWindowsFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = CurrentWindowsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onStart() {
         super.onStart()

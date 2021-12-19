@@ -10,7 +10,6 @@ import android.util.Patterns
 import android.view.View
 import android.webkit.URLUtil
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +22,11 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
+import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.data.bookmarks.database.BookmarksDatabase
+import ru.tech.easysearch.databinding.ActivityMainBinding
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabels
 import ru.tech.easysearch.fragment.recent.RecentFragment
@@ -35,6 +37,8 @@ import java.util.*
 
 @SuppressLint("NotifyDataSetChanged")
 class MainActivity : AppCompatActivity(), LabelListChangedInterface {
+
+    private lateinit var binding: ActivityMainBinding
 
     private var searchView: SearchView? = null
     private var toolbarAdapter: ToolbarAdapter? = null
@@ -114,12 +118,16 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
+        ESearchApplication.bookmarkDatabase = BookmarksDatabase.getInstance(applicationContext)
 
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
 
-        toolbarRecycler = findViewById(R.id.toolbarRecycler)
+        toolbarRecycler = binding.appBar.toolbarRecycler
 
         val labelList: ArrayList<String> = ArrayList(loadLabelList(this)!!.split("+"))
 
@@ -130,27 +138,27 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         )
         toolbarRecycler!!.layoutManager = layoutManager
 
-        fab = findViewById(R.id.fab)
+        fab = binding.fab
         fab!!.setOnClickListener {
             startSpeechRecognize(resultLauncher)
         }
 
-        card = findViewById(R.id.labelSuggestionCard)
+        card = binding.labelSuggestionCard
         card!!.translationY = displayOffsetY
-        manageList = findViewById(R.id.manageList)
+        manageList = binding.manageList
         manageList!!.translationY = displayOffsetY
-        close = findViewById(R.id.closeButton)
+        close = binding.closeButton
         close!!.translationX = displayOffsetX
 
-        history = findViewById(R.id.historyButton)
-        vpn = findViewById(R.id.vpnButton)
-        bookmarks = findViewById(R.id.bookmarksButton)
-        settings = findViewById(R.id.settingsButton)
+        history = binding.historyButton
+        vpn = binding.vpnButton
+        bookmarks = binding.bookmarksButton
+        settings = binding.settingsButton
 
-        labelRecycler = findViewById(R.id.labelRecycler)
+        labelRecycler = binding.labelRecycler
 
-        forward = findViewById(R.id.forward)
-        backward = findViewById(R.id.backward)
+        forward = binding.forward
+        backward = binding.backward
 
         recursiveClickForward()
         recursiveClickBackward()
@@ -187,7 +195,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             manageList!!.animate().y(displayOffsetY).setDuration(200).start()
         }
 
-        searchView = findViewById(R.id.searchView)
+        searchView = binding.searchView
         searchView!!.isSubmitButtonEnabled = true
         searchView?.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {

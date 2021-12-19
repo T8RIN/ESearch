@@ -3,13 +3,13 @@ package ru.tech.easysearch.adapter.selection
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
+import ru.tech.easysearch.databinding.SelectableLabelItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
 import ru.tech.easysearch.extensions.Extensions.setTint
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
@@ -30,8 +30,7 @@ class DeSelectedLabelsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.selectable_label_item, parent, false)
+            SelectableLabelItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -54,10 +53,11 @@ class DeSelectedLabelsAdapter(
         return labelList.size
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val label: ImageView = view.findViewById(R.id.label)
-        val icon: ImageButton = view.findViewById(R.id.icon)
-        val dragger: ImageView = view.findViewById(R.id.dragger)
+    inner class ViewHolder(binding: SelectableLabelItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val label: ImageView = binding.label
+        val icon: ImageButton = binding.icon
+        val dragger: ImageView = binding.dragger
     }
 
 }

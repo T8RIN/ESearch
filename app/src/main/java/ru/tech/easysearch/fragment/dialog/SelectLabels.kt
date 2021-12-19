@@ -1,7 +1,9 @@
 package ru.tech.easysearch.fragment.dialog
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
@@ -14,10 +16,28 @@ import ru.tech.easysearch.adapter.text.TextAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.data.SharedPreferencesAccess.saveLabelList
+import ru.tech.easysearch.databinding.SelectLabelsDialogBinding
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
 class SelectLabels(private val mainInterface: LabelListChangedInterface) :
-    DialogFragment(R.layout.select_labels_dialog), LabelListChangedInterface {
+    DialogFragment(), LabelListChangedInterface {
+
+    private var _binding: SelectLabelsDialogBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = SelectLabelsDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onStart() {
         super.onStart()
@@ -39,7 +59,7 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
             R.style.DialogAnimation
         )
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        val toolbar: Toolbar = binding.toolbar
         toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
         toolbar.setTitle(R.string.selectSearchEngine)
         toolbar.setNavigationOnClickListener {
@@ -51,7 +71,7 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
 
         for (i in prefixDict) if (!labelList.contains(i.key)) disLabelList.add(i.key)
 
-        val recycler: RecyclerView = view.findViewById(R.id.labelSelectionRecycler)
+        val recycler: RecyclerView = binding.labelSelectionRecycler
         val disAdapter = DeSelectedLabelsAdapter(requireContext(), disLabelList, this)
         val nestedAdapter = RecyclerItemTouchAdapter(requireContext(), labelList, disAdapter, this)
 
@@ -79,12 +99,10 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
     }
 
     override fun onEndList() {
-        val view = requireView()
-
         val labelList: ArrayList<String> = ArrayList()
         for (i in prefixDict) labelList.add(i.key)
 
-        val recycler: RecyclerView = view.findViewById(R.id.labelSelectionRecycler)
+        val recycler: RecyclerView = binding.labelSelectionRecycler
         val disAdapter = DeSelectedLabelsAdapter(requireContext(), ArrayList(), this)
         val nestedAdapter = RecyclerItemTouchAdapter(requireContext(), labelList, disAdapter, this)
 
@@ -97,12 +115,10 @@ class SelectLabels(private val mainInterface: LabelListChangedInterface) :
     }
 
     override fun onStartList(labelList: ArrayList<String>) {
-        val view = requireView()
-
         val disLabelList: ArrayList<String> = ArrayList()
         for (i in prefixDict) if (!labelList.contains(i.key)) disLabelList.add(i.key)
 
-        val recycler: RecyclerView = view.findViewById(R.id.labelSelectionRecycler)
+        val recycler: RecyclerView = binding.labelSelectionRecycler
         val disAdapter = DeSelectedLabelsAdapter(requireContext(), disLabelList, this)
         val nestedAdapter = RecyclerItemTouchAdapter(requireContext(), labelList, disAdapter, this)
 

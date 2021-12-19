@@ -2,11 +2,10 @@ package ru.tech.easysearch.adapter.selection
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ru.tech.easysearch.R
+import ru.tech.easysearch.databinding.RecyclerViewItemBinding
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
 
@@ -69,8 +68,7 @@ class RecyclerItemTouchAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         disAdapter.bindAdapter(adapter)
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.recycler_view_item, parent, false)
+            RecyclerViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -83,8 +81,9 @@ class RecyclerItemTouchAdapter(
         return 1
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val recyclerView: RecyclerView = view as RecyclerView
+    inner class ViewHolder(binding: RecyclerViewItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val recyclerView: RecyclerView = binding.root
     }
 
 }

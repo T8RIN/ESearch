@@ -14,6 +14,7 @@ import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.lables.LabelListAdapter
+import ru.tech.easysearch.databinding.ToolbarItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
 
 
@@ -32,7 +33,7 @@ class ToolbarAdapter(
     RecyclerView.Adapter<ToolbarAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.toolbar_item, parent, false)
+            ToolbarItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -99,8 +100,8 @@ class ToolbarAdapter(
         return labelList.size
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val label: ImageView = view.findViewById(R.id.label)
+    inner class ViewHolder(binding: ToolbarItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val label: ImageView = binding.label
     }
 
 }

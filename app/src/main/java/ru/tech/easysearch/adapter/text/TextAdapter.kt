@@ -1,11 +1,10 @@
 package ru.tech.easysearch.adapter.text
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.tech.easysearch.R
+import ru.tech.easysearch.databinding.TextItemBinding
 
 
 class TextAdapter(
@@ -15,7 +14,7 @@ class TextAdapter(
     RecyclerView.Adapter<TextAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.text_item, parent, false)
+            TextItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -28,8 +27,8 @@ class TextAdapter(
         return textCount.size
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val text: TextView = view.findViewById(R.id.text)
+    inner class ViewHolder(binding: TextItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val text: TextView = binding.text
     }
 
 }

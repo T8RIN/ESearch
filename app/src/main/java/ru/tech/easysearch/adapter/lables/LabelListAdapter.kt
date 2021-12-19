@@ -13,6 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.activity.SearchResultsActivity
+import ru.tech.easysearch.databinding.LabelItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
 
 
@@ -31,7 +32,7 @@ class LabelListAdapter(
     RecyclerView.Adapter<LabelListAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.label_item, parent, false)
+            LabelItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -71,9 +72,9 @@ class LabelListAdapter(
         return labelList.size
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val label: ImageView = view.findViewById(R.id.label)
-        val card: MaterialCardView = view.findViewById(R.id.labelCard)
+    inner class ViewHolder(binding: LabelItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val label: ImageView = binding.label
+        val card: MaterialCardView = binding.root
     }
 
 }
