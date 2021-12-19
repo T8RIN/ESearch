@@ -1,12 +1,12 @@
 package ru.tech.easysearch.application
 
 import android.app.Application
-import ru.tech.easysearch.data.bookmarks.database.BookmarksDatabase
+import ru.tech.easysearch.database.ESearchDatabase
 
 class ESearchApplication : Application() {
 
     companion object {
-        lateinit var bookmarkDatabase: BookmarksDatabase
+        lateinit var database: ESearchDatabase
     }
 
 }

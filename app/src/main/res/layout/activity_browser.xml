@@ -7,6 +7,7 @@
     tools:context=".activity.BrowserActivity">
 
     <LinearLayout
+        android:elevation="5dp"
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/none"
             android:padding="12dp"
-            android:src="@drawable/ic_browser_144"
+            android:src="@drawable/ic_baseline_broken_image_24"
             android:visibility="gone" />
 
         <com.google.android.material.textfield.TextInputEditText
@@ -90,15 +91,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/bottomAppBar"
-        android:elevation="5dp"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent" >
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/backwardBrowser"

@@ -42,4 +42,5 @@
     <color name="dviolet">#9F05B0</color>
 
     <color name="manualBackground">#FFFFFF</color>
+    <color name="manualText">#000000</color>
 </resources>

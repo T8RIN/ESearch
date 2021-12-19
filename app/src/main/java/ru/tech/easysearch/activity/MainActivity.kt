@@ -25,10 +25,10 @@ import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
-import ru.tech.easysearch.data.bookmarks.database.BookmarksDatabase
+import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityMainBinding
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
-import ru.tech.easysearch.fragment.dialog.SelectLabels
+import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.recent.RecentFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.vpn.VpnFragment
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         setContentView(binding.root)
 
-        ESearchApplication.bookmarkDatabase = BookmarksDatabase.getInstance(applicationContext)
+        ESearchApplication.database = ESearchDatabase.getInstance(applicationContext)
 
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             )
         toolbarRecycler!!.adapter = toolbarAdapter
 
-        val selectLabelsFragment = SelectLabels(this)
+        val selectLabelsFragment = SelectLabelsDialog(this)
         manageList!!.setOnClickListener {
             if (!selectLabelsFragment.isAdded) selectLabelsFragment.show(
                 supportFragmentManager,

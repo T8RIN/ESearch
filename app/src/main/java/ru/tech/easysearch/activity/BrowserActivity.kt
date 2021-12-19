@@ -21,15 +21,18 @@ import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
+import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
+import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.dialog.CreateBookmarkDialog
 import ru.tech.easysearch.fragment.recent.RecentFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
 class BrowserActivity : AppCompatActivity() {
-    
+
     private lateinit var binding: ActivityBrowserBinding
 
     var searchView: TextInputEditText? = null
@@ -113,11 +116,16 @@ class BrowserActivity : AppCompatActivity() {
         }
 
         bookmarksBrowser?.setOnClickListener {
-            BookmarksFragment().show(supportFragmentManager, "custom")
+            BookmarksFragment(browser).show(supportFragmentManager, "custom")
         }
 
-        historyBrowser?.setOnClickListener{
+        historyBrowser?.setOnClickListener {
             RecentFragment().show(supportFragmentManager, "custom")
+        }
+
+        binding.bookmarkButton.setOnClickListener {
+            val bookmarkDialog = CreateBookmarkDialog(browser?.title ,lastUrl, iconView?.drawable?.getBitmap()!!.toByteArray())
+            if (!bookmarkDialog.isAdded) bookmarkDialog.show(supportFragmentManager, "bookDialog")
         }
 
     }

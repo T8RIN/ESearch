@@ -20,6 +20,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import java.io.ByteArrayOutputStream
 
 
 object Extensions {
@@ -62,6 +63,12 @@ object Extensions {
         setBounds(0, 0, canvas.width, canvas.height)
         draw(canvas)
         return bitmap
+    }
+
+    fun Bitmap.toByteArray(): ByteArray {
+        val stream = ByteArrayOutputStream()
+        compress(Bitmap.CompressFormat.PNG, 90, stream)
+        return stream.toByteArray()
     }
 
     @TargetApi(Build.VERSION_CODES.M)

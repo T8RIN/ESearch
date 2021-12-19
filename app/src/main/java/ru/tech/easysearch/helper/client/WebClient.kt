@@ -1,16 +1,16 @@
 package ru.tech.easysearch.helper.client
 
-import android.annotation.TargetApi
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.view.View.VISIBLE
-import android.webkit.*
+import android.webkit.URLUtil
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -18,9 +18,13 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
+import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.data.DataArrays.prefixDict
-import ru.tech.easysearch.extensions.Extensions.errorMessage
+import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.getBitmap
+import ru.tech.easysearch.extensions.Extensions.toByteArray
+import ru.tech.easysearch.functions.Functions
+import java.util.*
 
 
 class WebClient(
@@ -71,23 +75,28 @@ class WebClient(
                 context.lastUrl = it
                 context.clickedGo = false
             }
-        }
-        super.onPageFinished(view, url)
-    }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    override fun onReceivedError(
-        view: WebView?,
-        request: WebResourceRequest?,
-        error: WebResourceError?
-    ) {
-        error?.errorMessage().let {
-            if (it != "Generic error") {
-                chromeClient.onReceivedIcon(
-                    view,
-                    ContextCompat.getDrawable(context, R.drawable.ic_lightning)?.getBitmap()
+            val title = view?.title!!
+
+            val calendar = Calendar.getInstance()
+            val day = calendar[Calendar.DAY_OF_MONTH]
+            val month = calendar[Calendar.MONTH]
+            val year = calendar[Calendar.YEAR]
+            val hour = calendar[Calendar.HOUR]
+            val minute = calendar[Calendar.MINUTE]
+
+            Functions.waitForDoInBackground(4000) {
+                ESearchApplication.database.historyDao().insert(
+                    History(
+                        title,
+                        url,
+                        chromeClient.iconView?.drawable?.getBitmap()?.toByteArray(),
+                        "${hour}:${minute}",
+                        "$day $month $year"
+                    )
                 )
             }
         }
+        super.onPageFinished(view, url)
     }
 }

@@ -1,11 +1,13 @@
 package ru.tech.easysearch.fragment.recent
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
+import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.databinding.RecentFragmentBinding
 
 class RecentFragment : DialogFragment() {
@@ -47,6 +49,9 @@ class RecentFragment : DialogFragment() {
         requireDialog().window?.setWindowAnimations(
             R.style.DialogAnimation
         )
+        database.historyDao().getHistory().observe(this) {
+            Log.d("dao", it.toString())
+        }
     }
 
 }

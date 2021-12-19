@@ -1,16 +1,19 @@
-package ru.tech.easysearch.data.bookmarks.dao
+package ru.tech.easysearch.database.bookmarks.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import ru.tech.easysearch.data.bookmarks.Bookmark
+import ru.tech.easysearch.database.bookmarks.Bookmark
 
 @Dao
-interface BookmarksDao {
+interface BookmarkDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(bookmark: Bookmark)
 
-    @Update
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(vararg bookmark: Bookmark)
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     fun update(bookmark: Bookmark)
 
     @Delete
@@ -21,4 +24,5 @@ interface BookmarksDao {
 
     @Query("select * from bookmarks order by id desc")
     fun getAllBookmarks(): LiveData<List<Bookmark>>
+
 }

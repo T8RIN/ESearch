@@ -1,4 +1,4 @@
-package ru.tech.easysearch.data.bookmarks
+package ru.tech.easysearch.database.bookmarks
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class Bookmark(
     val description: String,
     val url: String,
-    val icon: String,
+    val icon: ByteArray?,
     @PrimaryKey(autoGenerate = true) val id: Int? = null
 )

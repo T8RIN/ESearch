@@ -25,7 +25,7 @@ import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
-import ru.tech.easysearch.fragment.dialog.SelectLabels
+import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
@@ -116,7 +116,7 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
             )
         )
 
-        val selectLabelsFragment = SelectLabels(this)
+        val selectLabelsFragment = SelectLabelsDialog(this)
         manageList!!.setOnClickListener {
             if (!selectLabelsFragment.isAdded) selectLabelsFragment.show(
                 supportFragmentManager,

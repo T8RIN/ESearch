@@ -14,4 +14,9 @@
         </item>
     </style>
 
+    <style name="EditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/edit_text_selector</item>
+        <item name="hintTextColor">@color/edit_text_selector</item>
+    </style>
+
 </resources>

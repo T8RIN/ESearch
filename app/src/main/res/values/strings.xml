@@ -15,4 +15,10 @@
     <string name="searchInGoogle">Search in google</string>
     <string name="cantGoForward">Can\'t go forward</string>
     <string name="cantGoBack">Can\'t go back</string>
+    <string name="description">Description</string>
+    <string name="address">Url address</string>
+    <string name="addBookmark">Bookmark creation</string>
+    <string name="bookmarkAdded">Bookmark added</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="noBookmarks">No bookmarks found</string>
 </resources>

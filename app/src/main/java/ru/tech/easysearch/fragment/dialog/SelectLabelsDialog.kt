@@ -19,7 +19,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.saveLabelList
 import ru.tech.easysearch.databinding.SelectLabelsDialogBinding
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 
-class SelectLabels(private val mainInterface: LabelListChangedInterface) :
+class SelectLabelsDialog(private val mainInterface: LabelListChangedInterface) :
     DialogFragment(), LabelListChangedInterface {
 
     private var _binding: SelectLabelsDialogBinding? = null

@@ -16,7 +16,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 class ChromeClient(
     private val activity: AppCompatActivity,
     private val progressBar: LinearProgressIndicator,
-    private var iconView: ImageView? = null
+    var iconView: ImageView? = null
 ) :
     WebChromeClient() {
 
