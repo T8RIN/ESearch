@@ -29,7 +29,7 @@ import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityMainBinding
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
-import ru.tech.easysearch.fragment.recent.RecentFragment
+import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private fun recursiveBottomNavigationClick() {
         history?.setOnClickListener {
-            RecentFragment().show(supportFragmentManager, "custom")
+            HistoryFragment().show(supportFragmentManager, "custom")
             delayBeforeNextClick()
         }
         vpn?.setOnClickListener {

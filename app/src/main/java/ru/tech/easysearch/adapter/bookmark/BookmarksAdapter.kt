@@ -31,8 +31,8 @@ class BookmarksAdapter(
         holder.icon.setImageBitmap(byteArrayToBitmap(bookmark.icon!!))
         holder.description.text = bookmark.description
         holder.url.text = bookmark.url
-        holder.itemView.setOnClickListener{
-            if(browser != null) browser.loadUrl(bookmark.url)
+        holder.itemView.setOnClickListener {
+            if (browser != null) browser.loadUrl(bookmark.url)
             else {
                 val intent = Intent(bookmarksFragment.requireContext(), BrowserActivity::class.java)
                 intent.putExtra("url", bookmark.url)

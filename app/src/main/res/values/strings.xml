@@ -21,4 +21,6 @@
     <string name="bookmarkAdded">Bookmark added</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="noBookmarks">No bookmarks found</string>
+    <string name="noHistory">You have no history</string>
+    <string name="history">History</string>
 </resources>

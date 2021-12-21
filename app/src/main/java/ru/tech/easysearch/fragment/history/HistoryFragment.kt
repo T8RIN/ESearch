@@ -1,21 +1,20 @@
-package ru.tech.easysearch.fragment.bookmarks
+package ru.tech.easysearch.fragment.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
-import ru.tech.easysearch.adapter.bookmark.BookmarksAdapter
+import ru.tech.easysearch.adapter.history.HistoryAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
-import ru.tech.easysearch.databinding.BookmarksFragmentBinding
+import ru.tech.easysearch.custom.StickyHeaderDecoration
+import ru.tech.easysearch.databinding.HistoryFragmentBinding
 
-class BookmarksFragment(private val browser: WebView? = null) : DialogFragment() {
+class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
 
-    private var _binding: BookmarksFragmentBinding? = null
+    private var _binding: HistoryFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -23,7 +22,7 @@ class BookmarksFragment(private val browser: WebView? = null) : DialogFragment()
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = BookmarksFragmentBinding.inflate(inflater, container, false)
+        _binding = HistoryFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -52,22 +51,32 @@ class BookmarksFragment(private val browser: WebView? = null) : DialogFragment()
         requireDialog().window?.setWindowAnimations(
             R.style.DialogAnimation
         )
-
-        val dao = database.bookmarkDao()
-
         binding.close.setOnClickListener {
             dismiss()
         }
-
-        dao.getAllBookmarks().observe(this) {
+        database.historyDao().getHistory().observe(this) {
             if (it.isNotEmpty()) {
-                binding.bookmarkRecycler.adapter =
-                    BookmarksAdapter(this@BookmarksFragment, it, browser)
+                val booleanArray: ArrayList<Boolean> = ArrayList()
+                var prev = ""
+                for (i in it) {
+                    if (i.date != prev) {
+                        booleanArray.add(true)
+                        prev = i.date
+                    } else {
+                        booleanArray.add(false)
+                    }
+                }
+                val adapter = HistoryAdapter(this@HistoryFragment, it, booleanArray, browser)
+
+                binding.historyRecycler.adapter = adapter
+                binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter))
+
             } else {
-                binding.errorMessage.visibility = VISIBLE
-                binding.bookmarkRecycler.visibility = GONE
+                binding.errorMessage.visibility = View.VISIBLE
+                binding.historyRecycler.visibility = View.GONE
             }
         }
     }
+
 
 }

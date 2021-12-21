@@ -24,6 +24,7 @@ import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -82,17 +83,23 @@ class WebClient(
             val day = calendar[Calendar.DAY_OF_MONTH]
             val month = calendar[Calendar.MONTH]
             val year = calendar[Calendar.YEAR]
-            val hour = calendar[Calendar.HOUR]
-            val minute = calendar[Calendar.MINUTE]
+            val hour = calendar[Calendar.HOUR_OF_DAY]
+            val strMinute = calendar[Calendar.MINUTE]
+            val minute = when {
+                strMinute < 10 -> "0$strMinute"
+                else -> "$strMinute"
+            }
 
-            Functions.waitForDoInBackground(4000) {
+            val stringMonth = SimpleDateFormat("MMMM", Locale.getDefault()).format(month)
+
+            Functions.waitForDoInBackground(0) {
                 ESearchApplication.database.historyDao().insert(
                     History(
                         title,
                         url,
                         chromeClient.iconView?.drawable?.getBitmap()?.toByteArray(),
                         "${hour}:${minute}",
-                        "$day $month $year"
+                        "$day $stringMonth $year"
                     )
                 )
             }

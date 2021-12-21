@@ -27,7 +27,7 @@ import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.CreateBookmarkDialog
-import ru.tech.easysearch.fragment.recent.RecentFragment
+import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
@@ -120,11 +120,15 @@ class BrowserActivity : AppCompatActivity() {
         }
 
         historyBrowser?.setOnClickListener {
-            RecentFragment().show(supportFragmentManager, "custom")
+            HistoryFragment(browser).show(supportFragmentManager, "custom")
         }
 
         binding.bookmarkButton.setOnClickListener {
-            val bookmarkDialog = CreateBookmarkDialog(browser?.title ,lastUrl, iconView?.drawable?.getBitmap()!!.toByteArray())
+            val bookmarkDialog = CreateBookmarkDialog(
+                browser?.title,
+                lastUrl,
+                iconView?.drawable?.getBitmap()!!.toByteArray()
+            )
             if (!bookmarkDialog.isAdded) bookmarkDialog.show(supportFragmentManager, "bookDialog")
         }
 

@@ -12,14 +12,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Toast
 import ru.tech.easysearch.R
-import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.data.DataArrays
-import ru.tech.easysearch.database.hist.History
-import ru.tech.easysearch.extensions.Extensions.getBitmap
-import ru.tech.easysearch.extensions.Extensions.toByteArray
-import ru.tech.easysearch.functions.Functions.doInBackground
 import ru.tech.easysearch.helper.client.ChromeClient
-import java.util.*
 
 
 @SuppressLint("SetJavaScriptEnabled")
