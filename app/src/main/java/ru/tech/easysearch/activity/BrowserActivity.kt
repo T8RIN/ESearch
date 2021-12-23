@@ -5,26 +5,35 @@ import android.annotation.TargetApi
 import android.app.SearchManager
 import android.content.Intent
 import android.content.Intent.*
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.custom.SideMenu
+import ru.tech.easysearch.custom.SideMenuItem
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
+import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.CreateBookmarkDialog
+import ru.tech.easysearch.fragment.history.HistoryFragment
+import ru.tech.easysearch.fragment.settings.SettingsFragment
+import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
@@ -41,8 +50,7 @@ class BrowserActivity : AppCompatActivity() {
     var forwardBrowser: ImageButton? = null
     private var homeBrowser: ImageButton? = null
     private var currentWindows: ImageButton? = null
-    private var bookmarksBrowser: ImageButton? = null
-    private var historyBrowser: ImageButton? = null
+    private var profileBrowser: ImageButton? = null
 
     var lastUrl = ""
     var clickedGo = false
@@ -66,10 +74,8 @@ class BrowserActivity : AppCompatActivity() {
         homeBrowser = binding.homeBrowser
         backwardBrowser = binding.backwardBrowser
         forwardBrowser = binding.forwardBrowser
-
+        profileBrowser = binding.profileBrowser
         currentWindows = binding.windowsBrowser
-        //bookmarksBrowser = binding.bookmarkBrowser
-        //historyBrowser = binding.historyBrowser
 
         browser = binding.webBrowser
 
@@ -112,22 +118,60 @@ class BrowserActivity : AppCompatActivity() {
         }
 
         homeBrowser?.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
+            finish()
+            startActivity(Intent(this, MainActivity::class.java))
         }
 
         currentWindows?.setOnClickListener {
             CurrentWindowsFragment().show(supportFragmentManager, "custom")
         }
 
-//        bookmarksBrowser?.setOnClickListener {
-//            BookmarksFragment(browser).show(supportFragmentManager, "custom")
-//        }
-//
-//        historyBrowser?.setOnClickListener {
-//            HistoryFragment(browser).show(supportFragmentManager, "custom")
-//        }
+        profileBrowser?.setOnClickListener {
+            builder = SideMenu(binding.root.parent as ViewGroup, this)
+                .setMenuItemClickListener { menuItem ->
+                    when (menuItem.id) {
+                        R.drawable.ic_baseline_history_24 -> {
+                            HistoryFragment(browser).show(supportFragmentManager, "custom")
+                        }
+                        R.drawable.ic_baseline_bookmarks_24 -> {
+                            BookmarksFragment(browser).show(supportFragmentManager, "custom")
+                        }
+                        R.drawable.ic_baseline_vpn_lock_24 -> {
+                            VpnFragment().show(supportFragmentManager, "custom")
+                        }
+                        R.drawable.ic_baseline_settings_24 -> {
+                            SettingsFragment().show(supportFragmentManager, "custom")
+                        }
+                    }
+                    builder?.dismiss()
+                }
+                .addItems(
+                    SideMenuItem(
+                        R.drawable.ic_baseline_history_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_baseline_history_24
+                        )!!,
+                        getString(R.string.history)
+                    ),
+                    SideMenuItem(
+                        R.drawable.ic_baseline_bookmarks_24,
+                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_bookmarks_24)!!,
+                        getString(R.string.bookmarks)
+                    ),
+                    SideMenuItem(
+                        R.drawable.ic_baseline_settings_24,
+                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24)!!,
+                        getString(R.string.settings)
+                    ),
+                    SideMenuItem(
+                        R.drawable.ic_baseline_vpn_lock_24,
+                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_vpn_lock_24)!!,
+                        getString(R.string.vpn)
+                    )
+                )
+            builder!!.show()
+        }
 
         binding.bookmarkButton.setOnClickListener {
             val bookmarkDialog = CreateBookmarkDialog(lastUrl, browser?.title!!)
@@ -156,8 +200,11 @@ class BrowserActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            browser?.canGoBack() == true -> {
+            browser?.canGoBack() == true && builder?.isHidden == true -> {
                 browser?.goBack()
+            }
+            builder?.isHidden == false -> {
+                builder?.dismiss()
             }
             else -> {
                 super.onBackPressed()
@@ -184,6 +231,13 @@ class BrowserActivity : AppCompatActivity() {
         browser?.hideKeyboard(this)
 
         if (clearFocus) it.clearFocus()
+    }
+
+    private var builder: SideMenu? = null
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        builder?.dismiss()
+        super.onConfigurationChanged(newConfig)
     }
 
 }

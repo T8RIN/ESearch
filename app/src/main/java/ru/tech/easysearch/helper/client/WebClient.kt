@@ -127,11 +127,15 @@ class WebClient(
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
                 val year = calendar[Calendar.YEAR]
-                val hour = calendar[Calendar.HOUR_OF_DAY]
+                val strHour = calendar[Calendar.HOUR_OF_DAY]
                 val strMinute = calendar[Calendar.MINUTE]
                 val minute = when {
                     strMinute < 10 -> "0$strMinute"
                     else -> "$strMinute"
+                }
+                val hour = when {
+                    strHour < 10 -> "0$strHour"
+                    else -> "$strHour"
                 }
 
                 val stringMonth = DateFormatSymbols(Locale.getDefault()).months[month]
@@ -147,8 +151,7 @@ class WebClient(
                 Functions.delayedDoInBackground(1000) {
                     val icon = context.fetchFavicon(it).toByteArray()
                     val dao = database.historyDao()
-                    val lastRecord = dao.getLastRecord()
-                    if (lastRecord.url != it) dao.insert(
+                    dao.insert(
                         History(
                             title,
                             it,
