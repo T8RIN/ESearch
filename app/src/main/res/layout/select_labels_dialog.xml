@@ -5,12 +5,40 @@
     android:layout_height="match_parent"
     android:background="@color/manualBackground">
 
-    <androidx.appcompat.widget.Toolbar
+    <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="48dp"
         android:background="?attr/colorPrimary"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:elevation="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_close_24" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/selectSearchEngine"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/done"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_done_24" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/labelSelectionRecycler"

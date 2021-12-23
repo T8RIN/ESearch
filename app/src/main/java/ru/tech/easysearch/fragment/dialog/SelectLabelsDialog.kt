@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -59,10 +58,10 @@ class SelectLabelsDialog(private val mainInterface: LabelListChangedInterface) :
             R.style.DialogAnimation
         )
 
-        val toolbar: Toolbar = binding.toolbar
-        toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
-        toolbar.setTitle(R.string.selectSearchEngine)
-        toolbar.setNavigationOnClickListener {
+        binding.close.setOnClickListener {
+            requireDialog().dismiss()
+        }
+        binding.done.setOnClickListener {
             requireDialog().dismiss()
         }
 

@@ -19,6 +19,9 @@ interface HistoryDao {
     @Query("delete from history")
     fun clearHistory()
 
+    @Query("select * from history order by id desc limit 1")
+    fun getLastRecord(): History
+
     @Query("select * from history order by id desc")
     fun getHistory(): LiveData<List<History>>
 

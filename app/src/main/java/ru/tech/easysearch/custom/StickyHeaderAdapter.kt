@@ -18,7 +18,8 @@ abstract class StickyHeaderAdapter(
     }
 
     override fun isHeader(itemPosition: Int): Boolean {
-        return booleanArray[itemPosition]
+        if (itemPosition < booleanArray.size) return booleanArray[itemPosition]
+        return false
     }
 
     override fun getHeaderPositionForItem(itemPosition: Int): Int {

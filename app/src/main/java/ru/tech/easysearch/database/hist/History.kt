@@ -10,5 +10,6 @@ data class History(
     val icon: ByteArray?,
     val time: String,
     val date: String,
+    val sortingString: String,
     @PrimaryKey(autoGenerate = true) val id: Int? = null
 )

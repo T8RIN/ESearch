@@ -10,7 +10,10 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.history.HistoryAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.StickyHeaderDecoration
+import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HistoryFragmentBinding
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
 
@@ -54,23 +57,38 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
         binding.close.setOnClickListener {
             dismiss()
         }
-        database.historyDao().getHistory().observe(this) {
-            if (it.isNotEmpty()) {
+        database.historyDao().getHistory().observe(this) { liveList ->
+            if (liveList.isNotEmpty()) {
                 val booleanArray: ArrayList<Boolean> = ArrayList()
+                val historyList: ArrayList<History> = ArrayList()
+
+                val sortedList = ArrayList(liveList)
+                sortedList.sortByDescending {
+                    LocalDateTime.parse(
+                        it.sortingString,
+                        DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm")
+                    )
+                }
+
                 var prev = ""
-                for (i in it) {
+                for (i in sortedList) {
+                    var needToAddMore = false
                     if (i.date != prev) {
                         booleanArray.add(true)
+                        historyList.add(i)
                         prev = i.date
+                        needToAddMore = true
                     } else {
                         booleanArray.add(false)
                     }
+                    historyList.add(i)
+                    if (needToAddMore) booleanArray.add(false)
                 }
-                val adapter = HistoryAdapter(this@HistoryFragment, it, booleanArray, browser)
-
+                val adapter =
+                    HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
                 binding.historyRecycler.adapter = adapter
                 binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter))
-
+                //adapter.submitList(it, booleanArray)
             } else {
                 binding.errorMessage.visibility = View.VISIBLE
                 binding.historyRecycler.visibility = View.GONE

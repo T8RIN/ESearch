@@ -14,16 +14,15 @@ import android.view.View.VISIBLE
 import android.webkit.URLUtil
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
+import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
-import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
-import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.CreateBookmarkDialog
@@ -37,11 +36,11 @@ class BrowserActivity : AppCompatActivity() {
 
     var searchView: TextInputEditText? = null
     private var progressBar: LinearProgressIndicator? = null
-    private var iconView: ImageView? = null
+    var iconView: ImageView? = null
     private var goButton: ImageButton? = null
 
-    private var backwardBrowser: ImageView? = null
-    private var forwardBrowser: ImageButton? = null
+    var backwardBrowser: ImageButton? = null
+    var forwardBrowser: ImageButton? = null
     private var currentWindows: ImageButton? = null
     private var bookmarksBrowser: ImageButton? = null
     private var historyBrowser: ImageButton? = null
@@ -53,7 +52,10 @@ class BrowserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setTheme(R.style.Theme_ESearch)
+
         binding = ActivityBrowserBinding.inflate(layoutInflater)
+        database = ESearchDatabase.getInstance(this)
 
         setContentView(binding.root)
 
@@ -71,8 +73,8 @@ class BrowserActivity : AppCompatActivity() {
 
         browser = binding.webBrowser
 
-        val chromeClient = ChromeClient(this, progressBar!!, iconView)
-        browser!!.webViewClient = WebClient(this, null, progressBar!!, chromeClient)
+        val chromeClient = ChromeClient(this, progressBar!!)
+        browser!!.webViewClient = WebClient(this, null, progressBar!!)
         browser!!.webChromeClient = chromeClient
 
         val url = dispatchIntent(intent)
@@ -103,12 +105,10 @@ class BrowserActivity : AppCompatActivity() {
 
         backwardBrowser?.setOnClickListener {
             if (browser?.canGoBack() == true) browser?.goBack()
-            else Toast.makeText(this, R.string.cantGoBack, Toast.LENGTH_SHORT).show()
         }
 
         forwardBrowser?.setOnClickListener {
             if (browser?.canGoForward() == true) browser?.goForward()
-            else Toast.makeText(this, R.string.cantGoForward, Toast.LENGTH_SHORT).show()
         }
 
         currentWindows?.setOnClickListener {
@@ -124,12 +124,12 @@ class BrowserActivity : AppCompatActivity() {
         }
 
         binding.bookmarkButton.setOnClickListener {
-            val bookmarkDialog = CreateBookmarkDialog(
-                browser?.title,
-                lastUrl,
-                iconView?.drawable?.getBitmap()!!.toByteArray()
-            )
+            val bookmarkDialog = CreateBookmarkDialog(lastUrl, browser?.title!!)
             if (!bookmarkDialog.isAdded) bookmarkDialog.show(supportFragmentManager, "bookDialog")
+        }
+
+        binding.refreshButton.setOnClickListener {
+            browser?.reload()
         }
 
     }

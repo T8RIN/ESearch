@@ -8,13 +8,11 @@ import android.os.Environment
 import android.util.AttributeSet
 import android.webkit.CookieManager
 import android.webkit.URLUtil
-import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.tech.easysearch.R
 import ru.tech.easysearch.data.DataArrays
-import ru.tech.easysearch.helper.client.ChromeClient
-
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserView : WebView {
@@ -34,7 +32,7 @@ class BrowserView : WebView {
         settings.javaScriptCanOpenWindowsAutomatically = true
         settings.builtInZoomControls = true
         settings.displayZoomControls = false
-        //settings.setSupportMultipleWindows(true)
+        settings.setSupportMultipleWindows(true)
 
 
         setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
@@ -55,18 +53,13 @@ class BrowserView : WebView {
             val downloadManager =
                 context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
+            MaterialAlertDialogBuilder(context)
+
             downloadManager.enqueue(request)
 
             Toast.makeText(context.applicationContext, R.string.downloading, Toast.LENGTH_LONG)
                 .show()
         }
-    }
-
-    private var chromeClient: ChromeClient? = null
-
-    override fun setWebChromeClient(client: WebChromeClient?) {
-        super.setWebChromeClient(client)
-        chromeClient = client as ChromeClient
     }
 
 }

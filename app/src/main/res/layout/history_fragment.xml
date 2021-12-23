@@ -8,8 +8,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/manualBackground"
-        android:elevation="5dp"
+        android:background="?attr/colorPrimary"
+        android:elevation="10dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 

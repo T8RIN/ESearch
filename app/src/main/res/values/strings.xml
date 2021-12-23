@@ -23,4 +23,5 @@
     <string name="noBookmarks">No bookmarks found</string>
     <string name="noHistory">You have no history</string>
     <string name="history">History</string>
+    <string name="fillAllFields">Fill al fields first!</string>
 </resources>

@@ -3,6 +3,6 @@
     android:id="@+id/text"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/manualBackground"
+    android:background="?attr/colorPrimary"
     android:elevation="4dp"
     android:gravity="center" />

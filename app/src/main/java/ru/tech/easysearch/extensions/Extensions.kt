@@ -5,9 +5,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.util.TypedValue
 import android.view.View
@@ -19,8 +21,14 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
+import ru.tech.easysearch.R
+import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.net.URL
+import java.net.URLConnection
 
 
 object Extensions {
@@ -105,6 +113,22 @@ object Extensions {
             windowToken,
             0
         )
+    }
+
+    fun Context.fetchFavicon(url: String): Bitmap {
+        val uri = Uri.parse(url)
+        val iconUri: Uri = uri.buildUpon().path("favicon.ico").build()
+        val inputStream: InputStream?
+        val buffer: BufferedInputStream?
+        return try {
+            val urlConnection: URLConnection = URL(iconUri.toString()).openConnection()
+            urlConnection.connect()
+            inputStream = urlConnection.getInputStream()
+            buffer = BufferedInputStream(inputStream, 8192)
+            BitmapFactory.decodeStream(buffer)
+        } catch (e: Exception) {
+            ContextCompat.getDrawable(this, R.drawable.ic_earth)!!.toBitmap()
+        }
     }
 
 }

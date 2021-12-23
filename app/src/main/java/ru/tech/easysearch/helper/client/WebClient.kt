@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Handler
 import android.view.View.VISIBLE
 import android.webkit.URLUtil
 import android.webkit.WebResourceRequest
@@ -14,25 +15,28 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
-import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.database.hist.History
-import ru.tech.easysearch.extensions.Extensions.getBitmap
+import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
-import java.text.SimpleDateFormat
+import java.text.DateFormatSymbols
 import java.util.*
 
 
 class WebClient(
     private val context: Context,
     private val toolbar: RecyclerView? = null,
-    private val progressBar: LinearProgressIndicator,
-    private val chromeClient: ChromeClient
+    private val progressBar: LinearProgressIndicator
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -66,44 +70,102 @@ class WebClient(
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         progressBar.visibility = VISIBLE
+
+        if (context is BrowserActivity) {
+            context.searchView?.setText(view?.url!!)
+            context.lastUrl = view?.url!!
+            context.clickedGo = false
+            context.iconView?.visibility = VISIBLE
+            CoroutineScope(Dispatchers.Main).launch {
+                val icon = getIcon(view.url!!)
+                context.iconView?.setImageBitmap(icon)
+            }
+        }
+
         super.onPageStarted(view, url, favicon)
     }
 
-    override fun onPageFinished(view: WebView?, url: String?) {
-        url?.let {
-            if (context is BrowserActivity) {
-                context.searchView?.setText(it)
-                context.lastUrl = it
-                context.clickedGo = false
-            }
 
-            val title = view?.title!!
+    override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+        if (!isReload) {
 
-            val calendar = Calendar.getInstance()
-            val day = calendar[Calendar.DAY_OF_MONTH]
-            val month = calendar[Calendar.MONTH]
-            val year = calendar[Calendar.YEAR]
-            val hour = calendar[Calendar.HOUR_OF_DAY]
-            val strMinute = calendar[Calendar.MINUTE]
-            val minute = when {
-                strMinute < 10 -> "0$strMinute"
-                else -> "$strMinute"
-            }
+            view?.url?.let {
+                if (context is BrowserActivity) {
+                    context.searchView?.setText(it)
+                    context.lastUrl = it
+                    context.clickedGo = false
 
-            val stringMonth = SimpleDateFormat("MMMM", Locale.getDefault()).format(month)
+                    context.backwardBrowser?.apply {
+                        when (view.canGoBack()) {
+                            false -> {
+                                alpha = 0.5f
+                                isClickable = false
+                            }
+                            true -> {
+                                alpha = 1f
+                                isClickable = true
+                            }
+                        }
+                    }
 
-            Functions.waitForDoInBackground(0) {
-                ESearchApplication.database.historyDao().insert(
-                    History(
-                        title,
-                        url,
-                        chromeClient.iconView?.drawable?.getBitmap()?.toByteArray(),
-                        "${hour}:${minute}",
-                        "$day $stringMonth $year"
+                    context.forwardBrowser?.apply {
+                        when (view.canGoForward()) {
+                            false -> {
+                                alpha = 0.5f
+                                isClickable = false
+                            }
+                            true -> {
+                                alpha = 1f
+                                isClickable = true
+                            }
+                        }
+                    }
+
+                }
+
+                val calendar = Calendar.getInstance()
+                val day = calendar[Calendar.DAY_OF_MONTH]
+                val month = calendar[Calendar.MONTH]
+                val year = calendar[Calendar.YEAR]
+                val hour = calendar[Calendar.HOUR_OF_DAY]
+                val strMinute = calendar[Calendar.MINUTE]
+                val minute = when {
+                    strMinute < 10 -> "0$strMinute"
+                    else -> "$strMinute"
+                }
+
+                val stringMonth = DateFormatSymbols(Locale.getDefault()).months[month]
+
+                val sortingString = "$day-$month-$year | $hour:$minute"
+
+                var title = ""
+                Handler(context.mainLooper).postDelayed({
+                    title = view.title!!
+                    if (title.isEmpty()) title = it
+                }, 900)
+
+                Functions.waitForDoInBackground(1000) {
+                    val icon = context.fetchFavicon(it).toByteArray()
+                    val dao = database.historyDao()
+                    val lastRecord = dao.getLastRecord()
+                    if (lastRecord.url != it) dao.insert(
+                        History(
+                            title,
+                            it,
+                            icon,
+                            "${hour}:${minute}",
+                            "$day $stringMonth $year",
+                            sortingString
+                        )
                     )
-                )
+                }
             }
         }
-        super.onPageFinished(view, url)
+
+        super.doUpdateVisitedHistory(view, url, isReload)
+    }
+
+    private suspend fun getIcon(url: String): Bitmap = withContext(Dispatchers.IO) {
+        return@withContext context.fetchFavicon(url)
     }
 }

@@ -21,9 +21,11 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
+import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.helper.client.ChromeClient
@@ -54,6 +56,8 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_results)
 
+        ESearchApplication.database = ESearchDatabase.getInstance(this)
+
         overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
 
         searchView = findViewById(R.id.searchView)
@@ -63,7 +67,7 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
         browser = findViewById(R.id.webBrowser)
 
         val chromeClient = ChromeClient(this, progressBar!!)
-        browser!!.webViewClient = WebClient(this, recycler, progressBar!!, chromeClient)
+        browser!!.webViewClient = WebClient(this, recycler, progressBar!!)
         browser!!.webChromeClient = chromeClient
 
         prefix = intent.extras?.get("prefix").toString()

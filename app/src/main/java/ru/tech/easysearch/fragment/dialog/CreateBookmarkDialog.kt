@@ -10,13 +10,12 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.database.bookmarks.Bookmark
 import ru.tech.easysearch.databinding.CreateBookmarkDialogBinding
+import ru.tech.easysearch.extensions.Extensions.fetchFavicon
+import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions.doInBackground
 
-class CreateBookmarkDialog(
-    private val description: String? = "",
-    private val url: String,
-    private val array: ByteArray
-) : DialogFragment() {
+class CreateBookmarkDialog(private val url: String, private val description: String) :
+    DialogFragment() {
 
     private var _binding: CreateBookmarkDialogBinding? = null
     private val binding get() = _binding!!
@@ -59,17 +58,19 @@ class CreateBookmarkDialog(
         binding.url.editText?.setText(url)
         binding.done.setOnClickListener {
             val dao = ESearchApplication.database.bookmarkDao()
-            doInBackground {
-                dao.insert(
-                    Bookmark(
-                        binding.description.editText!!.text.toString(),
-                        binding.url.editText!!.text.toString(),
-                        array
-                    )
-                )
+            val newUrl = binding.url.editText!!.text.toString().trim()
+            val title = binding.description.editText!!.text.toString().trim()
+            if (title != "" && newUrl != "") {
+                doInBackground {
+                    val icon = requireContext().fetchFavicon(newUrl).toByteArray()
+                    dao.insert(Bookmark(title, newUrl, icon))
+                }
+                Toast.makeText(requireContext(), R.string.bookmarkAdded, Toast.LENGTH_SHORT).show()
+                dismiss()
+            } else {
+                Toast.makeText(requireContext(), R.string.fillAllFields, Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(requireContext(), R.string.bookmarkAdded, Toast.LENGTH_SHORT).show()
-            dismiss()
+
         }
         binding.close.setOnClickListener {
             dismiss()

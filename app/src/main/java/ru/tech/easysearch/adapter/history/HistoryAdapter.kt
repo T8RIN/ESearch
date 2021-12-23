@@ -27,7 +27,7 @@ class HistoryAdapter(
     booleanArray: List<Boolean>,
     private val browser: WebView?
 ) : StickyHeaderAdapter(historyList, booleanArray) {
-    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> {

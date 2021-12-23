@@ -1,12 +1,10 @@
 package ru.tech.easysearch.helper.client
 
-import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,10 +13,8 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 
 class ChromeClient(
     private val activity: AppCompatActivity,
-    private val progressBar: LinearProgressIndicator,
-    var iconView: ImageView? = null
-) :
-    WebChromeClient() {
+    private val progressBar: LinearProgressIndicator
+) : WebChromeClient() {
 
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
         super.onProgressChanged(view, newProgress)
@@ -26,12 +22,6 @@ class ChromeClient(
         if (newProgress == 100) {
             progressBar.visibility = View.GONE
         }
-    }
-
-    override fun onReceivedIcon(view: WebView?, icon: Bitmap?) {
-        iconView?.visibility = View.VISIBLE
-        iconView?.setImageBitmap(icon)
-        super.onReceivedIcon(view, icon)
     }
 
     private var videoPlayer: View? = null
