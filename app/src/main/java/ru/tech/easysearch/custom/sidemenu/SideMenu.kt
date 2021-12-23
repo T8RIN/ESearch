@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom
+package ru.tech.easysearch.custom.sidemenu
 
 import android.content.Context
 import android.view.Gravity

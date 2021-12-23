@@ -11,9 +11,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
-import ru.tech.easysearch.custom.StickyHeaderAdapter
-import ru.tech.easysearch.custom.StickyHeaderDecoration.Companion.HEADER
-import ru.tech.easysearch.custom.StickyHeaderDecoration.Companion.ITEM
+import ru.tech.easysearch.custom.stickyheader.StickyHeaderAdapter
+import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration.Companion.HEADER
+import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration.Companion.ITEM
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HeaderLayoutBinding
 import ru.tech.easysearch.databinding.HistItemBinding

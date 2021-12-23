@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom
+package ru.tech.easysearch.custom.stickyheader
 
 import android.graphics.Canvas
 import android.view.LayoutInflater

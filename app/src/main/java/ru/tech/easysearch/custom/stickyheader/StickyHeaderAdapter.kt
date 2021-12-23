@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom
+package ru.tech.easysearch.custom.stickyheader
 
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.helper.interfaces.StickyHeaderInterface

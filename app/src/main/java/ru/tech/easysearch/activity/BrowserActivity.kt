@@ -23,8 +23,8 @@ import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.BrowserView
-import ru.tech.easysearch.custom.SideMenu
-import ru.tech.easysearch.custom.SideMenuItem
+import ru.tech.easysearch.custom.sidemenu.SideMenu
+import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard

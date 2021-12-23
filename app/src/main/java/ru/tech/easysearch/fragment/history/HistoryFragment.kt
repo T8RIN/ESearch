@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.history.HistoryAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
-import ru.tech.easysearch.custom.StickyHeaderDecoration
+import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HistoryFragmentBinding
 import java.time.LocalDateTime
