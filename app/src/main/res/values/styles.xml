@@ -19,4 +19,25 @@
         <item name="hintTextColor">@color/edit_text_selector</item>
     </style>
 
+    <style name="modeAlert" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/buttonSecAlert1</item>
+        <item name="buttonBarNegativeButtonStyle">@style/buttonSecAlert2</item>
+    </style>
+
+    <style name="buttonSecAlert1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/buttonSecOverlay1</item>
+    </style>
+
+    <style name="buttonSecOverlay1" parent="">
+        <item name="colorPrimary">?attr/colorSecondary</item>
+    </style>
+
+    <style name="buttonSecAlert2" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/buttonSecOverlay2</item>
+    </style>
+
+    <style name="buttonSecOverlay2" parent="">
+        <item name="colorPrimary">@color/red</item>
+    </style>
+
 </resources>

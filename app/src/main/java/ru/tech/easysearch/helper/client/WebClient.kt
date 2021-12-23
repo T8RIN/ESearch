@@ -144,7 +144,7 @@ class WebClient(
                     if (title.isEmpty()) title = it
                 }, 900)
 
-                Functions.waitForDoInBackground(1000) {
+                Functions.delayedDoInBackground(1000) {
                     val icon = context.fetchFavicon(it).toByteArray()
                     val dao = database.historyDao()
                     val lastRecord = dao.getLastRecord()

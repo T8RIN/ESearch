@@ -23,10 +23,8 @@ import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
-import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.CreateBookmarkDialog
-import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
@@ -41,6 +39,7 @@ class BrowserActivity : AppCompatActivity() {
 
     var backwardBrowser: ImageButton? = null
     var forwardBrowser: ImageButton? = null
+    private var homeBrowser: ImageButton? = null
     private var currentWindows: ImageButton? = null
     private var bookmarksBrowser: ImageButton? = null
     private var historyBrowser: ImageButton? = null
@@ -64,12 +63,13 @@ class BrowserActivity : AppCompatActivity() {
         searchView = binding.searchView
         progressBar = binding.progressIndicator
         iconView = binding.icon
-
+        homeBrowser = binding.homeBrowser
         backwardBrowser = binding.backwardBrowser
         forwardBrowser = binding.forwardBrowser
+
         currentWindows = binding.windowsBrowser
-        bookmarksBrowser = binding.bookmarkBrowser
-        historyBrowser = binding.historyBrowser
+        //bookmarksBrowser = binding.bookmarkBrowser
+        //historyBrowser = binding.historyBrowser
 
         browser = binding.webBrowser
 
@@ -111,17 +111,23 @@ class BrowserActivity : AppCompatActivity() {
             if (browser?.canGoForward() == true) browser?.goForward()
         }
 
+        homeBrowser?.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+        }
+
         currentWindows?.setOnClickListener {
             CurrentWindowsFragment().show(supportFragmentManager, "custom")
         }
 
-        bookmarksBrowser?.setOnClickListener {
-            BookmarksFragment(browser).show(supportFragmentManager, "custom")
-        }
-
-        historyBrowser?.setOnClickListener {
-            HistoryFragment(browser).show(supportFragmentManager, "custom")
-        }
+//        bookmarksBrowser?.setOnClickListener {
+//            BookmarksFragment(browser).show(supportFragmentManager, "custom")
+//        }
+//
+//        historyBrowser?.setOnClickListener {
+//            HistoryFragment(browser).show(supportFragmentManager, "custom")
+//        }
 
         binding.bookmarkButton.setOnClickListener {
             val bookmarkDialog = CreateBookmarkDialog(lastUrl, browser?.title!!)

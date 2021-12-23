@@ -120,6 +120,15 @@
                 android:src="@drawable/ic_baseline_redo_24" />
 
             <ImageButton
+                android:id="@+id/homeBrowser"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple"
+                android:contentDescription="@string/none"
+                android:src="@drawable/ic_baseline_home_24" />
+
+            <ImageButton
                 android:id="@+id/windowsBrowser"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -129,22 +138,13 @@
                 android:src="@drawable/ic_baseline_view_carousel_24" />
 
             <ImageButton
-                android:id="@+id/bookmarkBrowser"
+                android:id="@+id/profileBrowser"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@drawable/ripple"
                 android:contentDescription="@string/none"
-                android:src="@drawable/ic_baseline_bookmark_24" />
-
-            <ImageButton
-                android:id="@+id/historyBrowser"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:background="@drawable/ripple"
-                android:contentDescription="@string/none"
-                android:src="@drawable/ic_baseline_history_24" />
+                android:src="@drawable/ic_baseline_account_circle_24" />
 
         </LinearLayout>
 

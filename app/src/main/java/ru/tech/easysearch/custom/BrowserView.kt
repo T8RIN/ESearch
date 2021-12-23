@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.util.AttributeSet
 import android.webkit.CookieManager
@@ -13,6 +14,10 @@ import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.tech.easysearch.R
 import ru.tech.easysearch.data.DataArrays
+import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
+import ru.tech.easysearch.functions.Functions.getNearestFileSize
+import java.net.URL
+import java.net.URLConnection
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserView : WebView {
@@ -36,12 +41,14 @@ class BrowserView : WebView {
 
 
         setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
+            val name = URLUtil.guessFileName(url, contentDisposition, mimeType)
+
             val request = DownloadManager.Request(Uri.parse(url))
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
                 .setMimeType(mimeType)
                 .addRequestHeader("cookie", CookieManager.getInstance().getCookie(url))
                 .addRequestHeader("User-Agent", userAgent)
-                .setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType))
+                .setTitle(name)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(false)
@@ -53,12 +60,29 @@ class BrowserView : WebView {
             val downloadManager =
                 context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
-            MaterialAlertDialogBuilder(context)
+            val dialog = MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.download)
+                .setPositiveButton(R.string.ok_ok) { _, _ ->
+                    downloadManager.enqueue(request)
+                    Toast.makeText(
+                        context.applicationContext,
+                        R.string.downloading,
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
+                .setNegativeButton(R.string.cancel, null)
 
-            downloadManager.enqueue(request)
+            doInIoThreadWithObservingOnMain({
+                val urlConnection: URLConnection = URL(url).openConnection()
+                urlConnection.connect()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) urlConnection.contentLengthLong
+                else urlConnection.contentLength.toLong()
+            }, {
+                dialog.setMessage("$name\n\n${getNearestFileSize(it as Long)}")
+                dialog.show()
+            })
 
-            Toast.makeText(context.applicationContext, R.string.downloading, Toast.LENGTH_LONG)
-                .show()
         }
     }
 

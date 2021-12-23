@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">ESearch</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="none">None</string>
     <string name="manage">Manage List</string>
@@ -24,4 +23,7 @@
     <string name="noHistory">You have no history</string>
     <string name="history">History</string>
     <string name="fillAllFields">Fill al fields first!</string>
+    <string name="download">Download</string>
+    <string name="ok_ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

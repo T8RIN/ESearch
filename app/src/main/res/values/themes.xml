@@ -19,9 +19,12 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="mainColor">#00D00A</item>
+
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
     </style>
 
     <style name="Theme.ESearch.Launcher">
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
+
 </resources>
