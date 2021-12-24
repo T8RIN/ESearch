@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
+import ru.tech.easysearch.application.ESearchApplication
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -128,6 +130,17 @@ object Extensions {
             BitmapFactory.decodeStream(buffer)
         } catch (e: Exception) {
             ContextCompat.getDrawable(this, R.drawable.ic_earth)!!.toBitmap()
+        }
+    }
+
+    fun Context.setCoeff(){
+        val displayMetrics = resources.displayMetrics
+        val dpHeight = (displayMetrics.heightPixels / displayMetrics.density).toInt()
+        val dpWidth = (displayMetrics.widthPixels / displayMetrics.density).toInt()
+
+        ESearchApplication.coeff = when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> (dpWidth - 210 - 35) / 5
+            else -> (dpHeight - 210 - 35) / 5
         }
     }
 

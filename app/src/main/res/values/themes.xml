@@ -21,6 +21,7 @@
         <item name="mainColor">#00D00A</item>
 
         <item name="materialAlertDialogTheme">@style/modeAlert</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="Theme.ESearch.Launcher">

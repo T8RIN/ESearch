@@ -10,9 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.view.KeyEvent
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.webkit.URLUtil
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -28,14 +27,15 @@ import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
+import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
-import ru.tech.easysearch.fragment.dialog.CreateBookmarkDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
+
 
 class BrowserActivity : AppCompatActivity() {
 
@@ -44,7 +44,6 @@ class BrowserActivity : AppCompatActivity() {
     var searchView: TextInputEditText? = null
     private var progressBar: LinearProgressIndicator? = null
     var iconView: ImageView? = null
-    private var goButton: ImageButton? = null
 
     var backwardBrowser: ImageButton? = null
     var forwardBrowser: ImageButton? = null
@@ -63,6 +62,7 @@ class BrowserActivity : AppCompatActivity() {
 
         binding = ActivityBrowserBinding.inflate(layoutInflater)
         database = ESearchDatabase.getInstance(this)
+        setCoeff()
 
         setContentView(binding.root)
 
@@ -85,12 +85,33 @@ class BrowserActivity : AppCompatActivity() {
 
         val url = dispatchIntent(intent)
 
+        searchView?.setText(url)
+
         url?.let { searchView?.let { it1 -> onGetUri(it1, it) } }
 
+        binding.goMoreButton.inAnimation = AnimationUtils.loadAnimation(
+            this,
+            R.anim.fade_in
+        )
+        binding.goMoreButton.outAnimation = AnimationUtils.loadAnimation(
+            this,
+            R.anim.fade_out
+        )
+
         searchView?.setOnFocusChangeListener { _, focused ->
-            goButton?.visibility = when (focused) {
-                true -> VISIBLE
-                else -> GONE
+            when (focused) {
+                true -> {
+                    binding.goMoreButton.showNext()
+                    binding.goMoreButton.setOnClickListener {
+                        onGetUri(searchView!!, searchView!!.text.toString())
+                    }
+                }
+                false -> {
+                    binding.goMoreButton.showPrevious()
+                    binding.goMoreButton.setOnClickListener {
+                        showMore()
+                    }
+                }
             }
             if (!focused && !clickedGo) searchView?.setText(lastUrl)
         }
@@ -102,11 +123,6 @@ class BrowserActivity : AppCompatActivity() {
                 handled = true
             }
             handled
-        }
-
-        goButton = binding.goButton
-        goButton!!.setOnClickListener {
-            onGetUri(searchView!!, searchView!!.text.toString())
         }
 
         backwardBrowser?.setOnClickListener {
@@ -125,6 +141,8 @@ class BrowserActivity : AppCompatActivity() {
         currentWindows?.setOnClickListener {
             CurrentWindowsFragment().show(supportFragmentManager, "custom")
         }
+
+        binding.goMoreButton.setOnClickListener { showMore() }
 
         profileBrowser?.setOnClickListener {
             builder = SideMenu(binding.root.parent as ViewGroup, this)
@@ -148,10 +166,7 @@ class BrowserActivity : AppCompatActivity() {
                 .addItems(
                     SideMenuItem(
                         R.drawable.ic_baseline_history_24,
-                        ContextCompat.getDrawable(
-                            this,
-                            R.drawable.ic_baseline_history_24
-                        )!!,
+                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24)!!,
                         getString(R.string.history)
                     ),
                     SideMenuItem(
@@ -173,14 +188,18 @@ class BrowserActivity : AppCompatActivity() {
             builder!!.show()
         }
 
-        binding.bookmarkButton.setOnClickListener {
-            val bookmarkDialog = CreateBookmarkDialog(lastUrl, browser?.title!!)
-            if (!bookmarkDialog.isAdded) bookmarkDialog.show(supportFragmentManager, "bookDialog")
-        }
+//        binding.bookmarkButton.setOnClickListener {
+//            val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
+//            if (!bookmarkDialog.isAdded) bookmarkDialog.show(supportFragmentManager, "bookDialog")
+//        }
+//
+//        binding.refreshButton.setOnClickListener {
+//            browser?.reload()
+//        }
 
-        binding.refreshButton.setOnClickListener {
-            browser?.reload()
-        }
+    }
+
+    private fun showMore() {
 
     }
 
@@ -200,7 +219,7 @@ class BrowserActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            browser?.canGoBack() == true && builder?.isHidden == true -> {
+            browser?.canGoBack() == true && (builder?.isHidden == true || builder == null) -> {
                 browser?.goBack()
             }
             builder?.isHidden == false -> {

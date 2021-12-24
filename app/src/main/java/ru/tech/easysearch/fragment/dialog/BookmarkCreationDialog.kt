@@ -14,7 +14,7 @@ import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions.doInBackground
 
-class CreateBookmarkDialog(private val url: String, private val description: String) :
+class BookmarkCreationDialog(private val url: String, private val description: String) :
     DialogFragment() {
 
     private var _binding: CreateBookmarkDialogBinding? = null

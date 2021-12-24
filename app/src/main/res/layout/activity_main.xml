@@ -6,12 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <include
+        android:id="@+id/recyclerInclude"
+        layout="@layout/content_main" />
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@color/manualBackground"
+        android:background="?attr/colorPrimary"
         android:imeOptions="actionSearch"
         android:layoutDirection="rtl"
         app:iconifiedByDefault="false"
@@ -21,8 +25,7 @@
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:hideOnScroll="true" />
+        android:layout_gravity="bottom" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

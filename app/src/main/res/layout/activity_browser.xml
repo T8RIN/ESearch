@@ -39,36 +39,32 @@
             android:textSize="14sp"
             tools:targetApi="O" />
 
-        <ImageButton
-            android:id="@+id/goButton"
+        <ImageSwitcher
+            android:id="@+id/goMoreButton"
+            android:clickable="true"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ripple"
-            android:contentDescription="@string/none"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:src="@drawable/ic_baseline_search_24"
-            android:visibility="gone" />
+            android:focusable="true">
 
-        <ImageButton
-            android:id="@+id/bookmarkButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ripple"
-            android:contentDescription="@string/none"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:src="@drawable/ic_baseline_bookmark_border_24" />
+            <ImageView
+                android:id="@+id/more"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/none"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:src="@drawable/ic_baseline_more_vert_24" />
 
-        <ImageButton
-            android:id="@+id/refreshButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ripple"
-            android:contentDescription="@string/none"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:src="@drawable/ic_baseline_refresh_24" />
+            <ImageView
+                android:id="@+id/go"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/none"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:src="@drawable/ic_baseline_search_24" />
+        </ImageSwitcher>
 
     </LinearLayout>
 

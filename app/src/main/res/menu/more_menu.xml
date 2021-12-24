@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/grp1">
+        <item
+            android:id="@+id/refresh"
+            android:icon="@drawable/ic_baseline_refresh_24"
+            android:title="@string/refresh" />
+    </group>
+
+    <group android:id="@+id/grp2">
+        <item
+            android:id="@+id/bookmark"
+            android:icon="@drawable/ic_baseline_bookmark_border_24"
+            android:title="@string/addToBookmarks" />
+    </group>
+
+    <group android:id="@+id/grp3">
+        <item
+            android:id="@+id/shortcut"
+            android:icon="@drawable/ic_baseline_add_to_home_screen_24"
+            android:title="@string/createShortcuts" />
+    </group>
+</menu>
+

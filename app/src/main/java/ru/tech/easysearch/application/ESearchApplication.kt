@@ -7,6 +7,7 @@ class ESearchApplication : Application() {
 
     companion object {
         lateinit var database: ESearchDatabase
+        var coeff = 0
     }
 
 }

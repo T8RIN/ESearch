@@ -28,4 +28,9 @@
     <string name="cancel">Cancel</string>
     <string name="settings">Settings</string>
     <string name="vpn">VPN</string>
+    <string name="addShortcut">Add shortcut</string>
+    <string name="shortcutAdded">Shortcut added</string>
+    <string name="refresh">Refresh</string>
+    <string name="addToBookmarks">Add to bookmarks</string>
+    <string name="createShortcuts">Create shortcut</string>
 </resources>

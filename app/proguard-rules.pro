@@ -19,3 +19,5 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepclassmembernames class androidx.appcompat.widget.PopupMenu { }
+-keepclassmembernames class androidx.appcompat.view.menu.* { public void setForceShowIcon(boolean); }

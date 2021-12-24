@@ -15,18 +15,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
+import ru.tech.easysearch.adapter.shortcuts.ShortcutsPagerRecyclerAdapter
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
-import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.database.ESearchDatabase
+import ru.tech.easysearch.database.shortcuts.Shortcut
 import ru.tech.easysearch.databinding.ActivityMainBinding
+import ru.tech.easysearch.extensions.Extensions.getBitmap
+import ru.tech.easysearch.extensions.Extensions.setCoeff
+import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
@@ -56,6 +62,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private var vpn: ImageButton? = null
     private var bookmarks: ImageButton? = null
     private var settings: ImageButton? = null
+
+    private var pagerShapHelper = PagerSnapHelper()
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -122,7 +130,9 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         setContentView(binding.root)
 
-        ESearchApplication.database = ESearchDatabase.getInstance(applicationContext)
+        setCoeff()
+
+        database = ESearchDatabase.getInstance(applicationContext)
 
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
@@ -238,6 +248,48 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
                 }
             }
         })
+
+        database.shortcutDao().getAllShortcuts().observe(this) { mainList ->
+            val plusShortcut = Shortcut(
+                getString(R.string.addShortcut), "",
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_add_box_24)!!
+                    .getBitmap()!!.toByteArray()
+            )
+            var tempList: ArrayList<Shortcut> = ArrayList()
+            val newList: ArrayList<ArrayList<Shortcut>> = ArrayList()
+
+            if (mainList.isNotEmpty()) {
+                for (i in mainList) {
+                    if (tempList.size == 20) {
+                        tempList.add(plusShortcut)
+                        newList.add(tempList)
+                        tempList = ArrayList()
+                    } else tempList.add(i)
+                }
+                if (tempList.isNotEmpty()) {
+                    tempList.add(plusShortcut)
+                    newList.add(tempList)
+                }
+                binding.recyclerInclude.mainRecycler.adapter =
+                    ShortcutsPagerRecyclerAdapter(this, newList)
+                if(newList.size != 1) {
+                    binding.recyclerInclude.mainRecycler.layoutManager = LoopingLayoutManager(
+                        this,
+                        LoopingLayoutManager.HORIZONTAL,
+                        false
+                    )
+                }
+
+                pagerShapHelper.attachToRecyclerView(null)
+                pagerShapHelper.attachToRecyclerView(binding.recyclerInclude.mainRecycler)
+            } else {
+                tempList.add(plusShortcut)
+                newList.add(tempList)
+                binding.recyclerInclude.mainRecycler.adapter =
+                    ShortcutsPagerRecyclerAdapter(this, newList)
+            }
+
+        }
 
         recursiveBottomNavigationClick()
     }

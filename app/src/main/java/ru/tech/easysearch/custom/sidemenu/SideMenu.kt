@@ -68,7 +68,8 @@ class SideMenu(private var root: ViewGroup, context: Context) {
     fun dismiss() {
         tintView.animate().alpha(0f).setDuration(animationDuration)
             .withStartAction {
-                tintView.setOnClickListener {}
+                tintView.setOnClickListener(null)
+                tintView.isClickable = false
                 isHidden = true
             }
             .withEndAction {
@@ -103,6 +104,7 @@ class SideMenu(private var root: ViewGroup, context: Context) {
     fun setMenuItemClickListener(onClick: (SideMenuItem) -> Unit): SideMenu {
         adapter.reattachListener(SideMenuItemClickListener { sideMenuItem ->
             onClick(sideMenuItem)
+            adapter.reattachListener(SideMenuItemClickListener{})
         })
         return this
     }
