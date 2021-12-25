@@ -33,4 +33,10 @@
     <string name="refresh">Refresh</string>
     <string name="addToBookmarks">Add to bookmarks</string>
     <string name="createShortcuts">Create shortcut</string>
+    <string name="share">Share</string>
+    <string name="translate">Translate</string>
+    <string name="findInPage">Find in page</string>
+    <string name="desktopMode">Desktop mode</string>
+    <string name="addTo">Add to</string>
+    <string name="shortcuts">Shortcuts</string>
 </resources>

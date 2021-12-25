@@ -22,6 +22,8 @@ import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.custom.popup.PopupMenuItem
+import ru.tech.easysearch.custom.popup.SmartPopupMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.database.ESearchDatabase
@@ -145,7 +147,7 @@ class BrowserActivity : AppCompatActivity() {
         binding.goMoreButton.setOnClickListener { showMore() }
 
         profileBrowser?.setOnClickListener {
-            builder = SideMenu(binding.root.parent as ViewGroup, this)
+            sideMenu = SideMenu(binding.root.parent as ViewGroup, this)
                 .setMenuItemClickListener { menuItem ->
                     when (menuItem.id) {
                         R.drawable.ic_baseline_history_24 -> {
@@ -161,7 +163,7 @@ class BrowserActivity : AppCompatActivity() {
                             SettingsFragment().show(supportFragmentManager, "custom")
                         }
                     }
-                    builder?.dismiss()
+                    sideMenu?.dismiss()
                 }
                 .addItems(
                     SideMenuItem(
@@ -185,7 +187,7 @@ class BrowserActivity : AppCompatActivity() {
                         getString(R.string.vpn)
                     )
                 )
-            builder!!.show()
+            sideMenu!!.show()
         }
 
 //        binding.bookmarkButton.setOnClickListener {
@@ -200,7 +202,47 @@ class BrowserActivity : AppCompatActivity() {
     }
 
     private fun showMore() {
-
+        popupMenu = SmartPopupMenu(binding.root.parent as ViewGroup, this)
+            .addItems(
+                PopupMenuItem(
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_refresh_24),
+                    getString(R.string.refresh)
+                ),
+                PopupMenuItem(
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_share_24),
+                    getString(R.string.share)
+                ),
+                PopupMenuItem(
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_translate_24),
+                    getString(R.string.translate)
+                ),
+                PopupMenuItem(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_find_in_page_24
+                    ), getString(R.string.findInPage)
+                ),
+                PopupMenuItem(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_desktop_mac_24
+                    ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
+                ),
+                PopupMenuItem(null, getString(R.string.addTo)),
+                PopupMenuItem(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_bookmark_border_24
+                    ), getString(R.string.bookmarks)
+                ),
+                PopupMenuItem(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_add_to_home_screen_24
+                    ), getString(R.string.shortcuts)
+                ),
+            )
+        popupMenu!!.show()
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -219,11 +261,16 @@ class BrowserActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            browser?.canGoBack() == true && (builder?.isHidden == true || builder == null) -> {
+            browser?.canGoBack() == true
+                    && (sideMenu?.isHidden == true || sideMenu == null)
+                    && (popupMenu?.isHidden == true || popupMenu == null) -> {
                 browser?.goBack()
             }
-            builder?.isHidden == false -> {
-                builder?.dismiss()
+            sideMenu?.isHidden == false -> {
+                sideMenu?.dismiss()
+            }
+            popupMenu?.isHidden == false -> {
+                popupMenu?.dismiss()
             }
             else -> {
                 super.onBackPressed()
@@ -252,10 +299,12 @@ class BrowserActivity : AppCompatActivity() {
         if (clearFocus) it.clearFocus()
     }
 
-    private var builder: SideMenu? = null
+    private var sideMenu: SideMenu? = null
+    private var popupMenu: SmartPopupMenu? = null
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-        builder?.dismiss()
+        sideMenu?.dismiss()
+        popupMenu?.dismiss()
         super.onConfigurationChanged(newConfig)
     }
 

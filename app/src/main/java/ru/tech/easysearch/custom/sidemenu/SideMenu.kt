@@ -1,6 +1,7 @@
 package ru.tech.easysearch.custom.sidemenu
 
 import android.content.Context
+import android.content.res.Configuration
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,7 @@ import ru.tech.easysearch.R
 
 class SideMenu(private var root: ViewGroup, context: Context) {
 
-    var animationDuration = 1000L
+    var animationDuration = 500L
     var openDirection = END
     var isCancelable = true
     var isHidden = true
@@ -30,7 +31,10 @@ class SideMenu(private var root: ViewGroup, context: Context) {
     private var adapter: SideMenuAdapter = SideMenuAdapter()
 
     init {
-        displayOffsetX = context.resources.displayMetrics.widthPixels.toFloat()
+        displayOffsetX = when (context.resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> context.resources.displayMetrics.heightPixels.toFloat()
+            else -> context.resources.displayMetrics.widthPixels.toFloat()
+        }
         sideView = LayoutInflater.from(context).inflate(R.layout.side_menu, root, false)
         tintView = LayoutInflater.from(context).inflate(R.layout.side_menu_tint, root, false)
         cardView = sideView.findViewById(R.id.card)

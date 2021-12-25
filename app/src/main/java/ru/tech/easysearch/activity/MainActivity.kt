@@ -261,24 +261,14 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             if (mainList.isNotEmpty()) {
                 for (i in mainList) {
                     if (tempList.size == 20) {
-                        tempList.add(plusShortcut)
                         newList.add(tempList)
                         tempList = ArrayList()
                     } else tempList.add(i)
                 }
-                if (tempList.isNotEmpty()) {
-                    tempList.add(plusShortcut)
-                    newList.add(tempList)
-                }
+                if (tempList.isNotEmpty()) newList.add(tempList)
+                newList[newList.lastIndex].add(plusShortcut)
                 binding.recyclerInclude.mainRecycler.adapter =
                     ShortcutsPagerRecyclerAdapter(this, newList)
-                if(newList.size != 1) {
-                    binding.recyclerInclude.mainRecycler.layoutManager = LoopingLayoutManager(
-                        this,
-                        LoopingLayoutManager.HORIZONTAL,
-                        false
-                    )
-                }
 
                 pagerShapHelper.attachToRecyclerView(null)
                 pagerShapHelper.attachToRecyclerView(binding.recyclerInclude.mainRecycler)
@@ -288,7 +278,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
                 binding.recyclerInclude.mainRecycler.adapter =
                     ShortcutsPagerRecyclerAdapter(this, newList)
             }
-
+            binding.indicator.attachToRecyclerView(binding.recyclerInclude.mainRecycler)
         }
 
         recursiveBottomNavigationClick()

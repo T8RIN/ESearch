@@ -133,7 +133,7 @@ object Extensions {
         }
     }
 
-    fun Context.setCoeff(){
+    fun Context.setCoeff() {
         val displayMetrics = resources.displayMetrics
         val dpHeight = (displayMetrics.heightPixels / displayMetrics.density).toInt()
         val dpWidth = (displayMetrics.widthPixels / displayMetrics.density).toInt()

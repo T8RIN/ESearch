@@ -62,6 +62,15 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.41" />
 
+        <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/fabDividerLeft"
+            app:layout_constraintEnd_toEndOf="@+id/fabDividerRight" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/fabDividerRight"
             android:layout_width="wrap_content"

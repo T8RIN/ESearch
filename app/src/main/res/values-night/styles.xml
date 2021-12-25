@@ -5,15 +5,6 @@
         <item name="colorControlNormal">?attr/mainColor</item>
     </style>
 
-    <style name="DialogAnimation">
-        <item name="android:windowEnterAnimation">
-            @anim/enter_slide_up
-        </item>
-        <item name="android:windowExitAnimation">
-            @anim/exit_slide_down
-        </item>
-    </style>
-
     <style name="EditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/edit_text_selector</item>
         <item name="hintTextColor">@color/edit_text_selector</item>
