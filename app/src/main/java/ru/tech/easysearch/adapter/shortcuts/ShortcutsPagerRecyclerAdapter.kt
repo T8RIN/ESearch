@@ -20,8 +20,10 @@ class ShortcutsPagerRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position != mainList.size - 1) holder.mainBookmarksRecycler.adapter = ShortcutsAdapter(context, mainList[position], false)
-        else holder.mainBookmarksRecycler.adapter = ShortcutsAdapter(context, mainList[position], true)
+        if (position != mainList.size - 1) holder.mainBookmarksRecycler.adapter =
+            ShortcutsAdapter(context, mainList[position], false)
+        else holder.mainBookmarksRecycler.adapter =
+            ShortcutsAdapter(context, mainList[position], true)
     }
 
     override fun getItemCount(): Int {

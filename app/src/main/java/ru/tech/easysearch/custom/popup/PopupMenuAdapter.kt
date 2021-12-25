@@ -1,7 +1,6 @@
 package ru.tech.easysearch.custom.popup
 
 import android.content.Context
-import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -13,9 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.tech.easysearch.R
-import ru.tech.easysearch.extensions.Extensions.dipToPixels
+import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.helper.interfaces.DesktopInterface
 
-class PopupMenuAdapter(private val context: Context) :
+class PopupMenuAdapter(
+    private val context: Context,
+    private val desktopInterface: DesktopInterface?
+) :
     RecyclerView.Adapter<PopupMenuAdapter.PopupViewHolder>() {
 
     private var menuList: ArrayList<PopupMenuItem> = ArrayList()
@@ -31,16 +34,24 @@ class PopupMenuAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: PopupViewHolder, position: Int) {
         val popupMenuItem = menuList[position]
         if (popupMenuItem.icon != null) {
+            holder.bind(popupMenuItem)
+
             holder.image.setImageDrawable(popupMenuItem.icon)
             holder.text.text = popupMenuItem.title
 
-            if (popupMenuItem.showSwitcher) holder.switcher.visibility = VISIBLE
-            else holder.switcher.visibility = GONE
+            if (popupMenuItem.showSwitcher) {
+                holder.itemView.isClickable = false
+                holder.switcher.visibility = VISIBLE
+                holder.switcher.isChecked =
+                    (context as BrowserActivity).browser?.isDesktop() == true
+                holder.switcher.setOnCheckedChangeListener { _, isChecked ->
+                    desktopInterface?.changeUserAgent(isChecked)
+                }
+            } else holder.switcher.visibility = GONE
 
             if (popupMenuItem.showDivider) holder.divider.visibility = VISIBLE
             else holder.divider.visibility = GONE
 
-            holder.bind(popupMenuItem)
         } else {
             holder.image.visibility = GONE
             holder.text.text = popupMenuItem.title

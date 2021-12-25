@@ -11,9 +11,14 @@ import com.google.android.material.card.MaterialCardView
 import ru.tech.easysearch.R
 import ru.tech.easysearch.helper.anim.AnimUtils.slideViewHorizontally
 import ru.tech.easysearch.helper.anim.AnimUtils.slideViewVertically
+import ru.tech.easysearch.helper.interfaces.DesktopInterface
 
 
-class SmartPopupMenu(private var root: ViewGroup, context: Context) {
+class SmartPopupMenu(
+    private var root: ViewGroup,
+    context: Context,
+    desktopInterface: DesktopInterface? = null
+) {
 
     private var animationDuration = 500L
     private var isCancelable = true
@@ -28,7 +33,7 @@ class SmartPopupMenu(private var root: ViewGroup, context: Context) {
     private var popupDismissTint: View
     private var cardView: MaterialCardView
 
-    private var adapter: PopupMenuAdapter = PopupMenuAdapter(context)
+    private var adapter: PopupMenuAdapter = PopupMenuAdapter(context, desktopInterface)
 
     init {
         displayOffsetX = when (context.resources.configuration.orientation) {

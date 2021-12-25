@@ -5,11 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.tech.easysearch.database.bookmarks.Bookmark
-import ru.tech.easysearch.database.shortcuts.Shortcut
 import ru.tech.easysearch.database.bookmarks.dao.BookmarkDao
-import ru.tech.easysearch.database.shortcuts.dao.ShortcutDao
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.database.hist.dao.HistoryDao
+import ru.tech.easysearch.database.shortcuts.Shortcut
+import ru.tech.easysearch.database.shortcuts.dao.ShortcutDao
 
 @Database(
     entities = [Bookmark::class, History::class, Shortcut::class],

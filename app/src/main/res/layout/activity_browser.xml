@@ -41,10 +41,10 @@
 
         <ImageSwitcher
             android:id="@+id/goMoreButton"
-            android:clickable="true"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ripple"
+            android:clickable="true"
             android:focusable="true">
 
             <ImageView

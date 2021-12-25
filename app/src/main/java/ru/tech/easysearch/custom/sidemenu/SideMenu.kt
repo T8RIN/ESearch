@@ -108,7 +108,7 @@ class SideMenu(private var root: ViewGroup, context: Context) {
     fun setMenuItemClickListener(onClick: (SideMenuItem) -> Unit): SideMenu {
         adapter.reattachListener(SideMenuItemClickListener { sideMenuItem ->
             onClick(sideMenuItem)
-            adapter.reattachListener(SideMenuItemClickListener{})
+            adapter.reattachListener(SideMenuItemClickListener {})
         })
         return this
     }

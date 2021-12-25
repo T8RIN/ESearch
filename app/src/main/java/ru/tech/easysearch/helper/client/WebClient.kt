@@ -24,11 +24,17 @@ import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
+import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
+import ru.tech.easysearch.functions.ScriptsJS.desktopScript
+import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript1
+import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript2
+import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript3
+import ru.tech.easysearch.functions.ScriptsJS.privacyScript
 import java.text.DateFormatSymbols
 import java.util.*
 
@@ -170,5 +176,15 @@ class WebClient(
 
     private suspend fun getIcon(url: String): Bitmap = withContext(Dispatchers.IO) {
         return@withContext context.fetchFavicon(url)
+    }
+
+    override fun onLoadResource(view: WebView, url: String?) {
+        if ((view as BrowserView).isDesktop()) view.evaluateJavascript(desktopScript, null)
+        view.apply {
+            evaluateJavascript(privacyScript, null)
+            evaluateJavascript(doNotTrackScript1, null)
+            evaluateJavascript(doNotTrackScript2, null)
+            evaluateJavascript(doNotTrackScript3, null)
+        }
     }
 }

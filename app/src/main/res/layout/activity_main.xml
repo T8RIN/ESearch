@@ -68,8 +68,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/fabDividerLeft"
-            app:layout_constraintEnd_toEndOf="@+id/fabDividerRight" />
+            app:layout_constraintEnd_toEndOf="@+id/fabDividerRight"
+            app:layout_constraintStart_toStartOf="@id/fabDividerLeft" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/fabDividerRight"

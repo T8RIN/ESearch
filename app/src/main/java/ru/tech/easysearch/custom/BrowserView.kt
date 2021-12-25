@@ -7,24 +7,42 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.URLUtil
 import android.webkit.WebView
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
-import ru.tech.easysearch.data.DataArrays
+import ru.tech.easysearch.data.DataArrays.desktopUserAgentString
+import ru.tech.easysearch.data.DataArrays.userAgentString
+import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
 import java.net.URL
 import java.net.URLConnection
 
-@SuppressLint("SetJavaScriptEnabled")
+@SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
 class BrowserView : WebView {
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
+    private var rootGroup: ViewGroup? = null
+    private var findBox: View? = null
+    private var close: ImageButton? = null
+    private var up: ImageButton? = null
+    private var down: ImageButton? = null
+    private var numMatches: TextView? = null
+    private var searchView: TextInputEditText? = null
 
     init {
         settings.javaScriptEnabled = true
@@ -33,7 +51,7 @@ class BrowserView : WebView {
         settings.domStorageEnabled = true
         settings.allowFileAccess = true
         settings.allowContentAccess = true
-        settings.userAgentString = DataArrays.userAgentString
+        settings.userAgentString = userAgentString
         settings.javaScriptCanOpenWindowsAutomatically = true
         settings.builtInZoomControls = true
         settings.displayZoomControls = false
@@ -83,6 +101,87 @@ class BrowserView : WebView {
                 dialog.show()
             })
 
+        }
+
+        setFindListener { _, numberOfMatches, _ ->
+            if (numberOfMatches != 0) {
+                findArray = List(numberOfMatches) { 0 }
+                numMatches?.text = "$currentIndex/$numberOfMatches"
+                numMatches?.setTextColor(color)
+            } else {
+                findArray = List(numberOfMatches) { 0 }
+                numMatches?.text = "0/0"
+                numMatches?.setTextColor(ContextCompat.getColor(context, R.color.red))
+            }
+        }
+    }
+
+    private var color = 0
+    private var findArray: List<Int> = List(0) { 0 }
+    private var currentIndex = 1
+
+    fun prepareFinding(root: ViewGroup) {
+        rootGroup = root
+        isFinding = true
+
+        findBox =
+            LayoutInflater.from(context).inflate(R.layout.find_in_page_layout, rootGroup, false)
+        close = findBox!!.findViewById(R.id.close)
+        up = findBox!!.findViewById(R.id.up)
+        down = findBox!!.findViewById(R.id.down)
+        numMatches = findBox!!.findViewById(R.id.numMatches)
+        searchView = findBox!!.findViewById(R.id.findText)
+
+        color = numMatches!!.currentTextColor
+
+        rootGroup!!.addView(findBox)
+        close!!.setOnClickListener {
+            cancelFinding()
+        }
+        up!!.setOnClickListener {
+            findNext(false)
+        }
+        down!!.setOnClickListener {
+            findNext(true)
+        }
+        searchView!!.addTextChangedListener {
+            findAllAsync(it.toString())
+        }
+    }
+
+    var isFinding = false
+
+    fun cancelFinding() {
+        clearMatches()
+        findBox?.clearFocus()
+        rootGroup?.removeView(findBox)
+        isFinding = false
+    }
+
+    override fun findNext(forward: Boolean) {
+        super.findNext(forward)
+        val last = findArray.size
+        if (last != 0) {
+            hideKeyboard(context)
+            when (forward) {
+                true -> {
+                    currentIndex++
+                    if (currentIndex > last) currentIndex = 1
+                    numMatches?.text = "$currentIndex/$last"
+                }
+                else -> {
+                    currentIndex--
+                    if (currentIndex == 0) currentIndex = last
+                    numMatches?.text = "$currentIndex/$last"
+                }
+            }
+        }
+    }
+
+    fun isDesktop(): Boolean {
+        return when (settings.userAgentString) {
+            desktopUserAgentString -> true
+            else -> false
         }
     }
 

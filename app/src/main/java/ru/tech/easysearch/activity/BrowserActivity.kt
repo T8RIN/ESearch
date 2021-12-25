@@ -26,20 +26,25 @@ import ru.tech.easysearch.custom.popup.PopupMenuItem
 import ru.tech.easysearch.custom.popup.SmartPopupMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenuItem
+import ru.tech.easysearch.data.DataArrays
+import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
+import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
+import ru.tech.easysearch.helper.interfaces.DesktopInterface
 
 
-class BrowserActivity : AppCompatActivity() {
+class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
     private lateinit var binding: ActivityBrowserBinding
 
@@ -121,7 +126,7 @@ class BrowserActivity : AppCompatActivity() {
         searchView?.setOnKeyListener { _, _, keyEvent ->
             var handled = false
             if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
-                onGetUri(searchView!!, searchView!!.text.toString(), false)
+                onGetUri(searchView!!, searchView!!.text.toString(), true)
                 handled = true
             }
             handled
@@ -190,58 +195,91 @@ class BrowserActivity : AppCompatActivity() {
             sideMenu!!.show()
         }
 
-//        binding.bookmarkButton.setOnClickListener {
-//            val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
-//            if (!bookmarkDialog.isAdded) bookmarkDialog.show(supportFragmentManager, "bookDialog")
-//        }
-//
-//        binding.refreshButton.setOnClickListener {
-//            browser?.reload()
-//        }
-
     }
 
     private fun showMore() {
-        popupMenu = SmartPopupMenu(binding.root.parent as ViewGroup, this)
+        popupMenu = SmartPopupMenu(binding.root.parent as ViewGroup, this, this)
             .addItems(
                 PopupMenuItem(
+                    R.drawable.ic_baseline_refresh_24,
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_refresh_24),
                     getString(R.string.refresh)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_share_24,
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_share_24),
                     getString(R.string.share)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_translate_24,
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_translate_24),
                     getString(R.string.translate)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_find_in_page_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_find_in_page_24
                     ), getString(R.string.findInPage)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_desktop_mac_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_desktop_mac_24
                     ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
                 ),
-                PopupMenuItem(null, getString(R.string.addTo)),
+                PopupMenuItem(null, null, getString(R.string.addTo)),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_bookmark_border_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_bookmark_border_24
                     ), getString(R.string.bookmarks)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_add_to_home_screen_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_add_to_home_screen_24
                     ), getString(R.string.shortcuts)
                 ),
             )
+            .setMenuItemClickListener { popupMenuItem ->
+                when (popupMenuItem.id) {
+                    R.drawable.ic_baseline_refresh_24 -> {
+                        browser?.reload()
+                    }
+                    R.drawable.ic_baseline_share_24 -> {
+                        val sendIntent = Intent()
+                        sendIntent.action = ACTION_SEND
+                        sendIntent.putExtra(EXTRA_TEXT, browser?.url)
+                        sendIntent.type = "text/plain"
+                        startActivity(createChooser(sendIntent, getString(R.string.share)))
+                    }
+                    R.drawable.ic_baseline_translate_24 -> {
+                        browser?.loadUrl("$translateSite${browser?.url}")
+                    }
+                    R.drawable.ic_baseline_find_in_page_24 -> {
+                        browser?.prepareFinding(binding.root.parent as ViewGroup)
+                    }
+                    R.drawable.ic_baseline_bookmark_border_24 -> {
+                        val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
+                        if (!bookmarkDialog.isAdded) bookmarkDialog.show(
+                            supportFragmentManager,
+                            "bookDialog"
+                        )
+                    }
+                    R.drawable.ic_baseline_add_to_home_screen_24 -> {
+                        val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
+                        if (!shortcutDialog.isAdded) shortcutDialog.show(
+                            supportFragmentManager,
+                            "shortcutDialog"
+                        )
+                    }
+                }
+                popupMenu!!.dismiss()
+            }
         popupMenu!!.show()
     }
 
@@ -257,13 +295,14 @@ class BrowserActivity : AppCompatActivity() {
         }
     }
 
-    private var browser: BrowserView? = null
+    var browser: BrowserView? = null
 
     override fun onBackPressed() {
         when {
             browser?.canGoBack() == true
                     && (sideMenu?.isHidden == true || sideMenu == null)
-                    && (popupMenu?.isHidden == true || popupMenu == null) -> {
+                    && (popupMenu?.isHidden == true || popupMenu == null)
+                    && (browser?.isFinding == false) -> {
                 browser?.goBack()
             }
             sideMenu?.isHidden == false -> {
@@ -271,6 +310,9 @@ class BrowserActivity : AppCompatActivity() {
             }
             popupMenu?.isHidden == false -> {
                 popupMenu?.dismiss()
+            }
+            browser?.isFinding == true -> {
+                browser?.cancelFinding()
             }
             else -> {
                 super.onBackPressed()
@@ -306,6 +348,18 @@ class BrowserActivity : AppCompatActivity() {
         sideMenu?.dismiss()
         popupMenu?.dismiss()
         super.onConfigurationChanged(newConfig)
+    }
+
+    override fun changeUserAgent(isChecked: Boolean) {
+        browser?.settings!!.apply {
+            userAgentString = when (isChecked) {
+                true -> DataArrays.desktopUserAgentString
+                else -> DataArrays.userAgentString
+            }
+            useWideViewPort = isChecked
+            loadWithOverviewMode = isChecked
+        }
+        browser?.reload()
     }
 
 }
