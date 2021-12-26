@@ -10,10 +10,12 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import ru.tech.easysearch.custom.BrowserView
 
 class ChromeClient(
     private val activity: AppCompatActivity,
-    private val progressBar: LinearProgressIndicator
+    private val progressBar: LinearProgressIndicator,
+    private val browser: BrowserView
 ) : WebChromeClient() {
 
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
@@ -67,4 +69,5 @@ class ChromeClient(
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
+
 }

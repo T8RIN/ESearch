@@ -34,10 +34,10 @@ import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
+import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
-import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
 
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private var close: ImageButton? = null
 
     private var history: ImageButton? = null
-    private var vpn: ImageButton? = null
+    private var currentWindows: ImageButton? = null
     private var bookmarks: ImageButton? = null
     private var settings: ImageButton? = null
 
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         close!!.translationX = displayOffsetX
 
         history = binding.historyButton
-        vpn = binding.vpnButton
+        currentWindows = binding.currentPagesButton
         bookmarks = binding.bookmarksButton
         settings = binding.settingsButton
 
@@ -289,8 +289,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             HistoryFragment().show(supportFragmentManager, "custom")
             delayBeforeNextClick()
         }
-        vpn?.setOnClickListener {
-            VpnFragment().show(supportFragmentManager, "custom")
+        currentWindows?.setOnClickListener {
+            CurrentWindowsFragment().show(supportFragmentManager, "windows")
             delayBeforeNextClick()
         }
         bookmarks?.setOnClickListener {
@@ -312,7 +312,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     private fun clearListeners() {
         history?.setOnClickListener {}
-        vpn?.setOnClickListener {}
+        currentWindows?.setOnClickListener {}
         bookmarks?.setOnClickListener {}
         settings?.setOnClickListener {}
     }

@@ -19,7 +19,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/none"
             android:padding="12dp"
-            android:src="@drawable/ic_earth" />
+            android:src="@drawable/ic_earth_24" />
 
         <LinearLayout
             android:layout_width="0dp"

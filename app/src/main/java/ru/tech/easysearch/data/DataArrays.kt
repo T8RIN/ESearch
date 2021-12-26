@@ -25,12 +25,13 @@ object DataArrays {
     )
 
     const val userAgentString =
-        "Mozilla/5.0 (Linux; Android 10.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Mobile Safari/537.36"
+        "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36"
 
     const val desktopUserAgentString =
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15"
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
 
     const val translateSite = "https://translate.yandex.ru/translate?url="
 
     val sizeSuffixes = listOf("B", "kB", "MB", "GB", "TB")
+
 }

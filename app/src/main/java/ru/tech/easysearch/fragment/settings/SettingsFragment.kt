@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.material.divider.MaterialDividerItemDecoration.VERTICAL
 import ru.tech.easysearch.R
+import ru.tech.easysearch.adapter.settings.BrowserSettingsAdapter
 import ru.tech.easysearch.databinding.SettingsFragmentBinding
+import ru.tech.easysearch.extensions.Extensions.createSettingsList
 
 class SettingsFragment : DialogFragment() {
 
@@ -47,6 +51,14 @@ class SettingsFragment : DialogFragment() {
         requireDialog().window?.setWindowAnimations(
             R.style.DialogAnimation
         )
+        binding.close.setOnClickListener {
+            dismiss()
+        }
+        binding.settingsRecycler.apply {
+            adapter =
+                BrowserSettingsAdapter(requireContext(), requireContext().createSettingsList())
+            addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
+        }
     }
 
 }

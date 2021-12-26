@@ -39,4 +39,17 @@
     <string name="desktopMode">Desktop mode</string>
     <string name="addTo">Add to</string>
     <string name="shortcuts">Shortcuts</string>
+    <string name="homeScreen">Home screen</string>
+    <string name="saveAsPDF">Save page as PDF</string>
+    <string name="downloads">Downloads</string>
+    <string name="adblock">AdBlock</string>
+    <string name="imageLoading">Load images</string>
+    <string name="location">Geolocation</string>
+    <string name="camera">Camera access</string>
+    <string name="mic">Microphone access</string>
+    <string name="saveHistory">Save history</string>
+    <string name="cookies">Cookies</string>
+    <string name="javascript">Javascript</string>
+    <string name="popupMessages">Popup messages</string>
+    <string name="domStorage">Dom storage</string>
 </resources>

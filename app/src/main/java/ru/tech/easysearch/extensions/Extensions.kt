@@ -26,6 +26,16 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
+import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
+import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
+import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
+import ru.tech.easysearch.data.SharedPreferencesAccess.JS
+import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
+import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
+import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.model.SettingsItem
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -129,7 +139,7 @@ object Extensions {
             buffer = BufferedInputStream(inputStream, 8192)
             BitmapFactory.decodeStream(buffer)
         } catch (e: Exception) {
-            ContextCompat.getDrawable(this, R.drawable.ic_earth)!!.toBitmap()
+            ContextCompat.getDrawable(this, R.drawable.ic_earth_24)!!.toBitmap()
         }
     }
 
@@ -144,4 +154,56 @@ object Extensions {
         }
     }
 
+    fun Context.createSettingsList(): List<SettingsItem> {
+        return listOf(
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_block_24),
+                getString(R.string.adblock),
+                getSetting(this, AD_BLOCK),
+                AD_BLOCK
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_image_24),
+                getString(R.string.imageLoading),
+                getSetting(this, IMAGE_LOADING),
+                IMAGE_LOADING
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_location_on_24),
+                getString(R.string.location),
+                getSetting(this, LOCATION_ACCESS),
+                LOCATION_ACCESS
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24),
+                getString(R.string.saveHistory),
+                getSetting(this, SAVE_HISTORY),
+                SAVE_HISTORY
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_cookie_24),
+                getString(R.string.cookies),
+                getSetting(this, COOKIES),
+                COOKIES
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_javascript_24),
+                getString(R.string.javascript),
+                getSetting(this, JS),
+                JS
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_message_24),
+                getString(R.string.popupMessages),
+                getSetting(this, POPUPS),
+                POPUPS
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_database_24),
+                getString(R.string.domStorage),
+                getSetting(this, DOM_STORAGE),
+                DOM_STORAGE
+            )
+        )
+    }
 }

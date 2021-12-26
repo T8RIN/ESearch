@@ -40,17 +40,17 @@
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
             android:src="@drawable/ic_baseline_settings_24"
-            app:layout_constraintEnd_toStartOf="@id/vpnButton"
+            app:layout_constraintEnd_toStartOf="@id/currentPagesButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_chainStyle="spread" />
 
         <ImageButton
-            android:id="@+id/vpnButton"
+            android:id="@+id/currentPagesButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_vpn_lock_24"
+            android:src="@drawable/ic_baseline_view_carousel_24"
             app:layout_constraintEnd_toEndOf="@id/fabDividerLeft"
             app:layout_constraintStart_toEndOf="@id/settingsButton"
             app:layout_constraintVertical_chainStyle="spread" />

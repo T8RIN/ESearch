@@ -7,10 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.view.View.VISIBLE
-import android.webkit.URLUtil
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
@@ -26,6 +23,9 @@ import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.data.DataArrays.prefixDict
+import ru.tech.easysearch.data.SharedPreferencesAccess
+import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
@@ -87,15 +87,38 @@ class WebClient(
                 context.iconView?.setImageBitmap(icon)
             }
         }
-
         super.onPageStarted(view, url, favicon)
     }
 
 
-    override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
-        if (!isReload) {
+    override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
 
-            view?.url?.let {
+        val adBlock = getSetting(context, SharedPreferencesAccess.AD_BLOCK)
+        val imageLoading = getSetting(context, SharedPreferencesAccess.IMAGE_LOADING)
+        val location = getSetting(context, SharedPreferencesAccess.LOCATION_ACCESS)
+        val cookies = getSetting(context, SharedPreferencesAccess.COOKIES)
+        val js = getSetting(context, SharedPreferencesAccess.JS)
+        val popups = getSetting(context, SharedPreferencesAccess.POPUPS)
+        val dom = getSetting(context, SharedPreferencesAccess.DOM_STORAGE)
+
+        val manager = CookieManager.getInstance()
+        if (cookies) {
+            manager.setAcceptCookie(true)
+            manager.getCookie(url)
+        } else manager.setAcceptCookie(false)
+
+        view.settings.apply {
+            javaScriptEnabled = js
+            domStorageEnabled = dom
+            blockNetworkImage = !imageLoading
+            javaScriptCanOpenWindowsAutomatically = popups
+            setGeolocationEnabled(location)
+        }
+
+
+        if (!isReload && getSetting(context, SAVE_HISTORY)) {
+
+            view.url?.let {
                 if (context is BrowserActivity) {
                     context.searchView?.setText(it)
                     context.lastUrl = it

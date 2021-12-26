@@ -22,7 +22,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.data.DataArrays.desktopUserAgentString
-import ru.tech.easysearch.data.DataArrays.userAgentString
+import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
+import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
+import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
+import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
+import ru.tech.easysearch.data.SharedPreferencesAccess.JS
+import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
+import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
@@ -45,17 +52,33 @@ class BrowserView : WebView {
     private var searchView: TextInputEditText? = null
 
     init {
-        settings.javaScriptEnabled = true
-        settings.useWideViewPort = true
-        settings.loadWithOverviewMode = true
-        settings.domStorageEnabled = true
-        settings.allowFileAccess = true
-        settings.allowContentAccess = true
-        settings.userAgentString = userAgentString
-        settings.javaScriptCanOpenWindowsAutomatically = true
-        settings.builtInZoomControls = true
-        settings.displayZoomControls = false
-        settings.setSupportMultipleWindows(true)
+        val adBlock = getSetting(context, AD_BLOCK)
+        val imageLoading = getSetting(context, IMAGE_LOADING)
+        val location = getSetting(context, LOCATION_ACCESS)
+        val cookies = getSetting(context, COOKIES)
+        val js = getSetting(context, JS)
+        val popups = getSetting(context, POPUPS)
+        val dom = getSetting(context, DOM_STORAGE)
+
+        val manager = CookieManager.getInstance()
+        if (cookies) manager.setAcceptCookie(true)
+        else manager.setAcceptCookie(false)
+
+        settings.apply {
+            javaScriptEnabled = js
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            domStorageEnabled = dom
+            blockNetworkImage = !imageLoading
+            allowFileAccess = true
+            allowContentAccess = true
+            userAgentString = userAgentString
+            setGeolocationEnabled(location)
+            javaScriptCanOpenWindowsAutomatically = popups
+            builtInZoomControls = true
+            displayZoomControls = false
+            setSupportMultipleWindows(true)
+        }
 
 
         setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->

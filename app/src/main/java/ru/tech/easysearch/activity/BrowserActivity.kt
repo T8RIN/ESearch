@@ -2,6 +2,7 @@ package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.DownloadManager
 import android.app.SearchManager
 import android.content.Intent
 import android.content.Intent.*
@@ -38,10 +39,11 @@ import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
 import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
-import ru.tech.easysearch.fragment.vpn.VpnFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
+import ru.tech.easysearch.helper.save.SaveUtils.addToHomeScreen
+import ru.tech.easysearch.helper.save.SaveUtils.saveAsPDF
 
 
 class BrowserActivity : AppCompatActivity(), DesktopInterface {
@@ -86,7 +88,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
         browser = binding.webBrowser
 
-        val chromeClient = ChromeClient(this, progressBar!!)
+        val chromeClient = ChromeClient(this, progressBar!!, browser!!)
         browser!!.webViewClient = WebClient(this, null, progressBar!!)
         browser!!.webChromeClient = chromeClient
 
@@ -161,8 +163,8 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         R.drawable.ic_baseline_bookmarks_24 -> {
                             BookmarksFragment(browser).show(supportFragmentManager, "custom")
                         }
-                        R.drawable.ic_baseline_vpn_lock_24 -> {
-                            VpnFragment().show(supportFragmentManager, "custom")
+                        R.drawable.ic_baseline_download_24 -> {
+                            startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
                         }
                         R.drawable.ic_baseline_settings_24 -> {
                             SettingsFragment().show(supportFragmentManager, "custom")
@@ -182,14 +184,14 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         getString(R.string.bookmarks)
                     ),
                     SideMenuItem(
+                        R.drawable.ic_baseline_download_24,
+                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_download_24)!!,
+                        getString(R.string.downloads)
+                    ),
+                    SideMenuItem(
                         R.drawable.ic_baseline_settings_24,
                         ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24)!!,
                         getString(R.string.settings)
-                    ),
-                    SideMenuItem(
-                        R.drawable.ic_baseline_vpn_lock_24,
-                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_vpn_lock_24)!!,
-                        getString(R.string.vpn)
                     )
                 )
             sideMenu!!.show()
@@ -223,6 +225,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     ), getString(R.string.findInPage)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_download_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_download_24
+                    ), getString(R.string.saveAsPDF)
+                ),
+                PopupMenuItem(
                     R.drawable.ic_baseline_desktop_mac_24,
                     ContextCompat.getDrawable(
                         this,
@@ -230,6 +239,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
                 ),
                 PopupMenuItem(null, null, getString(R.string.addTo)),
+                PopupMenuItem(
+                    R.drawable.ic_start_panel,
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_start_panel
+                    ), getString(R.string.shortcuts)
+                ),
                 PopupMenuItem(
                     R.drawable.ic_baseline_bookmark_border_24,
                     ContextCompat.getDrawable(
@@ -242,7 +258,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_add_to_home_screen_24
-                    ), getString(R.string.shortcuts)
+                    ), getString(R.string.homeScreen)
                 ),
             )
             .setMenuItemClickListener { popupMenuItem ->
@@ -263,6 +279,16 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     R.drawable.ic_baseline_find_in_page_24 -> {
                         browser?.prepareFinding(binding.root.parent as ViewGroup)
                     }
+                    R.drawable.ic_baseline_download_24 -> {
+                        browser?.saveAsPDF(this)
+                    }
+                    R.drawable.ic_start_panel -> {
+                        val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
+                        if (!shortcutDialog.isAdded) shortcutDialog.show(
+                            supportFragmentManager,
+                            "shortcutDialog"
+                        )
+                    }
                     R.drawable.ic_baseline_bookmark_border_24 -> {
                         val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
                         if (!bookmarkDialog.isAdded) bookmarkDialog.show(
@@ -271,11 +297,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         )
                     }
                     R.drawable.ic_baseline_add_to_home_screen_24 -> {
-                        val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
-                        if (!shortcutDialog.isAdded) shortcutDialog.show(
-                            supportFragmentManager,
-                            "shortcutDialog"
-                        )
+                        browser?.addToHomeScreen(this)
                     }
                 }
                 popupMenu!!.dismiss()
