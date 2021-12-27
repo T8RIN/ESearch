@@ -13,7 +13,7 @@ class AdBlocker {
             return adList.contains(this.getDomain().lowercase())
         }
 
-        private fun String.getDomain(): String {
+        fun String.getDomain(): String {
             var url = this.lowercase()
             val index: Int = url.indexOf('/', 8)
             if (index != -1) {

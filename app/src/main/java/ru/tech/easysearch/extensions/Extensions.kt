@@ -5,10 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -16,6 +13,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebResourceError
+import android.webkit.WebView
 import android.webkit.WebViewClient.*
 import android.widget.ImageView
 import androidx.annotation.AttrRes
@@ -26,10 +24,13 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.data.DataArrays.NEGATIVE_COLOR
+import ru.tech.easysearch.data.DataArrays.faviconParser
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
+import ru.tech.easysearch.data.SharedPreferencesAccess.EYE_PROTECTION
 import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
 import ru.tech.easysearch.data.SharedPreferencesAccess.JS
 import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
@@ -130,8 +131,7 @@ object Extensions {
     }
 
     fun Context.fetchFavicon(url: String): Bitmap {
-        val uri = Uri.parse(url)
-        val iconUri: Uri = uri.buildUpon().path("favicon.ico").build()
+        val iconUri: Uri = Uri.parse("$faviconParser${Uri.parse(url).host}")
         val inputStream: InputStream?
         val buffer: BufferedInputStream?
         return try {
@@ -158,6 +158,12 @@ object Extensions {
 
     fun Context.createSettingsList(): List<SettingsItem> {
         return listOf(
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_eye_protection_24),
+                getString(R.string.eyeProtection),
+                getSetting(this, EYE_PROTECTION),
+                EYE_PROTECTION
+            ),
             SettingsItem(
                 ContextCompat.getDrawable(this, R.drawable.ic_baseline_block_24),
                 getString(R.string.adblock),
@@ -220,4 +226,23 @@ object Extensions {
             )
         )
     }
+
+    fun WebView.forceNightMode(night: Boolean) {
+        when (night) {
+            true -> {
+                val paint = Paint()
+                val matrix = ColorMatrix()
+                matrix.set(NEGATIVE_COLOR)
+                val gcm = ColorMatrix()
+                gcm.setSaturation(0f)
+                val concat = ColorMatrix()
+                concat.setConcat(matrix, gcm)
+                val filter = ColorMatrixColorFilter(concat)
+                paint.colorFilter = filter
+                setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+            }
+            false -> setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        }
+    }
+
 }

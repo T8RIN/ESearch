@@ -71,7 +71,6 @@ class BrowserView : WebView {
             javaScriptCanOpenWindowsAutomatically = getSetting(context, POPUPS)
             builtInZoomControls = true
             displayZoomControls = false
-            setSupportMultipleWindows(true)
         }
 
 

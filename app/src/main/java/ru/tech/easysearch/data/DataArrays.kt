@@ -31,7 +31,31 @@ object DataArrays {
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
 
     const val translateSite = "https://translate.yandex.ru/translate?url="
+    const val faviconParser = "https://www.google.com/s2/favicons?sz=64&domain_url="
 
     val sizeSuffixes = listOf("B", "kB", "MB", "GB", "TB")
+
+    val NEGATIVE_COLOR = floatArrayOf(
+        -1.0f,
+        0f,
+        0f,
+        0f,
+        255f,
+        0f,
+        -1.0f,
+        0f,
+        0f,
+        255f,
+        0f,
+        0f,
+        -1.0f,
+        0f,
+        255f,
+        0f,
+        0f,
+        0f,
+        1.0f,
+        0f
+    )
 
 }

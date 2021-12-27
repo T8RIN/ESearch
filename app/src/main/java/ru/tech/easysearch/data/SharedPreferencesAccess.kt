@@ -8,6 +8,7 @@ object SharedPreferencesAccess {
     private const val defLabels =
         "ic_google_logo+ic_bing_logo+ic_yandex_logo+ic_mailru_logo+ic_yahoo_logo"
 
+    const val EYE_PROTECTION = "eye"
     const val AD_BLOCK = "adblock"
     const val IMAGE_LOADING = "imgload"
     const val LOCATION_ACCESS = "location"

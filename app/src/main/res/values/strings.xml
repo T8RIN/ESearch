@@ -57,4 +57,5 @@
     <string name="locationPerm">Access webpage to know your location?</string>
     <string name="cameraPerm">Access webpage to use camera? Restart app after that</string>
     <string name="recordPerm">Access webpage to use your microphone? Restart app after that</string>
+    <string name="eyeProtection">Eye protection</string>
 </resources>

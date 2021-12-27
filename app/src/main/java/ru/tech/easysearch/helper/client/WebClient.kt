@@ -9,6 +9,8 @@ import android.os.Handler
 import android.view.View.VISIBLE
 import android.webkit.*
 import android.widget.Toast
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
+import ru.tech.easysearch.data.SharedPreferencesAccess.EYE_PROTECTION
 import ru.tech.easysearch.data.SharedPreferencesAccess.GET
 import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
 import ru.tech.easysearch.data.SharedPreferencesAccess.JS
@@ -32,6 +35,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
+import ru.tech.easysearch.extensions.Extensions.forceNightMode
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.ScriptsJS.desktopScript
@@ -107,6 +111,19 @@ class WebClient(
                 blockNetworkImage = !getSetting(context, IMAGE_LOADING)
                 javaScriptCanOpenWindowsAutomatically = getSetting(context, POPUPS)
                 setGeolocationEnabled(getSetting(context, LOCATION_ACCESS))
+            }
+
+            if (getSetting(context, EYE_PROTECTION)) {
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK))
+                    WebSettingsCompat.setForceDark(view.settings, WebSettingsCompat.FORCE_DARK_ON)
+                else view.forceNightMode(true)
+            } else {
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK))
+                    WebSettingsCompat.setForceDark(
+                        view.settings,
+                        WebSettingsCompat.FORCE_DARK_OFF
+                    )
+                else view.forceNightMode(false)
             }
         }
 
