@@ -7,6 +7,8 @@ import android.app.SearchManager
 import android.content.Intent
 import android.content.Intent.*
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
@@ -22,6 +24,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
+import ru.tech.easysearch.custom.ScreenshotAnim
 import ru.tech.easysearch.custom.popup.PopupMenuItem
 import ru.tech.easysearch.custom.popup.SmartPopupMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenu
@@ -33,6 +36,7 @@ import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.extensions.Extensions.setCoeff
+import ru.tech.easysearch.extensions.Extensions.writeBitmap
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
@@ -51,7 +55,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     private lateinit var binding: ActivityBrowserBinding
 
     var searchView: TextInputEditText? = null
-    private var progressBar: LinearProgressIndicator? = null
+    var progressBar: LinearProgressIndicator? = null
     var iconView: ImageView? = null
 
     var backwardBrowser: ImageButton? = null
@@ -232,6 +236,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     ), getString(R.string.saveAsPDF)
                 ),
                 PopupMenuItem(
+                    R.drawable.ic_baseline_screenshot_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_screenshot_24
+                    ), getString(R.string.makeScreenshot)
+                ),
+                PopupMenuItem(
                     R.drawable.ic_baseline_desktop_mac_24,
                     ContextCompat.getDrawable(
                         this,
@@ -281,6 +292,19 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     }
                     R.drawable.ic_baseline_download_24 -> {
                         browser?.saveAsPDF(this)
+                    }
+                    R.drawable.ic_baseline_screenshot_24 -> {
+                        val browserContainer = binding.webViewContainer
+                        val bitmap =
+                            Bitmap.createBitmap(
+                                browserContainer.width,
+                                browserContainer.height,
+                                Bitmap.Config.ARGB_8888
+                            )
+                        val canvas = Canvas(bitmap)
+                        browserContainer.draw(canvas)
+                        writeBitmap(bitmap)
+                        ScreenshotAnim(binding.root.parent as ViewGroup, bitmap, this)
                     }
                     R.drawable.ic_start_panel -> {
                         val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)

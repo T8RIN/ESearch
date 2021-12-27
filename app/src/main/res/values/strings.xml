@@ -58,4 +58,6 @@
     <string name="cameraPerm">Access webpage to use camera? Restart app after that</string>
     <string name="recordPerm">Access webpage to use your microphone? Restart app after that</string>
     <string name="eyeProtection">Eye protection</string>
+    <string name="makeScreenshot">Make screenshot</string>
+    <string name="noExternalStorageAccess">App have no access to external storage</string>
 </resources>

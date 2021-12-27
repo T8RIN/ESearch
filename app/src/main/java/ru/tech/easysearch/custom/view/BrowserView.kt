@@ -18,10 +18,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.data.DataArrays.desktopUserAgentString
+import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
 import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
@@ -29,7 +32,9 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.JS
 import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.extensions.Extensions.forceNightMode
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
+import ru.tech.easysearch.functions.Functions.doInBackground
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
 import ru.tech.easysearch.helper.adblock.AdBlocker
@@ -52,7 +57,9 @@ class BrowserView : WebView {
     private var searchView: TextInputEditText? = null
 
     init {
-        AdBlocker().createAdList(context)
+        doInBackground {
+            AdBlocker().createAdList(context)
+        }
 
         val manager = CookieManager.getInstance()
         if (getSetting(context, COOKIES)) manager.setAcceptCookie(true)
@@ -73,6 +80,18 @@ class BrowserView : WebView {
             displayZoomControls = false
         }
 
+        if (getSetting(context, SharedPreferencesAccess.EYE_PROTECTION)) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK))
+                WebSettingsCompat.setForceDark(settings, WebSettingsCompat.FORCE_DARK_ON)
+            else forceNightMode(true)
+        } else {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK))
+                WebSettingsCompat.setForceDark(
+                    settings,
+                    WebSettingsCompat.FORCE_DARK_OFF
+                )
+            else forceNightMode(false)
+        }
 
         setDownloadListener { url, userAgent, contentDisposition, mimeType, _ ->
             val name = URLUtil.guessFileName(url, contentDisposition, mimeType)

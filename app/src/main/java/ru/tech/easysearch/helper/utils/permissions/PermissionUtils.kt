@@ -59,4 +59,13 @@ object PermissionUtils {
         }
     }
 
+    fun grantPermissionsStorage(activity: Activity) {
+        if (activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            activity.requestPermissions(
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                4
+            )
+        }
+    }
+
 }

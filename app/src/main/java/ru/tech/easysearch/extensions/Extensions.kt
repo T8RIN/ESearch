@@ -2,6 +2,8 @@ package ru.tech.easysearch.extensions
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -9,6 +11,8 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -16,9 +20,11 @@ import android.webkit.WebResourceError
 import android.webkit.WebView
 import android.webkit.WebViewClient.*
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
@@ -38,12 +44,12 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsStorage
 import ru.tech.easysearch.model.SettingsItem
-import java.io.BufferedInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
+import java.io.*
 import java.net.URL
 import java.net.URLConnection
+import java.util.*
 
 
 object Extensions {
@@ -243,6 +249,65 @@ object Extensions {
             }
             false -> setLayerType(View.LAYER_TYPE_HARDWARE, null)
         }
+    }
+
+    fun AppCompatActivity.writeBitmap(bitmap: Bitmap) {
+        val calendar = Calendar.getInstance()
+        val day = calendar[Calendar.DAY_OF_MONTH]
+        val month = calendar[Calendar.MONTH]
+        val year = calendar[Calendar.YEAR]
+        val strHour = calendar[Calendar.HOUR_OF_DAY]
+        val strMinute = calendar[Calendar.MINUTE]
+        val minute = when {
+            strMinute < 10 -> "0$strMinute"
+            else -> "$strMinute"
+        }
+        val hour = when {
+            strHour < 10 -> "0$strHour"
+            else -> "$strHour"
+        }
+        val millis = calendar[Calendar.MILLISECOND]
+
+        val date = "$day-$month-${year}_$hour:$minute:$millis"
+
+        try {
+            execute(bitmap, date)
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(
+                this.applicationContext,
+                R.string.noExternalStorageAccess,
+                Toast.LENGTH_LONG
+            ).show()
+            grantPermissionsStorage(this)
+        }
+
+    }
+
+    private fun AppCompatActivity.execute(bitmap: Bitmap, date: String) {
+        val name = "Screenshot_ESearch_${date}"
+        val fos: OutputStream? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val resolver: ContentResolver = contentResolver
+            val contentValues = ContentValues()
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/ESearch")
+            val imageUri =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            resolver.openOutputStream(imageUri!!)
+        } else {
+            val imagesDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            ).toString() + File.separator + "ESearch"
+            val file = File(imagesDir)
+            if (!file.exists()) {
+                file.mkdir()
+            }
+            val image = File(imagesDir, "$name.png")
+            FileOutputStream(image)
+        }
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        fos!!.flush()
+        fos.close()
     }
 
 }
