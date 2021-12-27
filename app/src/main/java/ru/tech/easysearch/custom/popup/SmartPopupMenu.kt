@@ -9,9 +9,9 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import ru.tech.easysearch.R
-import ru.tech.easysearch.helper.anim.AnimUtils.slideViewHorizontally
-import ru.tech.easysearch.helper.anim.AnimUtils.slideViewVertically
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.slideViewHorizontally
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.slideViewVertically
 
 
 class SmartPopupMenu(

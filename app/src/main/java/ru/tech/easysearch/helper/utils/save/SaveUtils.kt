@@ -1,4 +1,4 @@
-package ru.tech.easysearch.helper.save
+package ru.tech.easysearch.helper.utils.save
 
 import android.content.Context
 import android.content.Intent

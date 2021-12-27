@@ -22,11 +22,11 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
-import ru.tech.easysearch.custom.BrowserView
 import ru.tech.easysearch.custom.popup.PopupMenuItem
 import ru.tech.easysearch.custom.popup.SmartPopupMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenuItem
+import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.database.ESearchDatabase
@@ -42,8 +42,8 @@ import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
-import ru.tech.easysearch.helper.save.SaveUtils.addToHomeScreen
-import ru.tech.easysearch.helper.save.SaveUtils.saveAsPDF
+import ru.tech.easysearch.helper.utils.save.SaveUtils.addToHomeScreen
+import ru.tech.easysearch.helper.utils.save.SaveUtils.saveAsPDF
 
 
 class BrowserActivity : AppCompatActivity(), DesktopInterface {
@@ -382,6 +382,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             loadWithOverviewMode = isChecked
         }
         browser?.reload()
+    }
+
+    override fun onPause() {
+        for (frag in supportFragmentManager.fragments) {
+            supportFragmentManager.beginTransaction().remove(frag).commit()
+        }
+        super.onPause()
     }
 
 }

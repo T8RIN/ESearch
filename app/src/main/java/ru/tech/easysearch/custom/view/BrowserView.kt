@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom
+package ru.tech.easysearch.custom.view
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -22,7 +22,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.data.DataArrays.desktopUserAgentString
-import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
 import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
@@ -33,6 +32,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
+import ru.tech.easysearch.helper.adblock.AdBlocker
 import java.net.URL
 import java.net.URLConnection
 
@@ -52,29 +52,23 @@ class BrowserView : WebView {
     private var searchView: TextInputEditText? = null
 
     init {
-        val adBlock = getSetting(context, AD_BLOCK)
-        val imageLoading = getSetting(context, IMAGE_LOADING)
-        val location = getSetting(context, LOCATION_ACCESS)
-        val cookies = getSetting(context, COOKIES)
-        val js = getSetting(context, JS)
-        val popups = getSetting(context, POPUPS)
-        val dom = getSetting(context, DOM_STORAGE)
+        AdBlocker().createAdList(context)
 
         val manager = CookieManager.getInstance()
-        if (cookies) manager.setAcceptCookie(true)
+        if (getSetting(context, COOKIES)) manager.setAcceptCookie(true)
         else manager.setAcceptCookie(false)
 
         settings.apply {
-            javaScriptEnabled = js
+            javaScriptEnabled = getSetting(context, JS)
             useWideViewPort = true
             loadWithOverviewMode = true
-            domStorageEnabled = dom
-            blockNetworkImage = !imageLoading
+            domStorageEnabled = getSetting(context, DOM_STORAGE)
+            blockNetworkImage = !getSetting(context, IMAGE_LOADING)
             allowFileAccess = true
             allowContentAccess = true
             userAgentString = userAgentString
-            setGeolocationEnabled(location)
-            javaScriptCanOpenWindowsAutomatically = popups
+            setGeolocationEnabled(getSetting(context, LOCATION_ACCESS))
+            javaScriptCanOpenWindowsAutomatically = getSetting(context, POPUPS)
             builtInZoomControls = true
             displayZoomControls = false
             setSupportMultipleWindows(true)

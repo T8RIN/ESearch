@@ -377,4 +377,11 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         toolbarAdapter?.labelListAdapter?.notifyDataSetChanged()
     }
 
+    override fun onPause() {
+        for (frag in supportFragmentManager.fragments) {
+            supportFragmentManager.beginTransaction().remove(frag).commit()
+        }
+        super.onPause()
+    }
+
 }

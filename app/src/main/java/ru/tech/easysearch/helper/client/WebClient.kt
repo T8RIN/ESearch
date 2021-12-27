@@ -18,9 +18,15 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
-import ru.tech.easysearch.custom.BrowserView
-import ru.tech.easysearch.data.SharedPreferencesAccess
+import ru.tech.easysearch.custom.view.BrowserView
+import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
+import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
+import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
 import ru.tech.easysearch.data.SharedPreferencesAccess.GET
+import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
+import ru.tech.easysearch.data.SharedPreferencesAccess.JS
+import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
+import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
@@ -33,6 +39,8 @@ import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript1
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript2
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript3
 import ru.tech.easysearch.functions.ScriptsJS.privacyScript
+import ru.tech.easysearch.helper.adblock.AdBlocker.Companion.areAD
+import java.io.ByteArrayInputStream
 import java.text.DateFormatSymbols
 import java.util.*
 
@@ -87,26 +95,18 @@ class WebClient(
     override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
 
         if (needToChangeBrowserSettings(context, GET)) {
-            val adBlock = getSetting(context, SharedPreferencesAccess.AD_BLOCK)
-            val imageLoading = getSetting(context, SharedPreferencesAccess.IMAGE_LOADING)
-            val location = getSetting(context, SharedPreferencesAccess.LOCATION_ACCESS)
-            val cookies = getSetting(context, SharedPreferencesAccess.COOKIES)
-            val js = getSetting(context, SharedPreferencesAccess.JS)
-            val popups = getSetting(context, SharedPreferencesAccess.POPUPS)
-            val dom = getSetting(context, SharedPreferencesAccess.DOM_STORAGE)
-
             val manager = CookieManager.getInstance()
-            if (cookies) {
+            if (getSetting(context, COOKIES)) {
                 manager.setAcceptCookie(true)
                 manager.getCookie(url)
             } else manager.setAcceptCookie(false)
 
             view.settings.apply {
-                javaScriptEnabled = js
-                domStorageEnabled = dom
-                blockNetworkImage = !imageLoading
-                javaScriptCanOpenWindowsAutomatically = popups
-                setGeolocationEnabled(location)
+                javaScriptEnabled = getSetting(context, JS)
+                domStorageEnabled = getSetting(context, DOM_STORAGE)
+                blockNetworkImage = !getSetting(context, IMAGE_LOADING)
+                javaScriptCanOpenWindowsAutomatically = getSetting(context, POPUPS)
+                setGeolocationEnabled(getSetting(context, LOCATION_ACCESS))
             }
         }
 
@@ -203,5 +203,19 @@ class WebClient(
             evaluateJavascript(doNotTrackScript2, null)
             evaluateJavascript(doNotTrackScript3, null)
         }
+    }
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest
+    ): WebResourceResponse? {
+        if (request.url.toString().areAD() && getSetting(context, AD_BLOCK)) {
+            return WebResourceResponse(
+                "text/plain",
+                "utf-8",
+                ByteArrayInputStream("".toByteArray())
+            )
+        }
+        return super.shouldInterceptRequest(view, request)
     }
 }

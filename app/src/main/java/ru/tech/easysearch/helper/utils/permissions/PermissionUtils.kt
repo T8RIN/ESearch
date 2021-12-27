@@ -1,4 +1,4 @@
-package ru.tech.easysearch.helper.permissions
+package ru.tech.easysearch.helper.utils.permissions
 
 import android.Manifest
 import android.annotation.TargetApi

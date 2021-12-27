@@ -15,13 +15,13 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import ru.tech.easysearch.R
-import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
-import ru.tech.easysearch.helper.permissions.PermissionUtils.grantPermissionsCamera
-import ru.tech.easysearch.helper.permissions.PermissionUtils.grantPermissionsLoc
-import ru.tech.easysearch.helper.permissions.PermissionUtils.grantPermissionsMic
+import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsCamera
+import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsLoc
+import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsMic
 
 
 class ChromeClient(

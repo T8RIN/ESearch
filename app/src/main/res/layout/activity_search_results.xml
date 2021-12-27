@@ -17,7 +17,7 @@
         app:iconifiedByDefault="false"
         app:queryHint="@string/typeHere" />
 
-    <ru.tech.easysearch.custom.BrowserView
+    <ru.tech.easysearch.custom.view.BrowserView
         android:id="@+id/webBrowser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

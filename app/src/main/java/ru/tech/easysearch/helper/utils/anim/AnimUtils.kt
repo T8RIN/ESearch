@@ -1,4 +1,4 @@
-package ru.tech.easysearch.helper.anim
+package ru.tech.easysearch.helper.utils.anim
 
 import android.animation.Animator
 import android.animation.AnimatorSet
