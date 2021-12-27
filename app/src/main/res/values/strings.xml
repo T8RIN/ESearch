@@ -52,4 +52,9 @@
     <string name="javascript">Javascript</string>
     <string name="popupMessages">Popup messages</string>
     <string name="domStorage">Dom storage</string>
+    <string name="permissionRequest">Permission request</string>
+    <string name="permDRM">Allow DRM protected media playback?</string>
+    <string name="locationPerm">Access webpage to know your location?</string>
+    <string name="cameraPerm">Access webpage to use camera? Restart app after that</string>
+    <string name="recordPerm">Access webpage to use your microphone? Restart app after that</string>
 </resources>

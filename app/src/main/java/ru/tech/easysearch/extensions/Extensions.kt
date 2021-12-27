@@ -27,11 +27,13 @@ import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
+import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
 import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
 import ru.tech.easysearch.data.SharedPreferencesAccess.JS
 import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
+import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
@@ -173,6 +175,18 @@ object Extensions {
                 getString(R.string.location),
                 getSetting(this, LOCATION_ACCESS),
                 LOCATION_ACCESS
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_camera_alt_24),
+                getString(R.string.camera),
+                getSetting(this, CAMERA_ACCESS),
+                CAMERA_ACCESS
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_mic_24),
+                getString(R.string.mic),
+                getSetting(this, MIC_ACCESS),
+                MIC_ACCESS
             ),
             SettingsItem(
                 ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24),

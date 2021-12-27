@@ -67,7 +67,7 @@ class SearchResultsActivity : AppCompatActivity(), LabelListChangedInterface {
         browser = findViewById(R.id.webBrowser)
 
         val chromeClient = ChromeClient(this, progressBar!!, browser!!)
-        browser!!.webViewClient = WebClient(this, recycler, progressBar!!)
+        browser!!.webViewClient = WebClient(this, progressBar!!)
         browser!!.webChromeClient = chromeClient
 
         prefix = intent.extras?.get("prefix").toString()

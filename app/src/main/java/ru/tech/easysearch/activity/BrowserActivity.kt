@@ -89,7 +89,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         browser = binding.webBrowser
 
         val chromeClient = ChromeClient(this, progressBar!!, browser!!)
-        browser!!.webViewClient = WebClient(this, null, progressBar!!)
+        browser!!.webViewClient = WebClient(this, progressBar!!)
         browser!!.webChromeClient = chromeClient
 
         val url = dispatchIntent(intent)

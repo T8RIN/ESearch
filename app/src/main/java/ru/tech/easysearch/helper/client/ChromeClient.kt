@@ -1,16 +1,28 @@
 package ru.tech.easysearch.helper.client
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.webkit.*
 import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import ru.tech.easysearch.R
 import ru.tech.easysearch.custom.BrowserView
+import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
+import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.helper.permissions.PermissionUtils.grantPermissionsCamera
+import ru.tech.easysearch.helper.permissions.PermissionUtils.grantPermissionsLoc
+import ru.tech.easysearch.helper.permissions.PermissionUtils.grantPermissionsMic
+
 
 class ChromeClient(
     private val activity: AppCompatActivity,
@@ -67,6 +79,72 @@ class ChromeClient(
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private var tempFileCallback: ValueCallback<Array<Uri>>? = null
+
+    private val fileChooserResultLauncher =
+        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                tempFileCallback?.onReceiveValue(arrayOf(Uri.parse(data?.dataString)))
+            }
+        }
+
+    override fun onShowFileChooser(
+        webView: WebView,
+        filePathCallback: ValueCallback<Array<Uri>>,
+        fileChooserParams: FileChooserParams?
+    ): Boolean {
+        tempFileCallback = filePathCallback
+        val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+        contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+        contentSelectionIntent.type = "*/*"
+        val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+        chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+
+        fileChooserResultLauncher.launch(chooserIntent)
+
+        return true
+    }
+
+    override fun onGeolocationPermissionsShowPrompt(
+        origin: String?,
+        callback: GeolocationPermissions.Callback
+    ) {
+        grantPermissionsLoc(activity)
+        callback.invoke(origin, true, false)
+        super.onGeolocationPermissionsShowPrompt(origin, callback)
+    }
+
+    override fun onPermissionRequest(request: PermissionRequest) {
+        val resources = request.resources
+        for (resource in resources) {
+            if (PermissionRequest.RESOURCE_VIDEO_CAPTURE == resource) {
+                grantPermissionsCamera(activity)
+                if (browser.settings.mediaPlaybackRequiresUserGesture) {
+                    browser.settings.mediaPlaybackRequiresUserGesture = false
+                    browser.reload()
+                }
+                if (getSetting(activity, CAMERA_ACCESS)) request.grant(request.resources)
+                else request.deny()
+            } else if (PermissionRequest.RESOURCE_AUDIO_CAPTURE == resource) {
+                grantPermissionsMic(activity)
+                if (getSetting(activity, MIC_ACCESS)) request.grant(request.resources)
+                else request.deny()
+            } else if (PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID == resource) {
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle(R.string.permissionRequest)
+                    .setMessage(R.string.permDRM)
+                    .setPositiveButton(R.string.ok_ok) { _, _ ->
+                        request.grant(request.resources)
+                    }
+                    .setNegativeButton(R.string.cancel) { _, _ ->
+                        request.deny()
+                    }
+                    .show()
+            }
         }
     }
 

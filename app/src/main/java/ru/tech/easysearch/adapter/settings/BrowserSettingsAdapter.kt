@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.switchmaterial.SwitchMaterial
+import ru.tech.easysearch.data.SharedPreferencesAccess.SET
+import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
 import ru.tech.easysearch.data.SharedPreferencesAccess.setSetting
 import ru.tech.easysearch.databinding.BrowserSettingsItemBinding
 import ru.tech.easysearch.model.SettingsItem
@@ -30,6 +32,7 @@ class BrowserSettingsAdapter(
         holder.switcher.isChecked = settingsItem.checked
         holder.switcher.setOnCheckedChangeListener { _, isChecked ->
             setSetting(context, settingsItem.key, isChecked)
+            needToChangeBrowserSettings(context, SET)
         }
     }
 

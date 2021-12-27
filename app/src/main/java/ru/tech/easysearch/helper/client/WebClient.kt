@@ -9,8 +9,6 @@ import android.os.Handler
 import android.view.View.VISIBLE
 import android.webkit.*
 import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
-import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,13 +17,13 @@ import kotlinx.coroutines.withContext
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.SearchResultsActivity
-import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.BrowserView
-import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess
+import ru.tech.easysearch.data.SharedPreferencesAccess.GET
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
@@ -41,18 +39,13 @@ import java.util.*
 
 class WebClient(
     private val context: Context,
-    private val toolbar: RecyclerView? = null,
     private val progressBar: LinearProgressIndicator
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
         val url = request.url.toString()
 
-        val currentEngine =
-            prefixDict[(toolbar?.adapter as ToolbarAdapter?)?.labelList?.get((toolbar?.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition())]
-        val temp = Uri.parse(url).host
-
-        if (currentEngine?.contains(temp.toString()) == false && context is SearchResultsActivity) {
+        if (context is SearchResultsActivity) {
             val intent = Intent(context, BrowserActivity::class.java)
             intent.putExtra("url", url)
             context.startActivity(intent)
@@ -93,28 +86,29 @@ class WebClient(
 
     override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
 
-        val adBlock = getSetting(context, SharedPreferencesAccess.AD_BLOCK)
-        val imageLoading = getSetting(context, SharedPreferencesAccess.IMAGE_LOADING)
-        val location = getSetting(context, SharedPreferencesAccess.LOCATION_ACCESS)
-        val cookies = getSetting(context, SharedPreferencesAccess.COOKIES)
-        val js = getSetting(context, SharedPreferencesAccess.JS)
-        val popups = getSetting(context, SharedPreferencesAccess.POPUPS)
-        val dom = getSetting(context, SharedPreferencesAccess.DOM_STORAGE)
+        if (needToChangeBrowserSettings(context, GET)) {
+            val adBlock = getSetting(context, SharedPreferencesAccess.AD_BLOCK)
+            val imageLoading = getSetting(context, SharedPreferencesAccess.IMAGE_LOADING)
+            val location = getSetting(context, SharedPreferencesAccess.LOCATION_ACCESS)
+            val cookies = getSetting(context, SharedPreferencesAccess.COOKIES)
+            val js = getSetting(context, SharedPreferencesAccess.JS)
+            val popups = getSetting(context, SharedPreferencesAccess.POPUPS)
+            val dom = getSetting(context, SharedPreferencesAccess.DOM_STORAGE)
 
-        val manager = CookieManager.getInstance()
-        if (cookies) {
-            manager.setAcceptCookie(true)
-            manager.getCookie(url)
-        } else manager.setAcceptCookie(false)
+            val manager = CookieManager.getInstance()
+            if (cookies) {
+                manager.setAcceptCookie(true)
+                manager.getCookie(url)
+            } else manager.setAcceptCookie(false)
 
-        view.settings.apply {
-            javaScriptEnabled = js
-            domStorageEnabled = dom
-            blockNetworkImage = !imageLoading
-            javaScriptCanOpenWindowsAutomatically = popups
-            setGeolocationEnabled(location)
+            view.settings.apply {
+                javaScriptEnabled = js
+                domStorageEnabled = dom
+                blockNetworkImage = !imageLoading
+                javaScriptCanOpenWindowsAutomatically = popups
+                setGeolocationEnabled(location)
+            }
         }
-
 
         if (!isReload && getSetting(context, SAVE_HISTORY)) {
 
