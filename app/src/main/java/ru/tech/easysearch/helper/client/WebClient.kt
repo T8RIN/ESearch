@@ -160,7 +160,6 @@ class WebClient(
                             }
                         }
                     }
-
                 }
 
                 val calendar = Calendar.getInstance()

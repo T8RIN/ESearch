@@ -84,4 +84,5 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.6"
+    implementation 'androidx.palette:palette-ktx:1.0.0'
 }

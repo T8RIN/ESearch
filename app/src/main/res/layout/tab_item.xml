@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:elevation="2dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/backgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:shapeAppearanceOverlay="@style/corners14dp" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/snap"
+        android:layout_width="130dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/none"
+        android:elevation="3dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/skeleton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/corners14dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/close"
+        app:layout_constraintStart_toEndOf="@+id/snap">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="@tools:sample/lorem/random"
+            android:maxLines="4" />
+
+        <TextView
+            android:maxLines="2"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/gray"
+            android:id="@+id/url"
+            tools:text="@tools:sample/lorem/random"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            tools:ignore="SmallSp" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="5dp"
+        android:paddingBottom="5dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="10dp"
+        android:background="@drawable/ripple"
+        android:contentDescription="@string/none"
+        android:src="@drawable/ic_baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="110dp"
+        android:background="@drawable/gradient"
+        android:elevation="3dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

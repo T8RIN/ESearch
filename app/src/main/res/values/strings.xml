@@ -60,4 +60,5 @@
     <string name="eyeProtection">Eye protection</string>
     <string name="makeScreenshot">Make screenshot</string>
     <string name="noExternalStorageAccess">App have no access to external storage</string>
+    <string name="tabs">Tabs</string>
 </resources>

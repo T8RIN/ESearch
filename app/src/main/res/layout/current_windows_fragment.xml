@@ -2,12 +2,52 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/manualBackground">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="CURRENT WINDOWS" />
+        android:layout_height="48dp"
+        android:background="?attr/colorPrimary"
+        android:elevation="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_close_24" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tabs"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/addTab"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple"
+            android:contentDescription="@string/none"
+            android:src="@drawable/ic_baseline_add_circle_24" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tabRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:stackFromEnd="true"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

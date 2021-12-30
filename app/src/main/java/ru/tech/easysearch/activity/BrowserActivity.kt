@@ -2,6 +2,7 @@ package ru.tech.easysearch.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.app.DownloadManager
 import android.app.SearchManager
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.content.Intent.*
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
@@ -16,8 +18,10 @@ import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.webkit.URLUtil
+import android.webkit.ValueCallback
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -30,6 +34,10 @@ import ru.tech.easysearch.custom.popup.SmartPopupMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.custom.view.BrowserView
+import ru.tech.easysearch.data.BrowserTabs.createNewTab
+import ru.tech.easysearch.data.BrowserTabs.loadTab
+import ru.tech.easysearch.data.BrowserTabs.openedTabs
+import ru.tech.easysearch.data.BrowserTabs.saveLastTab
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.database.ESearchDatabase
@@ -52,7 +60,16 @@ import ru.tech.easysearch.helper.utils.save.SaveUtils.saveAsPDF
 
 class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
-    private lateinit var binding: ActivityBrowserBinding
+    var tempFileCallback: ValueCallback<Array<Uri>>? = null
+    val fileChooserResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                tempFileCallback?.onReceiveValue(arrayOf(Uri.parse(data?.dataString)))
+            }
+        }
+
+    lateinit var binding: ActivityBrowserBinding
 
     var searchView: TextInputEditText? = null
     var progressBar: LinearProgressIndicator? = null
@@ -89,7 +106,6 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         forwardBrowser = binding.forwardBrowser
         profileBrowser = binding.profileBrowser
         currentWindows = binding.windowsBrowser
-
         browser = binding.webBrowser
 
         val chromeClient = ChromeClient(this, progressBar!!, browser!!)
@@ -97,10 +113,28 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         browser!!.webChromeClient = chromeClient
 
         val url = dispatchIntent(intent)
+        if(intent.getBooleanExtra("loadTab", false)){
+            loadTab(intent.getIntExtra("position", -1), false)
+        }
+        else {
+            searchView?.let { _ ->
+                clickedGo = true
+                val prefix = "https://www.google.com/search?q="
+                val tempUrl = when {
+                    !url.contains("https://") && !url.contains("http://") -> "https://$url"
+                    else -> url
+                }
+                if (URLUtil.isValidUrl(tempUrl) && Patterns.WEB_URL.matcher(tempUrl).matches()) {
+                    createNewTab(tempUrl)
+                    lastUrl = tempUrl
+                } else {
+                    createNewTab(prefix + url)
+                }
 
-        searchView?.setText(url)
-
-        url?.let { searchView?.let { it1 -> onGetUri(it1, it) } }
+                browser?.hideKeyboard(this)
+                searchView!!.clearFocus()
+            }
+        }
 
         binding.goMoreButton.inAnimation = AnimationUtils.loadAnimation(
             this,
@@ -147,6 +181,8 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         }
 
         homeBrowser?.setOnClickListener {
+            saveLastTab()
+            binding.webViewContainer.removeAllViews()
             finish()
             startActivity(Intent(this, MainActivity::class.java))
         }
@@ -330,13 +366,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private fun dispatchIntent(intent: Intent): String? {
+    private fun dispatchIntent(intent: Intent): String {
         return when (intent.action) {
-            ACTION_VIEW -> intent.dataString
+            ACTION_VIEW -> intent.dataString.toString()
             ACTION_PROCESS_TEXT -> intent.getCharSequenceExtra(EXTRA_PROCESS_TEXT)
                 .toString()
-            ACTION_WEB_SEARCH -> intent.getStringExtra(SearchManager.QUERY)
-            ACTION_SEND -> intent.getStringExtra(EXTRA_TEXT)
+            ACTION_WEB_SEARCH -> intent.getStringExtra(SearchManager.QUERY).toString()
+            ACTION_SEND -> intent.getStringExtra(EXTRA_TEXT).toString()
             else -> intent.extras?.get("url").toString()
         }
     }
@@ -362,6 +398,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             }
             else -> {
                 super.onBackPressed()
+                openedTabs.removeAt(openedTabs.lastIndex)
                 overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
             }
         }

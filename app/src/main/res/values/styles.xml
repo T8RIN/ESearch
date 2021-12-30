@@ -41,4 +41,12 @@
         <item name="android:dropDownVerticalOffset">16dp</item>
     </style>
 
+    <style name="corners14dp" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">14dp</item>
+        <item name="cornerSizeTopLeft">14dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
 </resources>

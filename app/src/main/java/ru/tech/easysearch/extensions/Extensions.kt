@@ -23,9 +23,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils.HSLToColor
+import androidx.core.graphics.ColorUtils.colorToHSL
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
@@ -73,12 +74,12 @@ object Extensions {
         return createConfigurationContext(configuration)
     }
 
-    fun ImageView.setTint(@ColorRes colorRes: Int?) {
-        if (colorRes != null) {
+    fun ImageView.setTint(@ColorInt color: Int?) {
+        if (color != null) {
             ImageViewCompat.setImageTintMode(this, PorterDuff.Mode.SRC_ATOP)
             ImageViewCompat.setImageTintList(
                 this,
-                ColorStateList.valueOf(ContextCompat.getColor(context, colorRes))
+                ColorStateList.valueOf(color)
             )
         } else ImageViewCompat.setImageTintList(this, null)
     }
@@ -308,6 +309,24 @@ object Extensions {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos!!.flush()
         fos.close()
+    }
+
+    @ColorInt
+    fun Int.lightenColor(value: Float): Int {
+        val hsl = FloatArray(3)
+        colorToHSL(this, hsl)
+        hsl[2] += value
+        hsl[2] = 0f.coerceAtLeast(hsl[2].coerceAtMost(1f))
+        return HSLToColor(hsl)
+    }
+
+    @ColorInt
+    fun Int.darkenColor(value: Float): Int {
+        val hsl = FloatArray(3)
+        colorToHSL(this, hsl)
+        hsl[2] -= value
+        hsl[2] = 0f.coerceAtLeast(hsl[2].coerceAtMost(1f))
+        return HSLToColor(hsl)
     }
 
 }

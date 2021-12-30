@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import ru.tech.easysearch.R
+import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
@@ -82,30 +83,21 @@ class ChromeClient(
         }
     }
 
-    private var tempFileCallback: ValueCallback<Array<Uri>>? = null
-
-    private val fileChooserResultLauncher =
-        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                tempFileCallback?.onReceiveValue(arrayOf(Uri.parse(data?.dataString)))
-            }
-        }
-
     override fun onShowFileChooser(
         webView: WebView,
         filePathCallback: ValueCallback<Array<Uri>>,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        tempFileCallback = filePathCallback
-        val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-        contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-        contentSelectionIntent.type = "*/*"
-        val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-        chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+        if(activity is BrowserActivity){
+            activity.tempFileCallback = filePathCallback
+            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+            contentSelectionIntent.type = "*/*"
+            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
 
-        fileChooserResultLauncher.launch(chooserIntent)
-
+            activity.fileChooserResultLauncher.launch(chooserIntent)
+        }
         return true
     }
 
