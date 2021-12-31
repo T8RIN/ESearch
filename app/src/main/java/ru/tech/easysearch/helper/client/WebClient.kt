@@ -18,9 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
-import ru.tech.easysearch.activity.SearchResultsActivity
+import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.view.BrowserView
+import ru.tech.easysearch.data.BrowserTabs.updateBottomNav
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
@@ -57,7 +58,7 @@ class WebClient(
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
         val url = request.url.toString()
 
-        if (context is SearchResultsActivity) {
+        if (context is MainActivity) {
             val intent = Intent(context, BrowserActivity::class.java)
             intent.putExtra("url", url)
             context.startActivity(intent)
@@ -135,31 +136,7 @@ class WebClient(
                     context.lastUrl = it
                     context.clickedGo = false
 
-                    context.backwardBrowser?.apply {
-                        when (view.canGoBack()) {
-                            false -> {
-                                alpha = 0.5f
-                                isClickable = false
-                            }
-                            true -> {
-                                alpha = 1f
-                                isClickable = true
-                            }
-                        }
-                    }
-
-                    context.forwardBrowser?.apply {
-                        when (view.canGoForward()) {
-                            false -> {
-                                alpha = 0.5f
-                                isClickable = false
-                            }
-                            true -> {
-                                alpha = 1f
-                                isClickable = true
-                            }
-                        }
-                    }
+                    context.updateBottomNav()
                 }
 
                 val calendar = Calendar.getInstance()

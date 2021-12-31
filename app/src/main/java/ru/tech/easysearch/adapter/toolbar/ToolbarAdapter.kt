@@ -12,7 +12,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
-import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.adapter.lables.LabelListAdapter
 import ru.tech.easysearch.databinding.ToolbarItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
@@ -28,7 +27,8 @@ class ToolbarAdapter(
     private val forward: ImageButton?,
     private val backward: ImageButton?,
     private val manageList: ImageButton,
-    private val close: ImageButton
+    private val close: ImageButton,
+    private var backButton: ImageView? = null
 ) :
     RecyclerView.Adapter<ToolbarAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,14 +38,10 @@ class ToolbarAdapter(
     }
 
     var labelListAdapter: LabelListAdapter? = null
-    private var backButton: ImageView? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
         holder.itemView.setOnClickListener {
-            if (context is SearchResultsActivity) {
-                backButton = context.findViewById(R.id.backButton)
-            }
             when (card.translationY) {
                 displayOffsetY -> {
                     card.animate()
@@ -62,7 +58,8 @@ class ToolbarAdapter(
                                 forward,
                                 backward,
                                 manageList,
-                                close
+                                close,
+                                backButton
                             )
                             labelRecycler.adapter = labelListAdapter
                             fab?.hide()

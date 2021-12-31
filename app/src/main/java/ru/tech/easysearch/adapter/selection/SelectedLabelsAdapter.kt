@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
 import ru.tech.easysearch.databinding.SelectableLabelItemBinding
@@ -32,7 +33,7 @@ class SelectedLabelsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
         holder.icon.setImageResource(R.drawable.ic_baseline_remove_circle_24)
-        holder.icon.setTint(R.color.red)
+        holder.icon.setTint(ContextCompat.getColor(context, R.color.red))
         holder.icon.setOnClickListener {
             if (labelList.size > 2) {
                 disAdapter.labelList.add(labelList[position])

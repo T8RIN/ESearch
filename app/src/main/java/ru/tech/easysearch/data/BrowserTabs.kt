@@ -2,8 +2,6 @@ package ru.tech.easysearch.data
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.os.Handler
-import android.webkit.WebBackForwardList
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
@@ -51,7 +49,7 @@ object BrowserTabs {
         val canvas = Canvas(fullSnap)
         container.draw(canvas)
 
-        val cutSnap = Bitmap.createBitmap(fullSnap, 0, 0, width, (width / 130f * 120f).toInt())
+        val cutSnap = Bitmap.createBitmap(fullSnap, 0, 0, width, (width / 130f * 140f).toInt())
 
         if (openedTabs.isEmpty()) {
             openedTabs.add(
@@ -95,19 +93,19 @@ object BrowserTabs {
         }, {
             iconView?.setImageBitmap(it as Bitmap)
         })
-        browser?.loadUrl("")
-        Handler(mainLooper).postDelayed({browser?.goBack()}, 100)
     }
 
-    private fun BrowserActivity.updateBottomNav() {
+    fun BrowserActivity.updateBottomNav() {
         backwardBrowser?.apply {
             when (browser!!.canGoBack()) {
                 false -> {
                     alpha = 0.5f
+                    setOnClickListener(null)
                     isClickable = false
                 }
                 true -> {
                     alpha = 1f
+                    setOnClickListener { browser?.goBack() }
                     isClickable = true
                 }
             }
@@ -117,10 +115,12 @@ object BrowserTabs {
             when (browser!!.canGoForward()) {
                 false -> {
                     alpha = 0.5f
+                    setOnClickListener(null)
                     isClickable = false
                 }
                 true -> {
                     alpha = 1f
+                    setOnClickListener { browser?.goForward() }
                     isClickable = true
                 }
             }

@@ -50,6 +50,7 @@ object SaveUtils {
             val installer = Intent()
             installer.putExtra("android.intent.extra.shortcut.INTENT", saveIntent)
             installer.putExtra("android.intent.extra.shortcut.NAME", title)
+            @Suppress("DEPRECATION")
             installer.putExtra(
                 Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(

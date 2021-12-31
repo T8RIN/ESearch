@@ -51,11 +51,8 @@ class SettingsFragment : DialogFragment() {
         requireDialog().window?.setWindowAnimations(
             R.style.DialogAnimation
         )
-        requireDialog().setOnDismissListener {
-
-        }
         binding.close.setOnClickListener {
-            requireDialog().dismiss()
+            dismiss()
         }
         binding.settingsRecycler.apply {
             adapter =

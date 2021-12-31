@@ -44,7 +44,7 @@ class TabAdapter(
         )
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, wronPosition: Int) {
         val black = ContextCompat.getColor(
             context,
@@ -117,6 +117,12 @@ class TabAdapter(
             adapterTabs.clear()
             adapterTabs.addAll(openedTabs)
             difResult.dispatchUpdatesTo(this)
+
+            fragment.binding.label.apply {
+                text =
+                    if (openedTabs.isNotEmpty()) "${context.getString(R.string.tabsOpened)} ${openedTabs.size}"
+                    else context.getString(R.string.tabs)
+            }
 
             if (context is BrowserActivity) {
                 context.apply {

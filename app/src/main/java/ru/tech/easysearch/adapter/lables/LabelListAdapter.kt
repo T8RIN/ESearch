@@ -12,7 +12,6 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity
-import ru.tech.easysearch.activity.SearchResultsActivity
 import ru.tech.easysearch.databinding.LabelItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
 
@@ -27,7 +26,8 @@ class LabelListAdapter(
     private val forward: ImageButton?,
     private val backward: ImageButton?,
     private val manageList: ImageButton,
-    private val close: ImageButton
+    private val close: ImageButton,
+    private var backButton: ImageView? = null
 ) :
     RecyclerView.Adapter<LabelListAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,8 +36,6 @@ class LabelListAdapter(
         )
     }
 
-    private var backButton: ImageView? = null
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
 
@@ -45,9 +43,6 @@ class LabelListAdapter(
             position == (toolbarRecycler.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition()
 
         holder.itemView.setOnClickListener {
-            if (context is SearchResultsActivity) {
-                backButton = context.findViewById(R.id.backButton)
-            }
             card.animate()
                 .y(MainActivity.displayOffsetY)
                 .setDuration(350)

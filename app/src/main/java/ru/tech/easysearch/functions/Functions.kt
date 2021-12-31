@@ -20,6 +20,18 @@ object Functions {
         }
     }
 
+    fun delayedDoInIoThreadWithObservingOnMain(
+        delay: Long,
+        backgroundTask: () -> Any,
+        mainTask: (it: Any) -> Unit
+    ) {
+        tempJobSecond?.cancel()
+        tempJobSecond = CoroutineScope(Dispatchers.Main).launch {
+            val b = runAsyncWithDelayedResult(delay, backgroundTask)
+            mainTask(b)
+        }
+    }
+
     fun doInIoThreadWithObservingOnMain(backgroundTask: () -> Any, mainTask: (it: Any) -> Unit) {
         CoroutineScope(Dispatchers.Main).launch {
             val b = runAsyncWithResult(backgroundTask)
@@ -27,7 +39,22 @@ object Functions {
         }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
+    fun delayedDoInForeground(time: Long, function: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            waitForSync(time)
+            function()
+        }
+    }
+
     private var tempJob: Job? = null
+    private var tempJobSecond: Job? = null
+
+    private suspend fun runAsyncWithDelayedResult(delay: Long, backgroundTask: () -> Any) =
+        withContext(Dispatchers.IO) {
+            delay(delay)
+            return@withContext backgroundTask()
+        }
 
     private suspend fun runAsyncWithResult(backgroundTask: () -> Any) =
         withContext(Dispatchers.IO) {
@@ -42,6 +69,11 @@ object Functions {
         withContext(Dispatchers.IO) {
             delay(time)
             function()
+        }
+
+    private suspend fun waitForSync(time: Long) =
+        withContext(Dispatchers.IO) {
+            delay(time)
         }
 
     fun byteArrayToBitmap(array: ByteArray): Bitmap? {

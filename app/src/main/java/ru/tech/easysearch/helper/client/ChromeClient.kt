@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.FrameLayout
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -24,9 +22,8 @@ import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissi
 import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsLoc
 import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsMic
 
-
 class ChromeClient(
-    private val activity: AppCompatActivity,
+    private val activity: Activity,
     private val progressBar: LinearProgressIndicator,
     private val browser: BrowserView
 ) : WebChromeClient() {
@@ -88,7 +85,7 @@ class ChromeClient(
         filePathCallback: ValueCallback<Array<Uri>>,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        if(activity is BrowserActivity){
+        if (activity is BrowserActivity) {
             activity.tempFileCallback = filePathCallback
             val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)

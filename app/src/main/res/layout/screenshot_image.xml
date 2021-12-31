@@ -4,5 +4,5 @@
     android:layout_height="match_parent"
     android:layout_marginTop="48dp"
     android:layout_marginBottom="48dp"
-    android:scaleType="centerCrop"
-    android:contentDescription="@string/none" />
+    android:contentDescription="@string/none"
+    android:scaleType="centerCrop" />

@@ -1,25 +1,28 @@
 package ru.tech.easysearch.fragment.current
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.adapter.tabs.TabAdapter
 import ru.tech.easysearch.data.BrowserTabItem
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
-import ru.tech.easysearch.data.BrowserTabs.saveLastTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
+import ru.tech.easysearch.data.BrowserTabs.saveLastTab
 import ru.tech.easysearch.databinding.CurrentWindowsFragmentBinding
 
 class CurrentWindowsFragment : DialogFragment() {
 
     private var _binding: CurrentWindowsFragmentBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +51,7 @@ class CurrentWindowsFragment : DialogFragment() {
         setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
@@ -58,25 +62,46 @@ class CurrentWindowsFragment : DialogFragment() {
         val activity = requireActivity()
         (activity as? BrowserActivity)?.saveLastTab()
 
-        binding.close.setOnClickListener{ dismiss() }
+        binding.close.setOnClickListener { dismiss() }
 
+        binding.clear.setOnClickListener {
+            if (openedTabs.isNotEmpty()) {
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle(R.string.clearTabs)
+                    .setMessage(R.string.clearTabsMessage)
+                    .setPositiveButton(R.string.ok_ok) { _, _ ->
+                        if (activity is BrowserActivity) activity.finish()
+                        else dismiss()
+                        openedTabs.clear()
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            } else {
+                Toast.makeText(activity.applicationContext, R.string.noTabs, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
 
-        binding.addTab.setOnClickListener{
+        binding.addTab.setOnClickListener {
             dismiss()
-            if(activity is MainActivity){
+            if (activity is MainActivity) {
                 val intent = Intent(activity, BrowserActivity::class.java)
                 intent.putExtra("url", "https://google.com")
                 requireContext().startActivity(intent)
-            }
-            else (activity as? BrowserActivity)?.createNewTab()
+            } else (activity as? BrowserActivity)?.createNewTab()
         }
 
-        binding.tabRecycler.apply{
+        binding.label.apply {
+            text =
+                if (openedTabs.isNotEmpty()) "${getString(R.string.tabsOpened)} ${openedTabs.size}"
+                else getString(R.string.tabs)
+        }
+
+        binding.tabRecycler.apply {
             val list: ArrayList<BrowserTabItem> = ArrayList()
             list.addAll(openedTabs)
             adapter = TabAdapter(requireContext(), list, this@CurrentWindowsFragment)
         }
 
     }
-
 }

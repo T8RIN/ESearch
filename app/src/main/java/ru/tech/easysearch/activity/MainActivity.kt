@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognizerIntent
 import android.util.Patterns
-import android.view.View
+import android.view.View.GONE
 import android.webkit.URLUtil
 import android.widget.ImageButton
 import androidx.activity.result.ActivityResultLauncher
@@ -37,7 +37,10 @@ import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
+import ru.tech.easysearch.fragment.results.SearchResultsFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
+import ru.tech.easysearch.functions.Functions
+import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
 
@@ -64,6 +67,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private var settings: ImageButton? = null
 
     private var pagerShapHelper = PagerSnapHelper()
+    private var searchResultsFragment = SearchResultsFragment()
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -85,7 +89,6 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     }
 
     private fun startBrowserWithQuery(query: String) {
-        val intent = Intent(this, SearchResultsActivity::class.java)
         val key =
             layoutManager?.findLastCompletelyVisibleItemPosition()
                 ?.let { toolbarAdapter?.labelList?.get(it) }
@@ -100,9 +103,14 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             intentBrowser.putExtra("url", tempUrl)
             startActivity(intentBrowser)
         } else {
-            intent.putExtra("url", prefix + query)
-            intent.putExtra("prefix", prefix)
-            startActivity(intent)
+            val args = Bundle()
+            args.putCharSequence("url", prefix + query)
+            args.putCharSequence("prefix", prefix)
+            searchResultsFragment = SearchResultsFragment()
+            searchResultsFragment.apply {
+                arguments = args
+                if (!isAdded) show(supportFragmentManager, "results")
+            }
         }
     }
 
@@ -110,12 +118,15 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         super.onStart()
         val labelList: ArrayList<String> = ArrayList(loadLabelList(this)!!.split("+"))
 
-        toolbarAdapter?.labelList = labelList
-        toolbarAdapter?.notifyDataSetChanged()
-        toolbarAdapter?.labelListAdapter?.labelList = labelList
-        toolbarAdapter?.labelListAdapter?.notifyDataSetChanged()
+        onStartList(labelList)
+
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
+
+        Functions.doInBackground {
+            AdBlocker().createAdList(this)
+        }
+
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -197,12 +208,9 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         }
 
         close!!.setOnClickListener {
-            card!!.animate().y(displayOffsetY).setStartDelay(100).setDuration(300)
-                .withEndAction { fab!!.show() }.start()
-            forward!!.animate().y(0f).setDuration(300).start()
-            backward!!.animate().y(0f).setDuration(300).start()
-            close!!.animate().x(displayOffsetX).setDuration(200).start()
-            manageList!!.animate().y(displayOffsetY).setDuration(200).start()
+            hideSearchSelectionCard(startAction = {
+                fab!!.show()
+            })
         }
 
         searchView = binding.searchView
@@ -235,16 +243,12 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!animating && card!!.translationY == 0f) {
-                    card!!.animate().y(displayOffsetY).setDuration(300)
-                        .withStartAction { animating = true }
-                        .withEndAction {
-                            fab!!.show()
-                            animating = false
-                        }.start()
-                    forward!!.animate().y(0f).setDuration(300).start()
-                    backward!!.animate().y(0f).setDuration(300).start()
-                    close!!.animate().x(displayOffsetX).setDuration(200).start()
-                    manageList!!.animate().y(displayOffsetY).setDuration(200).start()
+                    hideSearchSelectionCard(startAction = {
+                        animating = true
+                    }, endAction = {
+                        fab!!.show()
+                        animating = false
+                    })
                 }
             }
         })
@@ -320,7 +324,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private fun recursiveClickForward() {
         forward!!.setOnClickListener {
             val newPos = layoutManager!!.findLastCompletelyVisibleItemPosition() + 1
-            if (newPos == toolbarAdapter!!.itemCount) toolbarRecycler!!.scrollToPosition(0)
+            if (newPos == toolbarAdapter!!.itemCount) scrollToPosition(0)
             else toolbarRecycler!!.smoothScrollToPosition(newPos)
             it.setOnClickListener {}
             Handler(mainLooper).postDelayed({ recursiveClickForward() }, 200)
@@ -330,7 +334,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private fun recursiveClickBackward() {
         backward!!.setOnClickListener {
             val newPos = layoutManager!!.findLastCompletelyVisibleItemPosition() - 1
-            if (newPos == -1) toolbarRecycler!!.scrollToPosition(toolbarAdapter!!.itemCount)
+            if (newPos == -1) scrollToPosition(toolbarAdapter!!.itemCount)
             else toolbarRecycler!!.smoothScrollToPosition(newPos)
             backward!!.setOnClickListener {}
             Handler(mainLooper).postDelayed({
@@ -356,15 +360,10 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     override fun onBackPressed() {
         if (card?.translationY == 0f) {
-            card?.animate()?.y(displayOffsetY)?.setDuration(350)?.withEndAction {
+            hideSearchSelectionCard(endAction = {
                 labelRecycler?.adapter = null
                 fab?.show()
-                card?.visibility = View.GONE
-            }?.start()
-            forward?.animate()?.y(0f)?.setDuration(300)?.start()
-            backward?.animate()?.y(0f)?.setDuration(300)?.start()
-            close?.animate()?.x(displayOffsetX)?.setDuration(200)?.start()
-            manageList?.animate()?.y(displayOffsetY)?.setDuration(200)?.start()
+            })
         }
     }
 
@@ -379,9 +378,32 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     override fun onPause() {
         for (frag in supportFragmentManager.fragments) {
-            supportFragmentManager.beginTransaction().remove(frag).commit()
+            if (frag.tag != "results") supportFragmentManager.beginTransaction().remove(frag)
+                .commit()
         }
         super.onPause()
+    }
+
+    fun scrollToPosition(position: Int) {
+        toolbarRecycler!!.scrollToPosition(position)
+    }
+
+    private fun hideSearchSelectionCard(
+        startAction: (() -> Unit)? = null,
+        endAction: (() -> Unit)? = null
+    ) {
+        card?.animate()?.y(displayOffsetY)?.setDuration(350)
+            ?.withStartAction {
+                startAction?.invoke()
+            }
+            ?.withEndAction {
+                card?.visibility = GONE
+                endAction?.invoke()
+            }?.start()
+        forward?.animate()?.y(0f)?.setDuration(300)?.start()
+        backward?.animate()?.y(0f)?.setDuration(300)?.start()
+        close?.animate()?.x(displayOffsetX)?.setDuration(200)?.start()
+        manageList?.animate()?.y(displayOffsetY)?.setDuration(200)?.start()
     }
 
 }

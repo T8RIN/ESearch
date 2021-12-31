@@ -57,10 +57,6 @@ class BrowserView : WebView {
     private var searchView: TextInputEditText? = null
 
     init {
-        doInBackground {
-            AdBlocker().createAdList(context)
-        }
-
         val manager = CookieManager.getInstance()
         if (getSetting(context, COOKIES)) manager.setAcceptCookie(true)
         else manager.setAcceptCookie(false)

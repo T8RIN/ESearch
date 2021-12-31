@@ -51,6 +51,8 @@ import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
 import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
+import ru.tech.easysearch.functions.Functions
+import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
@@ -84,6 +86,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     var lastUrl = ""
     var clickedGo = false
 
+    override fun onStart() {
+        super.onStart()
+        Functions.doInBackground {
+            AdBlocker().createAdList(this)
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,10 +122,9 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         browser!!.webChromeClient = chromeClient
 
         val url = dispatchIntent(intent)
-        if(intent.getBooleanExtra("loadTab", false)){
+        if (intent.getBooleanExtra("loadTab", false)) {
             loadTab(intent.getIntExtra("position", -1), false)
-        }
-        else {
+        } else {
             searchView?.let { _ ->
                 clickedGo = true
                 val prefix = "https://www.google.com/search?q="
@@ -170,14 +178,6 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                 handled = true
             }
             handled
-        }
-
-        backwardBrowser?.setOnClickListener {
-            if (browser?.canGoBack() == true) browser?.goBack()
-        }
-
-        forwardBrowser?.setOnClickListener {
-            if (browser?.canGoForward() == true) browser?.goForward()
         }
 
         homeBrowser?.setOnClickListener {

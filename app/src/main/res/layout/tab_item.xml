@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="150dp"
     android:elevation="2dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -15,7 +15,7 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/snap"
         android:layout_width="130dp"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:contentDescription="@string/none"
@@ -31,8 +31,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="4dp"
         android:layout_marginTop="14dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="14dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@id/close"
@@ -42,19 +42,19 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="@tools:sample/lorem/random"
-            android:maxLines="4" />
+            android:maxLines="4"
+            tools:text="@tools:sample/lorem/random" />
 
         <TextView
-            android:maxLines="2"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/gray"
             android:id="@+id/url"
-            tools:text="@tools:sample/lorem/random"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:maxLines="2"
+            android:textColor="@color/gray"
             android:textSize="10sp"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"
+            tools:text="@tools:sample/lorem/random" />
 
     </LinearLayout>
 
@@ -62,12 +62,12 @@
         android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="5dp"
-        android:paddingBottom="5dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="10dp"
         android:background="@drawable/ripple"
         android:contentDescription="@string/none"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
         android:src="@drawable/ic_baseline_close_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -76,7 +76,7 @@
         android:id="@+id/shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="130dp"
         android:background="@drawable/gradient"
         android:elevation="3dp" />
 

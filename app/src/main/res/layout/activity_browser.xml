@@ -21,8 +21,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/none"
             android:padding="12dp"
-            android:src="@drawable/ic_earth_24"
-            android:visibility="gone" />
+            android:src="@drawable/ic_earth_24" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchView"
@@ -75,6 +74,7 @@
         android:layout_gravity="bottom"
         android:indeterminate="false"
         android:progress="0"
+        android:visibility="gone"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/appBar" />
 
@@ -109,7 +109,9 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:alpha="0.5"
                 android:background="@drawable/ripple"
+                android:clickable="false"
                 android:contentDescription="@string/none"
                 android:src="@drawable/ic_baseline_undo_24" />
 
@@ -118,7 +120,9 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:alpha="0.5"
                 android:background="@drawable/ripple"
+                android:clickable="false"
                 android:contentDescription="@string/none"
                 android:src="@drawable/ic_baseline_redo_24" />
 
