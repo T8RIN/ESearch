@@ -31,6 +31,7 @@ import androidx.core.graphics.ColorUtils.colorToHSL
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
+import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.custom.view.BrowserView.Companion.COPY_LINK
 import ru.tech.easysearch.custom.view.BrowserView.Companion.NEW_TAB
@@ -137,14 +138,6 @@ object Extensions {
         }
     }
 
-    fun Class<*>.getResId(resName: String): Int {
-        return try {
-            getDeclaredField(resName).let { it.getInt(it) }
-        } catch (e: Exception) {
-            -1
-        }
-    }
-
     fun View.hideKeyboard(context: Context) {
         (context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
             windowToken,
@@ -163,7 +156,7 @@ object Extensions {
             buffer = BufferedInputStream(inputStream, 8192)
             BitmapFactory.decodeStream(buffer)
         } catch (e: Exception) {
-            ContextCompat.getDrawable(this, R.drawable.ic_earth_24)!!.toBitmap()
+            ContextCompat.getDrawable(this, ic_earth_24)!!.toBitmap()
         }
     }
 
@@ -181,73 +174,73 @@ object Extensions {
     fun Context.createSettingsList(): List<SettingsItem> {
         return listOf(
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_eye_protection_24),
+                ContextCompat.getDrawable(this, ic_eye_protection_24),
                 getString(R.string.eyeProtection),
                 getSetting(this, EYE_PROTECTION),
                 EYE_PROTECTION
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_block_24),
+                ContextCompat.getDrawable(this, ic_baseline_block_24),
                 getString(R.string.adblock),
                 getSetting(this, AD_BLOCK),
                 AD_BLOCK
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_image_24),
+                ContextCompat.getDrawable(this, ic_baseline_image_24),
                 getString(R.string.imageLoading),
                 getSetting(this, IMAGE_LOADING),
                 IMAGE_LOADING
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_location_on_24),
+                ContextCompat.getDrawable(this, ic_baseline_location_on_24),
                 getString(R.string.location),
                 getSetting(this, LOCATION_ACCESS),
                 LOCATION_ACCESS
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_camera_alt_24),
+                ContextCompat.getDrawable(this, ic_baseline_camera_alt_24),
                 getString(R.string.camera),
                 getSetting(this, CAMERA_ACCESS),
                 CAMERA_ACCESS
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_mic_24),
+                ContextCompat.getDrawable(this, ic_baseline_mic_24),
                 getString(R.string.mic),
                 getSetting(this, MIC_ACCESS),
                 MIC_ACCESS
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24),
+                ContextCompat.getDrawable(this, ic_baseline_history_24),
                 getString(R.string.saveHistory),
                 getSetting(this, SAVE_HISTORY),
                 SAVE_HISTORY
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_view_carousel_24),
+                ContextCompat.getDrawable(this, ic_baseline_view_carousel_24),
                 getString(R.string.saveTabs),
                 getSetting(this, SAVE_TABS),
                 SAVE_TABS
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_cookie_24),
+                ContextCompat.getDrawable(this, ic_baseline_cookie_24),
                 getString(R.string.cookies),
                 getSetting(this, COOKIES),
                 COOKIES
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_javascript_24),
+                ContextCompat.getDrawable(this, ic_baseline_javascript_24),
                 getString(R.string.javascript),
                 getSetting(this, JS),
                 JS
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_baseline_message_24),
+                ContextCompat.getDrawable(this, ic_baseline_message_24),
                 getString(R.string.popupMessages),
                 getSetting(this, POPUPS),
                 POPUPS
             ),
             SettingsItem(
-                ContextCompat.getDrawable(this, R.drawable.ic_database_24),
+                ContextCompat.getDrawable(this, ic_database_24),
                 getString(R.string.domStorage),
                 getSetting(this, DOM_STORAGE),
                 DOM_STORAGE
@@ -305,6 +298,7 @@ object Extensions {
 
     }
 
+    @Suppress("DEPRECATION")
     private fun AppCompatActivity.execute(bitmap: Bitmap, date: String) {
         val name = "Screenshot_ESearch_${date}"
         val fos: OutputStream? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -393,6 +387,32 @@ object Extensions {
         add(0, VIEW_IMAGE, 0, R.string.openInNewTab).setOnMenuItemClickListener(listener)
         add(0, SAVE_IMAGE, 0, R.string.download).setOnMenuItemClickListener(listener)
         add(0, SHARE_LINK, 0, R.string.share).setOnMenuItemClickListener(listener)
+    }
+
+    fun String.getResId(): Int {
+        return when (this) {
+            "ic_amazon_logo" -> ic_amazon_logo
+            "ic_avito_logo" -> ic_avito_logo
+            "ic_bing_logo" -> ic_bing_logo
+            "ic_duckduckgo_logo" -> ic_duckduckgo_logo
+            "ic_ebay_logo" -> ic_ebay_logo
+            "ic_ekatalog_logo" -> ic_ekatalog_logo
+            "ic_facebook_logo" -> ic_facebook_logo
+            "ic_google_logo" -> ic_google_logo
+            "ic_imdb_logo" -> ic_imdb_logo
+            "ic_mailru_logo" -> ic_mailru_logo
+            "ic_ozon_logo" -> ic_ozon_logo
+            "ic_translate_logo" -> ic_translate_logo
+            "ic_twitter_logo" -> ic_twitter_logo
+            "ic_vk_logo" -> ic_vk_logo
+            "ic_wikipedia_logo" -> ic_wikipedia_logo
+            "ic_yahoo_logo" -> ic_yahoo_logo
+            "ic_yandex_logo" -> ic_yandex_logo
+            "ic_youla_logo" -> ic_youla_logo
+            "ic_youtube_logo" -> ic_youtube_logo
+            "ic_github_logo" -> ic_github_logo
+            else -> 0
+        }
     }
 
 }

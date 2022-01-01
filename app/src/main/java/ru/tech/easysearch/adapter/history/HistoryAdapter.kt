@@ -62,7 +62,9 @@ class HistoryAdapter(
             holder.time.text = history.time
             Log.d("dao", history.date + "  " + history.time)
             holder.itemView.setOnClickListener {
-                if (browser != null) (fragment.requireActivity() as BrowserActivity).createNewTab(history.url)
+                if (browser != null) (fragment.requireActivity() as BrowserActivity).createNewTab(
+                    history.url
+                )
                 else {
                     val intent = Intent(fragment.requireContext(), BrowserActivity::class.java)
                     intent.putExtra("url", history.url)

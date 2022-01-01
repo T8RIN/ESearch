@@ -100,7 +100,7 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
         }
 
         binding.clear.setOnClickListener {
-            if(adapter?.itemCount != 0){
+            if (adapter?.itemCount != 0) {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.clearHistory)
                     .setMessage(R.string.clearHistoryMessage)
@@ -113,7 +113,11 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
                     .setNegativeButton(R.string.cancel, null)
                     .show()
             } else {
-                Toast.makeText(requireContext().applicationContext, R.string.noHistoryClear, Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext().applicationContext,
+                    R.string.noHistoryClear,
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
 

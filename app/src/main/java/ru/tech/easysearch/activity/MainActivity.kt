@@ -37,11 +37,11 @@ import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
-import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.results.SearchResultsFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
+import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface

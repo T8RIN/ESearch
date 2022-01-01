@@ -37,7 +37,7 @@ class DeSelectedLabelsAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
+        holder.label.setImageResource(labelList[position].getResId())
         holder.icon.setImageResource(R.drawable.ic_baseline_add_circle_24)
         holder.icon.setTint(ContextCompat.getColor(context, R.color.dgreen))
         holder.dragger.visibility = GONE

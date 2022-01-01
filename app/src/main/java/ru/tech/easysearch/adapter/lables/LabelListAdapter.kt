@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.databinding.LabelItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
@@ -37,7 +36,7 @@ class LabelListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
+        holder.label.setImageResource(labelList[position].getResId())
 
         holder.card.isChecked =
             position == (toolbarRecycler.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition()

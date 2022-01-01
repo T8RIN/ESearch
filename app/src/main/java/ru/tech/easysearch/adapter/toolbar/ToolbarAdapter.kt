@@ -9,7 +9,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.adapter.lables.LabelListAdapter
@@ -40,7 +39,7 @@ class ToolbarAdapter(
     var labelListAdapter: LabelListAdapter? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(R.drawable::class.java.getResId(labelList[position]))
+        holder.label.setImageResource(labelList[position].getResId())
         holder.itemView.setOnClickListener {
             when (card.translationY) {
                 displayOffsetY -> {

@@ -49,11 +49,11 @@ import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.shareWith
 import ru.tech.easysearch.extensions.Extensions.writeBitmap
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
-import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
 import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
+import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.client.ChromeClient
