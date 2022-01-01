@@ -27,6 +27,7 @@ import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.data.BrowserTabs.loadOpenedTabs
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
+import ru.tech.easysearch.data.BrowserTabs.updateTabs
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.database.ESearchDatabase
@@ -383,6 +384,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             if (frag.tag != "results") supportFragmentManager.beginTransaction().remove(frag)
                 .commit()
         }
+        updateTabs()
         super.onStop()
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
@@ -66,7 +67,8 @@ class CurrentWindowsFragment : DialogFragment() {
         )
         val activity = requireActivity()
         requireDialog().setOnDismissListener {
-            if(needToLoad) (activity as? BrowserActivity)?.loadTab(position, false)
+            if (openedTabs.isEmpty()) (activity as? BrowserActivity)?.finish()
+            else if(needToLoad) (activity as? BrowserActivity)?.loadTab(position, false)
             activity.updateTabs()
         }
         (activity as? BrowserActivity)?.saveLastTab()
@@ -79,8 +81,8 @@ class CurrentWindowsFragment : DialogFragment() {
                     .setTitle(R.string.clearTabs)
                     .setMessage(R.string.clearTabsMessage)
                     .setPositiveButton(R.string.ok_ok) { _, _ ->
-                        if (activity is BrowserActivity) activity.finish()
-                        else requireDialog().dismiss()
+                        (activity as? BrowserActivity)?.finish()
+                        requireDialog().dismiss()
                         openedTabs.clear()
                         requireContext().updateTabs()
                     }
@@ -110,7 +112,11 @@ class CurrentWindowsFragment : DialogFragment() {
         binding.tabRecycler.apply {
             val list: ArrayList<BrowserTabItem> = ArrayList()
             list.addAll(openedTabs)
-            adapter = TabAdapter(requireContext(), list, this@CurrentWindowsFragment)
+            when(list.isNotEmpty()){
+                true -> adapter = TabAdapter(requireContext(), list, this@CurrentWindowsFragment)
+                else -> binding.errorMessage.visibility = VISIBLE
+            }
+
         }
     }
 

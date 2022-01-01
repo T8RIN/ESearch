@@ -66,4 +66,5 @@
     <string name="noTabs">You have no tabs to clear</string>
     <string name="tabs">Tabs</string>
     <string name="undo">Undo</string>
+    <string name="noTabsHere">You have no tabs</string>
 </resources>

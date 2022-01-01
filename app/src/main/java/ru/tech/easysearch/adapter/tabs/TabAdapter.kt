@@ -129,8 +129,7 @@ class TabAdapter(
 
             if (context is BrowserActivity) {
                 context.apply {
-                    if (adapterTabs.isEmpty()) finish()
-                    else if (findViewById<BrowserView>(R.id.webBrowser) === lastTab) {
+                    if (findViewById<BrowserView>(R.id.webBrowser) === lastTab) {
                         fragment.notifyPosition(adapterTabs.lastIndex)
                     }
                 }
@@ -138,17 +137,22 @@ class TabAdapter(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateState() {
         val dfc = TabDiffUtil(adapterTabs, openedTabs)
         val difResult = DiffUtil.calculateDiff(dfc)
         adapterTabs.clear()
         adapterTabs.addAll(openedTabs)
         difResult.dispatchUpdatesTo(this)
-        fragment.binding.label.apply {
-            text =
-                if (openedTabs.isNotEmpty()) "${context.getString(R.string.tabsOpened)} ${openedTabs.size}"
-                else context.getString(R.string.tabs)
+        if (openedTabs.isNotEmpty()) {
+            fragment.binding.label.text =
+                "${context.getString(R.string.tabsOpened)} ${openedTabs.size}"
+            fragment.binding.errorMessage.visibility = GONE
+        } else {
+            fragment.binding.label.text = context.getString(R.string.tabs)
+            fragment.binding.errorMessage.visibility = VISIBLE
         }
+
     }
 
     override fun getItemCount(): Int {

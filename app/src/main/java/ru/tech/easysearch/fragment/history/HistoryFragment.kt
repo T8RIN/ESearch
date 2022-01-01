@@ -88,7 +88,6 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
                     HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
                 binding.historyRecycler.adapter = adapter
                 binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter))
-                //adapter.submitList(it, booleanArray)
             } else {
                 binding.errorMessage.visibility = View.VISIBLE
                 binding.historyRecycler.visibility = View.GONE
