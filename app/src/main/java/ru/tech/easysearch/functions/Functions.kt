@@ -76,7 +76,7 @@ object Functions {
             delay(time)
         }
 
-    fun byteArrayToBitmap(array: ByteArray): Bitmap? {
+    fun byteArrayToBitmap(array: ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(array, 0, array.size)
     }
 

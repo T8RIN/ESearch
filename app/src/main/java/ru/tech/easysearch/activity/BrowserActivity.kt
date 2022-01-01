@@ -46,6 +46,7 @@ import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.extensions.Extensions.setCoeff
+import ru.tech.easysearch.extensions.Extensions.shareWith
 import ru.tech.easysearch.extensions.Extensions.writeBitmap
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
@@ -317,11 +318,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         browser?.reload()
                     }
                     R.drawable.ic_baseline_share_24 -> {
-                        val sendIntent = Intent()
-                        sendIntent.action = ACTION_SEND
-                        sendIntent.putExtra(EXTRA_TEXT, browser?.url)
-                        sendIntent.type = "text/plain"
-                        startActivity(createChooser(sendIntent, getString(R.string.share)))
+                        shareWith(browser?.url.toString())
                     }
                     R.drawable.ic_baseline_translate_24 -> {
                         browser?.loadUrl("$translateSite${browser?.url}")

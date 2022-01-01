@@ -12,6 +12,8 @@ import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 import ru.tech.easysearch.custom.view.BrowserView
+import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_TABS
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.data.SharedPreferencesAccess.mainSharedPrefsKey
 import ru.tech.easysearch.extensions.Extensions.dipToPixels
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
@@ -90,29 +92,33 @@ object BrowserTabs {
     }
 
     fun BrowserActivity.loadTab(position: Int, save: Boolean = true) {
-        val tabToLoad = openedTabs[position].tab
-        val temp = openedTabs[position]
-        val container = binding.webViewContainer
-        openedTabs.remove(temp)
-        openedTabs.add(temp)
-        if (save) this.saveLastTab()
-        container.removeView(findViewById(R.id.webBrowser))
-        container.addView(tabToLoad)
-        browser = tabToLoad
-        browser?.webChromeClient = ChromeClient(this, progressBar!!, tabToLoad)
-        browser?.webViewClient = WebClient(this, progressBar!!)
-        this.updateBottomNav()
-        val url = when (val rll = tabToLoad.url) {
-            null -> openedTabs[position].url
-            else -> rll
+        if (openedTabs.isEmpty()) {
+            createNewTab()
+        } else {
+            val tabToLoad = openedTabs[position].tab
+            val temp = openedTabs[position]
+            val container = binding.webViewContainer
+            openedTabs.remove(temp)
+            openedTabs.add(temp)
+            if (save) this.saveLastTab()
+            container.removeView(findViewById(R.id.webBrowser))
+            container.addView(tabToLoad)
+            browser = tabToLoad
+            browser?.webChromeClient = ChromeClient(this, progressBar!!, tabToLoad)
+            browser?.webViewClient = WebClient(this, progressBar!!)
+            this.updateBottomNav()
+            val url = when (val rll = tabToLoad.url) {
+                null -> openedTabs[position].url
+                else -> rll
+            }
+            searchView?.setText(url)
+            while (searchView?.isFocused == true) searchView?.clearFocus()
+            Functions.doInIoThreadWithObservingOnMain({
+                fetchFavicon(url)
+            }, {
+                iconView?.setImageBitmap(it as Bitmap)
+            })
         }
-        searchView?.setText(url)
-        while (searchView?.isFocused == true) searchView?.clearFocus()
-        Functions.doInIoThreadWithObservingOnMain({
-            fetchFavicon(url)
-        }, {
-            iconView?.setImageBitmap(it as Bitmap)
-        })
     }
 
     fun BrowserActivity.updateBottomNav() {
@@ -148,20 +154,22 @@ object BrowserTabs {
     }
 
     fun Context.updateTabs() {
-        doInBackground {
-            val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
-            val tempArray: ArrayList<String> = ArrayList()
-            for (i in openedTabs.indices) {
-                val item = openedTabs[i]
-                val fullSnap = when (val snap = item.fullSnap?.toByteArray()) {
-                    null -> ContextCompat.getDrawable(this, R.drawable.skeleton)!!.getBitmap()!!
-                        .toByteArray()
-                    else -> snap
+        if (getSetting(this, SAVE_TABS)) {
+            doInBackground {
+                val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
+                val tempArray: ArrayList<String> = ArrayList()
+                for (i in openedTabs.indices) {
+                    val item = openedTabs[i]
+                    val fullSnap = when (val snap = item.fullSnap?.toByteArray()) {
+                        null -> ContextCompat.getDrawable(this, R.drawable.skeleton)!!.getBitmap()!!
+                            .toByteArray()
+                        else -> snap
+                    }
+                    tempArray.add("$i$N${item.title}$N${item.url}$N${fullSnap.getString()}")
                 }
-                tempArray.add("$i$N${item.title}$N${item.url}$N${fullSnap.getString()}")
-            }
 
-            sp.setTabs(tempArray.toMutableSet())
+                sp.setTabs(tempArray.toMutableSet())
+            }
         }
     }
 
@@ -174,24 +182,31 @@ object BrowserTabs {
     }
 
     fun AppCompatActivity.loadOpenedTabs(progressBar: LinearProgressIndicator? = null) {
-        val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
-        val tempArr: ArrayList<Pair<Int, BrowserTabItem>> = ArrayList()
-        for (data in sp.getTabs()) {
-            val dataArr = data.split(N)
+        if (getSetting(this, SAVE_TABS)) {
+            val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
+            val tempArr: ArrayList<Pair<Int, BrowserTabItem>> = ArrayList()
+            for (data in sp.getTabs()) {
+                val dataArr = data.split(N)
 
-            val id = dataArr[0]
-            val title = dataArr[1]
-            val url = dataArr[2]
-            val fullSnap = dataArr[3].getByteArray()
+                val id = dataArr[0]
+                val title = dataArr[1]
+                val url = dataArr[2]
+                val fullSnap = dataArr[3].getByteArray()
 
-            val tab = BrowserView(this)
-            tab.webChromeClient = ChromeClient(this, progressBar, tab)
-            tab.webViewClient = WebClient(this, progressBar)
-            tab.loadUrl(url)
-            tempArr.add(Pair(Integer.parseInt(id), BrowserTabItem(byteArrayToBitmap(fullSnap), title, url, tab)))
+                val tab = BrowserView(this)
+                tab.webChromeClient = ChromeClient(this, progressBar, tab)
+                tab.webViewClient = WebClient(this, progressBar)
+                tab.loadUrl(url)
+                tempArr.add(
+                    Pair(
+                        Integer.parseInt(id),
+                        BrowserTabItem(byteArrayToBitmap(fullSnap), title, url, tab)
+                    )
+                )
+            }
+            tempArr.sortBy { it.first }
+            for (i in tempArr) openedTabs.add(i.second)
         }
-        tempArr.sortBy { it.first }
-        for (i in tempArr) openedTabs.add(i.second)
     }
 
     fun Bitmap.getCutSnap(): Bitmap? {

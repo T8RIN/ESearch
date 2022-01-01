@@ -2,9 +2,7 @@ package ru.tech.easysearch.extensions
 
 import android.annotation.TargetApi
 import android.app.Activity
-import android.content.ContentResolver
-import android.content.ContentValues
-import android.content.Context
+import android.content.*
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.*
@@ -15,6 +13,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64.*
 import android.util.TypedValue
+import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebResourceError
@@ -32,6 +32,11 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.custom.view.BrowserView.Companion.COPY_LINK
+import ru.tech.easysearch.custom.view.BrowserView.Companion.NEW_TAB
+import ru.tech.easysearch.custom.view.BrowserView.Companion.SAVE_IMAGE
+import ru.tech.easysearch.custom.view.BrowserView.Companion.SHARE_LINK
+import ru.tech.easysearch.custom.view.BrowserView.Companion.VIEW_IMAGE
 import ru.tech.easysearch.data.DataArrays.NEGATIVE_COLOR
 import ru.tech.easysearch.data.DataArrays.faviconParser
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
@@ -45,6 +50,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
+import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_TABS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsStorage
 import ru.tech.easysearch.model.SettingsItem
@@ -217,6 +223,12 @@ object Extensions {
                 SAVE_HISTORY
             ),
             SettingsItem(
+                ContextCompat.getDrawable(this, R.drawable.ic_baseline_view_carousel_24),
+                getString(R.string.saveTabs),
+                getSetting(this, SAVE_TABS),
+                SAVE_TABS
+            ),
+            SettingsItem(
                 ContextCompat.getDrawable(this, R.drawable.ic_baseline_cookie_24),
                 getString(R.string.cookies),
                 getSetting(this, COOKIES),
@@ -336,6 +348,51 @@ object Extensions {
         hsl[2] -= value
         hsl[2] = 0f.coerceAtLeast(hsl[2].coerceAtMost(1f))
         return HSLToColor(hsl)
+    }
+
+    fun Context.shareWith(data: String) {
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT, data)
+        sendIntent.type = "text/plain"
+        startActivity(Intent.createChooser(sendIntent, getString(R.string.share)))
+    }
+
+    fun Context.makeClip(data: String) {
+        val clipboard: ClipboardManager =
+            getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(getString(R.string.url), data)
+        clipboard.setPrimaryClip(clip)
+    }
+
+    fun Context.openPhone(data: String) {
+        val intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:$data")
+        startActivity(intent)
+    }
+
+    fun Context.openEmail(data: String) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:$data")
+        startActivity(intent)
+    }
+
+    fun Context.openMaps(data: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(data)
+        startActivity(intent)
+    }
+
+    fun ContextMenu.actionsForLink(listener: MenuItem.OnMenuItemClickListener) {
+        add(0, NEW_TAB, 0, R.string.openInNewTab).setOnMenuItemClickListener(listener)
+        add(0, COPY_LINK, 0, R.string.copy).setOnMenuItemClickListener(listener)
+        add(0, SHARE_LINK, 0, R.string.share).setOnMenuItemClickListener(listener)
+    }
+
+    fun ContextMenu.actionsForImage(listener: MenuItem.OnMenuItemClickListener) {
+        add(0, VIEW_IMAGE, 0, R.string.openInNewTab).setOnMenuItemClickListener(listener)
+        add(0, SAVE_IMAGE, 0, R.string.download).setOnMenuItemClickListener(listener)
+        add(0, SHARE_LINK, 0, R.string.share).setOnMenuItemClickListener(listener)
     }
 
 }

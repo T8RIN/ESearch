@@ -15,6 +15,7 @@ object SharedPreferencesAccess {
     const val CAMERA_ACCESS = "camera"
     const val MIC_ACCESS = "mic"
     const val SAVE_HISTORY = "svhist"
+    const val SAVE_TABS = "savetabsenbl"
     const val COOKIES = "cookies"
     const val JS = "javascript"
     const val POPUPS = "popupmessages"

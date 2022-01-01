@@ -67,4 +67,10 @@
     <string name="tabs">Tabs</string>
     <string name="undo">Undo</string>
     <string name="noTabsHere">You have no tabs</string>
+    <string name="saveTabs">Save opened tabs</string>
+    <string name="url">URL</string>
+    <string name="openInNewTab">Open in a new tab</string>
+    <string name="copy">Copy  to clipboard</string>
+    <string name="image">Image</string>
+    <string name="saved">Saved</string>
 </resources>

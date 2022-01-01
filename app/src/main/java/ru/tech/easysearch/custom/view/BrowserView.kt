@@ -6,23 +6,30 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.webkit.CookieManager
+import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import android.webkit.WebView
+import android.webkit.WebView.HitTestResult.*
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import okhttp3.internal.userAgent
 import ru.tech.easysearch.R
+import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.data.BrowserTabs.createNewTab
 import ru.tech.easysearch.data.DataArrays.desktopUserAgentString
 import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
@@ -32,14 +39,24 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.JS
 import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.extensions.Extensions.actionsForImage
+import ru.tech.easysearch.extensions.Extensions.actionsForLink
 import ru.tech.easysearch.extensions.Extensions.forceNightMode
+import ru.tech.easysearch.extensions.Extensions.getByteArray
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
-import ru.tech.easysearch.functions.Functions.doInBackground
+import ru.tech.easysearch.extensions.Extensions.makeClip
+import ru.tech.easysearch.extensions.Extensions.openEmail
+import ru.tech.easysearch.extensions.Extensions.openMaps
+import ru.tech.easysearch.extensions.Extensions.openPhone
+import ru.tech.easysearch.extensions.Extensions.shareWith
+import ru.tech.easysearch.extensions.Extensions.writeBitmap
+import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
-import ru.tech.easysearch.helper.adblock.AdBlocker
+import ru.tech.easysearch.helper.adblock.AdBlocker.Companion.getDomain
 import java.net.URL
 import java.net.URLConnection
+
 
 @SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
 class BrowserView : WebView {
@@ -57,6 +74,7 @@ class BrowserView : WebView {
     private var searchView: TextInputEditText? = null
 
     init {
+        (context as? BrowserActivity)?.registerForContextMenu(this)
         val manager = CookieManager.getInstance()
         if (getSetting(context, COOKIES)) manager.setAcceptCookie(true)
         else manager.setAcceptCookie(false)
@@ -101,11 +119,8 @@ class BrowserView : WebView {
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(false)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_DOWNLOADS,
-                    URLUtil.guessFileName(url, contentDisposition, mimeType)
-                )
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+
             val downloadManager =
                 context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
@@ -209,11 +224,124 @@ class BrowserView : WebView {
         }
     }
 
+    override fun onCreateContextMenu(menu: ContextMenu) {
+        val result = hitTestResult
+        result.extra?.let {
+            val extra = it
+            when (result.type) {
+                SRC_ANCHOR_TYPE -> {
+                    setupMenu(extra.getDomain(), extra, result.type, menu)
+                }
+                SRC_IMAGE_ANCHOR_TYPE -> {
+                    val handlerThread = HandlerThread("HandlerThread")
+                    handlerThread.start()
+                    val handler = Handler(handlerThread.looper)
+                    val message = handler.obtainMessage()
+                    requestFocusNodeHref(message)
+                    val url = message.data["url"] as String?
+                    setupMenu(url?.getDomain().toString(), url.toString(), result.type, menu)
+                }
+                IMAGE_TYPE -> {
+                    setupMenu(extra.getDomain(), extra, result.type, menu)
+                }
+                PHONE_TYPE -> context.openPhone(extra)
+                EMAIL_TYPE -> context.openEmail(extra)
+                GEO_TYPE -> context.openMaps(extra)
+                else -> {
+                    setupMenu(extra.getDomain(), extra, 0, menu)
+                }
+            }
+        }
+        super.onCreateContextMenu(menu)
+    }
+
+    private fun setupMenu(domain: String, url: String, srcAnchorType: Int, menu: ContextMenu) {
+        val listener = MenuItem.OnMenuItemClickListener {
+            when (it.itemId) {
+                SAVE_IMAGE -> {
+                    if (url.startsWith("data:")) {
+                        (context as AppCompatActivity).writeBitmap(
+                            byteArrayToBitmap(
+                                url.substringAfter(
+                                    ","
+                                ).getByteArray()
+                            )
+                        )
+                        Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+                    } else {
+                        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(url)
+                        val name = URLUtil.guessFileName(url, null, fileExtension)
+
+                        val request = DownloadManager.Request(Uri.parse(url))
+                            .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+                            .setMimeType("image/jpeg")
+                            .addRequestHeader("cookie", CookieManager.getInstance().getCookie(url))
+                            .addRequestHeader("User-Agent", userAgent)
+                            .setTitle(name)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(false)
+                            .setDestinationInExternalPublicDir(
+                                Environment.DIRECTORY_DOWNLOADS,
+                                name
+                            )
+
+                        val downloadManager =
+                            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                        downloadManager.enqueue(request)
+                    }
+                }
+                COPY_LINK -> context.makeClip(url)
+                NEW_TAB -> {
+                    (context as BrowserActivity).createNewTab(url)
+                }
+                VIEW_IMAGE -> {
+                    (context as BrowserActivity).createNewTab(url)
+                }
+                SHARE_LINK -> context.shareWith(url)
+            }
+            true
+        }
+
+        menu.setHeaderTitle(domain)
+        menu.setHeaderIcon(
+            ContextCompat.getDrawable(
+                context,
+                R.drawable.ic_baseline_insert_link_24
+            )
+        )
+
+        when (srcAnchorType) {
+            SRC_ANCHOR_TYPE -> menu.actionsForLink(listener)
+            IMAGE_TYPE -> {
+                menu.setHeaderTitle(R.string.image)
+                menu.setHeaderIcon(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_baseline_image_24
+                    )
+                )
+                menu.actionsForImage(listener)
+            }
+            SRC_IMAGE_ANCHOR_TYPE -> menu.actionsForLink(listener)
+            else -> menu.actionsForLink(listener)
+        }
+        Log.d("vvv", "$domain  $url  $srcAnchorType")
+    }
+
     fun isDesktop(): Boolean {
         return when (settings.userAgentString) {
             desktopUserAgentString -> true
             else -> false
         }
+    }
+
+    companion object {
+        const val NEW_TAB = -4
+        const val SAVE_IMAGE = -5
+        const val VIEW_IMAGE = -6
+        const val COPY_LINK = -7
+        const val SHARE_LINK = -8
     }
 
 }

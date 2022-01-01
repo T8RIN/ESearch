@@ -68,7 +68,7 @@ class CurrentWindowsFragment : DialogFragment() {
         val activity = requireActivity()
         requireDialog().setOnDismissListener {
             if (openedTabs.isEmpty()) (activity as? BrowserActivity)?.finish()
-            else if(needToLoad) (activity as? BrowserActivity)?.loadTab(position, false)
+            else if (needToLoad) (activity as? BrowserActivity)?.loadTab(position, false)
             activity.updateTabs()
         }
         (activity as? BrowserActivity)?.saveLastTab()
@@ -112,7 +112,7 @@ class CurrentWindowsFragment : DialogFragment() {
         binding.tabRecycler.apply {
             val list: ArrayList<BrowserTabItem> = ArrayList()
             list.addAll(openedTabs)
-            when(list.isNotEmpty()){
+            when (list.isNotEmpty()) {
                 true -> adapter = TabAdapter(requireContext(), list, this@CurrentWindowsFragment)
                 else -> binding.errorMessage.visibility = VISIBLE
             }
@@ -120,7 +120,7 @@ class CurrentWindowsFragment : DialogFragment() {
         }
     }
 
-    fun notifyPosition(position: Int){
+    fun notifyPosition(position: Int) {
         needToLoad = true
         this.position = position
     }
