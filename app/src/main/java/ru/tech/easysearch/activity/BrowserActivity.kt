@@ -49,7 +49,7 @@ import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.shareWith
 import ru.tech.easysearch.extensions.Extensions.writeBitmap
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
-import ru.tech.easysearch.fragment.tabs.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
 import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
@@ -192,7 +192,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         }
 
         currentWindows?.setOnClickListener {
-            CurrentWindowsFragment().show(supportFragmentManager, "custom")
+            TabsFragment().show(supportFragmentManager, "custom")
         }
 
         binding.goMoreButton.setOnClickListener { showMore() }

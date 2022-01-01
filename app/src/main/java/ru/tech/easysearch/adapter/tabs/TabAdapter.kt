@@ -30,7 +30,7 @@ import ru.tech.easysearch.extensions.Extensions.dipToPixels
 import ru.tech.easysearch.extensions.Extensions.getAttrColor
 import ru.tech.easysearch.extensions.Extensions.lightenColor
 import ru.tech.easysearch.extensions.Extensions.setTint
-import ru.tech.easysearch.fragment.tabs.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.helper.utils.diff.TabDiffUtil
 import java.net.URL
 
@@ -38,7 +38,7 @@ import java.net.URL
 class TabAdapter(
     private val context: Context,
     private var adapterTabs: ArrayList<BrowserTabItem>,
-    private val fragment: CurrentWindowsFragment
+    private val fragment: TabsFragment
 ) :
     RecyclerView.Adapter<TabAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -20,11 +20,11 @@ import ru.tech.easysearch.data.BrowserTabs.loadTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.BrowserTabs.saveLastTab
 import ru.tech.easysearch.data.BrowserTabs.updateTabs
-import ru.tech.easysearch.databinding.CurrentWindowsFragmentBinding
+import ru.tech.easysearch.databinding.TabsFragmentBinding
 
-class CurrentWindowsFragment : DialogFragment() {
+class TabsFragment : DialogFragment() {
 
-    private var _binding: CurrentWindowsFragmentBinding? = null
+    private var _binding: TabsFragmentBinding? = null
     val binding get() = _binding!!
 
     override fun onCreateView(
@@ -32,7 +32,7 @@ class CurrentWindowsFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = CurrentWindowsFragmentBinding.inflate(inflater, container, false)
+        _binding = TabsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -113,7 +113,7 @@ class CurrentWindowsFragment : DialogFragment() {
             val list: ArrayList<BrowserTabItem> = ArrayList()
             list.addAll(openedTabs)
             when (list.isNotEmpty()) {
-                true -> adapter = TabAdapter(requireContext(), list, this@CurrentWindowsFragment)
+                true -> adapter = TabAdapter(requireContext(), list, this@TabsFragment)
                 else -> binding.errorMessage.visibility = VISIBLE
             }
 

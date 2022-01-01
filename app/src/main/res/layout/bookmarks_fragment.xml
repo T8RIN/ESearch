@@ -30,12 +30,12 @@
             android:textSize="16sp" />
 
         <ImageButton
-            android:id="@+id/clear"
+            android:id="@+id/more"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_delete_sweep_24" />
+            android:src="@drawable/ic_baseline_more_vert_24" />
 
     </LinearLayout>
 

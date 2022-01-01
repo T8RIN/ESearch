@@ -37,7 +37,7 @@ import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
-import ru.tech.easysearch.fragment.tabs.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.results.SearchResultsFragment
@@ -297,7 +297,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             delayBeforeNextClick()
         }
         currentWindows?.setOnClickListener {
-            CurrentWindowsFragment().show(supportFragmentManager, "windows")
+            TabsFragment().show(supportFragmentManager, "windows")
             delayBeforeNextClick()
         }
         bookmarks?.setOnClickListener {
