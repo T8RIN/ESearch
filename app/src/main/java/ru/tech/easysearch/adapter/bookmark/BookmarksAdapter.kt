@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.data.BrowserTabs.createNewTab
 import ru.tech.easysearch.database.bookmarks.Bookmark
 import ru.tech.easysearch.databinding.BookmarkItemBinding
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
@@ -15,7 +16,7 @@ import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 
 
 class BookmarksAdapter(
-    private val bookmarksFragment: BookmarksFragment,
+    private val fragment: BookmarksFragment,
     private var bookmarkList: List<Bookmark>,
     private val browser: WebView?
 ) :
@@ -32,13 +33,15 @@ class BookmarksAdapter(
         holder.description.text = bookmark.description
         holder.url.text = bookmark.url
         holder.itemView.setOnClickListener {
-            if (browser != null) browser.loadUrl(bookmark.url)
+            if (browser != null) (fragment.requireActivity() as BrowserActivity).createNewTab(
+                bookmark.url
+            )
             else {
-                val intent = Intent(bookmarksFragment.requireContext(), BrowserActivity::class.java)
+                val intent = Intent(fragment.requireContext(), BrowserActivity::class.java)
                 intent.putExtra("url", bookmark.url)
-                bookmarksFragment.requireContext().startActivity(intent)
+                fragment.requireContext().startActivity(intent)
             }
-            bookmarksFragment.dismiss()
+            fragment.dismiss()
         }
     }
 

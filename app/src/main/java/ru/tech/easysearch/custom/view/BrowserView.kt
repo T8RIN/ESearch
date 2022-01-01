@@ -9,7 +9,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.webkit.CookieManager
 import android.webkit.MimeTypeMap
@@ -326,7 +325,6 @@ class BrowserView : WebView {
             SRC_IMAGE_ANCHOR_TYPE -> menu.actionsForLink(listener)
             else -> menu.actionsForLink(listener)
         }
-        Log.d("vvv", "$domain  $url  $srcAnchorType")
     }
 
     fun isDesktop(): Boolean {

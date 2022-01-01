@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.history.HistoryAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HistoryFragmentBinding
+import ru.tech.easysearch.functions.Functions.doInBackground
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -46,6 +49,8 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
     }
+
+    private var adapter: HistoryAdapter? = null
 
     override fun onViewCreated(
         view: View,
@@ -84,15 +89,36 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
                     historyList.add(i)
                     if (needToAddMore) booleanArray.add(false)
                 }
-                val adapter =
+                adapter =
                     HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
-                binding.historyRecycler.adapter = adapter
-                binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter))
+                binding.historyRecycler.adapter = adapter!!
+                binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter!!))
             } else {
                 binding.errorMessage.visibility = View.VISIBLE
                 binding.historyRecycler.visibility = View.GONE
             }
         }
+
+        binding.clear.setOnClickListener {
+            if(adapter?.itemCount != 0){
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.clearHistory)
+                    .setMessage(R.string.clearHistoryMessage)
+                    .setPositiveButton(R.string.ok_ok) { _, _ ->
+                        doInBackground {
+                            database.historyDao().clearHistory()
+                        }
+                        dismiss()
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            } else {
+                Toast.makeText(requireContext().applicationContext, R.string.noHistoryClear, Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+
     }
 
 

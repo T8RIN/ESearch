@@ -37,7 +37,7 @@ import ru.tech.easysearch.extensions.Extensions.getBitmap
 import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
-import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.tabs.CurrentWindowsFragment
 import ru.tech.easysearch.fragment.dialog.SelectLabelsDialog
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.results.SearchResultsFragment

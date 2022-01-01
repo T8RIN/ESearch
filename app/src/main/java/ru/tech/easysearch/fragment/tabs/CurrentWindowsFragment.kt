@@ -1,4 +1,4 @@
-package ru.tech.easysearch.fragment.current
+package ru.tech.easysearch.fragment.tabs
 
 import android.annotation.SuppressLint
 import android.content.Intent

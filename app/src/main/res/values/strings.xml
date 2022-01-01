@@ -73,4 +73,7 @@
     <string name="copy">Copy  to clipboard</string>
     <string name="image">Image</string>
     <string name="saved">Saved</string>
+    <string name="clearHistory">Clear history</string>
+    <string name="clearHistoryMessage">This will irrevocably clear all your history</string>
+    <string name="noHistoryClear">You have no history to clear</string>
 </resources>

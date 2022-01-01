@@ -30,7 +30,7 @@ import ru.tech.easysearch.extensions.Extensions.dipToPixels
 import ru.tech.easysearch.extensions.Extensions.getAttrColor
 import ru.tech.easysearch.extensions.Extensions.lightenColor
 import ru.tech.easysearch.extensions.Extensions.setTint
-import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
+import ru.tech.easysearch.fragment.tabs.CurrentWindowsFragment
 import ru.tech.easysearch.helper.utils.diff.TabDiffUtil
 import java.net.URL
 
