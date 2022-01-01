@@ -16,15 +16,18 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.BrowserTabItem
+import ru.tech.easysearch.data.BrowserTabs.getCutSnap
 import ru.tech.easysearch.data.BrowserTabs.loadTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.databinding.TabItemBinding
 import ru.tech.easysearch.extensions.Extensions.darkenColor
 import ru.tech.easysearch.extensions.Extensions.dipToPixels
+import ru.tech.easysearch.extensions.Extensions.getAttrColor
 import ru.tech.easysearch.extensions.Extensions.lightenColor
 import ru.tech.easysearch.extensions.Extensions.setTint
 import ru.tech.easysearch.fragment.current.CurrentWindowsFragment
@@ -66,7 +69,7 @@ class TabAdapter(
                 holder.shadow.visibility = VISIBLE
             }
         }
-        holder.snap.setImageBitmap(adapterTabs[position].cutSnap)
+        holder.snap.setImageBitmap(adapterTabs[position].fullSnap?.getCutSnap())
         holder.title.text = adapterTabs[position].title
         holder.url.text = URL(adapterTabs[position].url).host
 
@@ -97,6 +100,7 @@ class TabAdapter(
             position = holder.layoutPosition
             if (context is BrowserActivity) {
                 context.binding.webViewContainer.removeView(context.findViewById(R.id.webBrowser))
+                context.binding.webViewContainer.removeAllViews()
                 context.loadTab(position)
                 fragment.dismiss()
             } else {
@@ -109,29 +113,41 @@ class TabAdapter(
 
         holder.close.setOnClickListener {
             val lastTab = adapterTabs.last().tab
+            val removed = adapterTabs[holder.layoutPosition]
 
-            openedTabs.remove(adapterTabs[holder.layoutPosition])
+            openedTabs.remove(removed)
+            Snackbar.make(fragment.requireView(), "${lastTab.url}", Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo) {
+                    openedTabs.add(removed)
+                    updateState()
+                }
+                .setActionTextColor(context.getAttrColor(R.attr.colorSecondary))
+                .setAnchorView(fragment.binding.addTab)
+                .show()
 
-            val dfc = TabDiffUtil(adapterTabs, openedTabs)
-            val difResult = DiffUtil.calculateDiff(dfc)
-            adapterTabs.clear()
-            adapterTabs.addAll(openedTabs)
-            difResult.dispatchUpdatesTo(this)
-
-            fragment.binding.label.apply {
-                text =
-                    if (openedTabs.isNotEmpty()) "${context.getString(R.string.tabsOpened)} ${openedTabs.size}"
-                    else context.getString(R.string.tabs)
-            }
+            updateState()
 
             if (context is BrowserActivity) {
                 context.apply {
                     if (adapterTabs.isEmpty()) finish()
-                    else if (findViewById<BrowserView>(R.id.webBrowser) == lastTab) {
-                        loadTab(adapterTabs.lastIndex, false)
+                    else if (findViewById<BrowserView>(R.id.webBrowser) === lastTab) {
+                        fragment.notifyPosition(adapterTabs.lastIndex)
                     }
                 }
             }
+        }
+    }
+
+    private fun updateState() {
+        val dfc = TabDiffUtil(adapterTabs, openedTabs)
+        val difResult = DiffUtil.calculateDiff(dfc)
+        adapterTabs.clear()
+        adapterTabs.addAll(openedTabs)
+        difResult.dispatchUpdatesTo(this)
+        fragment.binding.label.apply {
+            text =
+                if (openedTabs.isNotEmpty()) "${context.getString(R.string.tabsOpened)} ${openedTabs.size}"
+                else context.getString(R.string.tabs)
         }
     }
 

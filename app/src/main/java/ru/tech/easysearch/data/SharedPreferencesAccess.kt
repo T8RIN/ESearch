@@ -4,7 +4,7 @@ import android.content.Context
 
 object SharedPreferencesAccess {
 
-    private const val mainSharedPrefsKey = "eSearch"
+    const val mainSharedPrefsKey = "eSearch"
     private const val defLabels =
         "ic_google_logo+ic_bing_logo+ic_yandex_logo+ic_mailru_logo+ic_yahoo_logo"
 
@@ -51,5 +51,4 @@ object SharedPreferencesAccess {
         }
         return false
     }
-
 }

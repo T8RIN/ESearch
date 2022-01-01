@@ -5,7 +5,6 @@ import ru.tech.easysearch.custom.view.BrowserView
 
 data class BrowserTabItem(
     var fullSnap: Bitmap?,
-    var cutSnap: Bitmap?,
     var title: String,
     var url: String,
     var tab: BrowserView

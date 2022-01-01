@@ -25,6 +25,8 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.shortcuts.ShortcutsPagerRecyclerAdapter
 import ru.tech.easysearch.adapter.toolbar.ToolbarAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
+import ru.tech.easysearch.data.BrowserTabs.loadOpenedTabs
+import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.database.ESearchDatabase
@@ -117,8 +119,9 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     override fun onStart() {
         super.onStart()
         val labelList: ArrayList<String> = ArrayList(loadLabelList(this)!!.split("+"))
-
         onStartList(labelList)
+
+        if (openedTabs.isEmpty()) loadOpenedTabs()
 
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
@@ -126,7 +129,6 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         Functions.doInBackground {
             AdBlocker().createAdList(this)
         }
-
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -376,12 +378,12 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         toolbarAdapter?.labelListAdapter?.notifyDataSetChanged()
     }
 
-    override fun onPause() {
+    override fun onStop() {
         for (frag in supportFragmentManager.fragments) {
             if (frag.tag != "results") supportFragmentManager.beginTransaction().remove(frag)
                 .commit()
         }
-        super.onPause()
+        super.onStop()
     }
 
     fun scrollToPosition(position: Int) {

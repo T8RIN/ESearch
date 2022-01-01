@@ -24,15 +24,15 @@ import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissi
 
 class ChromeClient(
     private val activity: Activity,
-    private val progressBar: LinearProgressIndicator,
+    private val progressBar: LinearProgressIndicator?,
     private val browser: BrowserView
 ) : WebChromeClient() {
 
     override fun onProgressChanged(view: WebView?, newProgress: Int) {
         super.onProgressChanged(view, newProgress)
-        progressBar.progress = newProgress
+        progressBar?.progress = newProgress
         if (newProgress == 100) {
-            progressBar.visibility = View.GONE
+            progressBar?.visibility = View.GONE
         }
     }
 

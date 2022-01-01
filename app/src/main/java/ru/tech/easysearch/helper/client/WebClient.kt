@@ -52,7 +52,7 @@ import java.util.*
 
 class WebClient(
     private val context: Context,
-    private val progressBar: LinearProgressIndicator
+    private val progressBar: LinearProgressIndicator?
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -81,7 +81,7 @@ class WebClient(
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-        progressBar.visibility = VISIBLE
+        progressBar?.visibility = VISIBLE
 
         if (context is BrowserActivity) {
             context.searchView?.setText(view?.url!!)
@@ -140,8 +140,8 @@ class WebClient(
                 }
 
                 val calendar = Calendar.getInstance()
-                val day = calendar[Calendar.DAY_OF_MONTH]
-                val month = calendar[Calendar.MONTH]
+                val strDay = calendar[Calendar.DAY_OF_MONTH]
+                val strMonth = calendar[Calendar.MONTH]
                 val year = calendar[Calendar.YEAR]
                 val strHour = calendar[Calendar.HOUR_OF_DAY]
                 val strMinute = calendar[Calendar.MINUTE]
@@ -154,7 +154,16 @@ class WebClient(
                     else -> "$strHour"
                 }
 
-                val stringMonth = DateFormatSymbols(Locale.getDefault()).months[month]
+                val day = when {
+                    strDay < 10 -> "0$strDay"
+                    else -> "$strDay"
+                }
+                val month = when {
+                    strMonth + 1 < 10 -> "0${strMonth + 1}"
+                    else -> "${strMonth + 1}"
+                }
+
+                val stringMonth = DateFormatSymbols(Locale.getDefault()).months[strMonth]
 
                 val sortingString = "$day-$month-$year | $hour:$minute"
 
@@ -173,7 +182,7 @@ class WebClient(
                             it,
                             icon,
                             "${hour}:${minute}",
-                            "$day $stringMonth $year",
+                            "$strDay $stringMonth $year",
                             sortingString
                         )
                     )

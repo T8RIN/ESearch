@@ -35,9 +35,11 @@ import ru.tech.easysearch.custom.sidemenu.SideMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
+import ru.tech.easysearch.data.BrowserTabs.loadOpenedTabs
 import ru.tech.easysearch.data.BrowserTabs.loadTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.BrowserTabs.saveLastTab
+import ru.tech.easysearch.data.BrowserTabs.updateTabs
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.database.ESearchDatabase
@@ -91,6 +93,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         Functions.doInBackground {
             AdBlocker().createAdList(this)
         }
+        if (openedTabs.isEmpty()) loadOpenedTabs(progressBar)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -445,11 +448,12 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         browser?.reload()
     }
 
-    override fun onPause() {
+    override fun onStop() {
         for (frag in supportFragmentManager.fragments) {
             supportFragmentManager.beginTransaction().remove(frag).commit()
         }
-        super.onPause()
+        updateTabs()
+        super.onStop()
     }
 
 }

@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Base64.*
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -97,8 +98,16 @@ object Extensions {
 
     fun Bitmap.toByteArray(): ByteArray {
         val stream = ByteArrayOutputStream()
-        compress(Bitmap.CompressFormat.PNG, 90, stream)
+        compress(Bitmap.CompressFormat.PNG, 80, stream)
         return stream.toByteArray()
+    }
+
+    fun ByteArray.getString(): String {
+        return encodeToString(this, NO_WRAP)
+    }
+
+    fun String.getByteArray(): ByteArray {
+        return decode(this, NO_WRAP)
     }
 
     @TargetApi(Build.VERSION_CODES.M)

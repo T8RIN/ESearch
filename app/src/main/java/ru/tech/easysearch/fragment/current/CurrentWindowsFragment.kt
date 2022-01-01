@@ -15,8 +15,10 @@ import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.adapter.tabs.TabAdapter
 import ru.tech.easysearch.data.BrowserTabItem
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
+import ru.tech.easysearch.data.BrowserTabs.loadTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.BrowserTabs.saveLastTab
+import ru.tech.easysearch.data.BrowserTabs.updateTabs
 import ru.tech.easysearch.databinding.CurrentWindowsFragmentBinding
 
 class CurrentWindowsFragment : DialogFragment() {
@@ -51,6 +53,9 @@ class CurrentWindowsFragment : DialogFragment() {
         setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
     }
 
+    private var needToLoad = false
+    private var position = 0
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(
         view: View,
@@ -60,9 +65,13 @@ class CurrentWindowsFragment : DialogFragment() {
             R.style.DialogAnimation
         )
         val activity = requireActivity()
+        requireDialog().setOnDismissListener {
+            if(needToLoad) (activity as? BrowserActivity)?.loadTab(position, false)
+            activity.updateTabs()
+        }
         (activity as? BrowserActivity)?.saveLastTab()
 
-        binding.close.setOnClickListener { dismiss() }
+        binding.close.setOnClickListener { requireDialog().dismiss() }
 
         binding.clear.setOnClickListener {
             if (openedTabs.isNotEmpty()) {
@@ -71,8 +80,9 @@ class CurrentWindowsFragment : DialogFragment() {
                     .setMessage(R.string.clearTabsMessage)
                     .setPositiveButton(R.string.ok_ok) { _, _ ->
                         if (activity is BrowserActivity) activity.finish()
-                        else dismiss()
+                        else requireDialog().dismiss()
                         openedTabs.clear()
+                        requireContext().updateTabs()
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .show()
@@ -83,7 +93,7 @@ class CurrentWindowsFragment : DialogFragment() {
         }
 
         binding.addTab.setOnClickListener {
-            dismiss()
+            requireDialog().dismiss()
             if (activity is MainActivity) {
                 val intent = Intent(activity, BrowserActivity::class.java)
                 intent.putExtra("url", "https://google.com")
@@ -102,6 +112,11 @@ class CurrentWindowsFragment : DialogFragment() {
             list.addAll(openedTabs)
             adapter = TabAdapter(requireContext(), list, this@CurrentWindowsFragment)
         }
-
     }
+
+    fun notifyPosition(position: Int){
+        needToLoad = true
+        this.position = position
+    }
+
 }
