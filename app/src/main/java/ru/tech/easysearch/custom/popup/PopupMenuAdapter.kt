@@ -13,6 +13,7 @@ import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.extensions.Extensions.isDesktop
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
 
 class PopupMenuAdapter(

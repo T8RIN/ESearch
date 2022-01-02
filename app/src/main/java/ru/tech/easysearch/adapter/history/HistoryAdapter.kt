@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderAdapter
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration.Companion.HEADER
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration.Companion.ITEM
@@ -19,6 +21,7 @@ import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HeaderLayoutBinding
 import ru.tech.easysearch.databinding.HistItemBinding
 import ru.tech.easysearch.fragment.history.HistoryFragment
+import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 
 
@@ -71,6 +74,21 @@ class HistoryAdapter(
                     fragment.requireContext().startActivity(intent)
                 }
                 fragment.dismiss()
+            }
+            holder.itemView.setOnLongClickListener {
+                val menu = PopupMenu(fragment.requireContext(), it)
+                menu.setForceShowIcon(true)
+                menu.menu.add(0, 1, 0, R.string.delete).setIcon(R.drawable.ic_baseline_delete_sweep_24)
+                menu.setOnMenuItemClickListener { item ->
+                    if (item.itemId == 1) {
+                        Functions.doInBackground {
+                            ESearchApplication.database.historyDao().delete(history)
+                        }
+                    }
+                    true
+                }
+                menu.show()
+                true
             }
         } else if (holder is HeaderViewHolder) {
             holder.text.text = history.date

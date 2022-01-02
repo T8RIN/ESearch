@@ -343,6 +343,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         ScreenshotAnim(binding.root.parent as ViewGroup, bitmap, this)
                     }
                     R.drawable.ic_start_panel -> {
+                        if(lastUrl == "") lastUrl = browser?.url!!
                         val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
                         if (!shortcutDialog.isAdded) shortcutDialog.show(
                             supportFragmentManager,
@@ -350,6 +351,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         )
                     }
                     R.drawable.ic_baseline_bookmark_border_24 -> {
+                        if(lastUrl == "") lastUrl = browser?.url!!
                         val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
                         if (!bookmarkDialog.isAdded) bookmarkDialog.show(
                             supportFragmentManager,

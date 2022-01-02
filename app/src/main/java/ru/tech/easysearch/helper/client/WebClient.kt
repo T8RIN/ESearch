@@ -20,7 +20,6 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
-import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.BrowserTabs.updateBottomNav
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
@@ -37,6 +36,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettin
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.forceNightMode
+import ru.tech.easysearch.extensions.Extensions.isDesktop
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.ScriptsJS.desktopScript
@@ -58,16 +58,21 @@ class WebClient(
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
         val url = request.url.toString()
 
+        val headers: HashMap<String, String> = HashMap()
+        headers["DNT"] = "1"
+        headers["Sec-GPC"] = "1"
+        headers["X-Requested-With"] = "com.duckduckgo.mobile.android"
+
         if (context is MainActivity) {
             val intent = Intent(context, BrowserActivity::class.java)
             intent.putExtra("url", url)
             context.startActivity(intent)
         } else {
-            if (URLUtil.isNetworkUrl(url)) view.loadUrl(url)
+            if (URLUtil.isNetworkUrl(url)) view.loadUrl(url, headers)
             else if (url.startsWith("intent://")) {
                 val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
                 val extraUrl = intent.getStringExtra("browser_fallback_url")
-                extraUrl?.let { view.loadUrl(it) }
+                extraUrl?.let { view.loadUrl(it, headers) }
             } else {
                 try {
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -198,7 +203,7 @@ class WebClient(
     }
 
     override fun onLoadResource(view: WebView, url: String?) {
-        if ((view as BrowserView).isDesktop()) view.evaluateJavascript(desktopScript, null)
+        if (view.isDesktop()) view.evaluateJavascript(desktopScript, null)
         view.apply {
             evaluateJavascript(privacyScript, null)
             evaluateJavascript(doNotTrackScript1, null)

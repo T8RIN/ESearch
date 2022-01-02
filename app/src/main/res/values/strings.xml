@@ -76,4 +76,11 @@
     <string name="clearHistory">Clear history</string>
     <string name="clearHistoryMessage">This will irrevocably clear all your history</string>
     <string name="noHistoryClear">You have no history to clear</string>
+    <string name="backgroundAudio">Background audio</string>
+    <string name="clickToOpenApp">Click to open app</string>
+    <string name="behaviorSettings">Behavior</string>
+    <string name="dataSettings">Storage</string>
+    <string name="advanced">Advanced</string>
+    <string name="permissions">Permissions</string>
+    <string name="delete">Delete</string>
 </resources>

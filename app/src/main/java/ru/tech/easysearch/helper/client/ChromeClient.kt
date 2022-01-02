@@ -14,7 +14,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
-import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.MIC_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
@@ -25,7 +24,7 @@ import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissi
 class ChromeClient(
     private val activity: Activity,
     private val progressBar: LinearProgressIndicator?,
-    private val browser: BrowserView
+    private val browser: WebView
 ) : WebChromeClient() {
 
     override fun onProgressChanged(view: WebView?, newProgress: Int) {

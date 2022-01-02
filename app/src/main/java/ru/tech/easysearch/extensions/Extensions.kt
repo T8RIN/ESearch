@@ -32,12 +32,14 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.ImageViewCompat
 import ru.tech.easysearch.R
 import ru.tech.easysearch.R.drawable.*
+import ru.tech.easysearch.adapter.settings.BrowserSettingsAdapter.Companion.HEADER
 import ru.tech.easysearch.application.ESearchApplication
 import ru.tech.easysearch.custom.view.BrowserView.Companion.COPY_LINK
 import ru.tech.easysearch.custom.view.BrowserView.Companion.NEW_TAB
 import ru.tech.easysearch.custom.view.BrowserView.Companion.SAVE_IMAGE
 import ru.tech.easysearch.custom.view.BrowserView.Companion.SHARE_LINK
 import ru.tech.easysearch.custom.view.BrowserView.Companion.VIEW_IMAGE
+import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.NEGATIVE_COLOR
 import ru.tech.easysearch.data.DataArrays.brokenIcons
 import ru.tech.easysearch.data.DataArrays.faviconParser
@@ -183,6 +185,11 @@ object Extensions {
     fun Context.createSettingsList(): List<SettingsItem> {
         return listOf(
             SettingsItem(
+                ContextCompat.getDrawable(this, ic_baseline_preview_24),
+                label = getString(R.string.behaviorSettings),
+                key = HEADER.toString()
+            ),
+            SettingsItem(
                 ContextCompat.getDrawable(this, ic_eye_protection_24),
                 getString(R.string.eyeProtection),
                 getSetting(this, EYE_PROTECTION),
@@ -199,6 +206,11 @@ object Extensions {
                 getString(R.string.imageLoading),
                 getSetting(this, IMAGE_LOADING),
                 IMAGE_LOADING
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, ic_baseline_view_in_ar_24),
+                label = getString(R.string.permissions),
+                key = HEADER.toString()
             ),
             SettingsItem(
                 ContextCompat.getDrawable(this, ic_baseline_location_on_24),
@@ -219,6 +231,11 @@ object Extensions {
                 MIC_ACCESS
             ),
             SettingsItem(
+                ContextCompat.getDrawable(this, ic_baseline_save_24),
+                label = getString(R.string.dataSettings),
+                key = HEADER.toString()
+            ),
+            SettingsItem(
                 ContextCompat.getDrawable(this, ic_baseline_history_24),
                 getString(R.string.saveHistory),
                 getSetting(this, SAVE_HISTORY),
@@ -229,6 +246,17 @@ object Extensions {
                 getString(R.string.saveTabs),
                 getSetting(this, SAVE_TABS),
                 SAVE_TABS
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, ic_database_24),
+                getString(R.string.domStorage),
+                getSetting(this, DOM_STORAGE),
+                DOM_STORAGE
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, ic_outline_warning_amber_24),
+                label = getString(R.string.advanced),
+                key = HEADER.toString()
             ),
             SettingsItem(
                 ContextCompat.getDrawable(this, ic_baseline_cookie_24),
@@ -247,12 +275,6 @@ object Extensions {
                 getString(R.string.popupMessages),
                 getSetting(this, POPUPS),
                 POPUPS
-            ),
-            SettingsItem(
-                ContextCompat.getDrawable(this, ic_database_24),
-                getString(R.string.domStorage),
-                getSetting(this, DOM_STORAGE),
-                DOM_STORAGE
             )
         )
     }
@@ -421,6 +443,13 @@ object Extensions {
             "ic_youtube_logo" -> ic_youtube_logo
             "ic_github_logo" -> ic_github_logo
             else -> 0
+        }
+    }
+
+    fun WebView.isDesktop(): Boolean {
+        return when (settings.userAgentString) {
+            DataArrays.desktopUserAgentString -> true
+            else -> false
         }
     }
 

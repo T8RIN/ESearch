@@ -29,7 +29,6 @@ import okhttp3.internal.userAgent
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
-import ru.tech.easysearch.data.DataArrays.desktopUserAgentString
 import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
@@ -73,7 +72,6 @@ class BrowserView : WebView {
     private var searchView: TextInputEditText? = null
 
     init {
-        (context as? BrowserActivity)?.registerForContextMenu(this)
         val manager = CookieManager.getInstance()
         if (getSetting(context, COOKIES)) manager.setAcceptCookie(true)
         else manager.setAcceptCookie(false)
@@ -224,30 +222,32 @@ class BrowserView : WebView {
     }
 
     override fun onCreateContextMenu(menu: ContextMenu) {
-        val result = hitTestResult
-        result.extra?.let {
-            val extra = it
-            when (result.type) {
-                SRC_ANCHOR_TYPE -> {
-                    setupMenu(extra.getDomain(), extra, result.type, menu)
-                }
-                SRC_IMAGE_ANCHOR_TYPE -> {
-                    val handlerThread = HandlerThread("HandlerThread")
-                    handlerThread.start()
-                    val handler = Handler(handlerThread.looper)
-                    val message = handler.obtainMessage()
-                    requestFocusNodeHref(message)
-                    val url = message.data["url"] as String?
-                    setupMenu(url?.getDomain().toString(), url.toString(), result.type, menu)
-                }
-                IMAGE_TYPE -> {
-                    setupMenu(extra.getDomain(), extra, result.type, menu)
-                }
-                PHONE_TYPE -> context.openPhone(extra)
-                EMAIL_TYPE -> context.openEmail(extra)
-                GEO_TYPE -> context.openMaps(extra)
-                else -> {
-                    setupMenu(extra.getDomain(), extra, 0, menu)
+        if (context is BrowserActivity) {
+            val result = hitTestResult
+            result.extra?.let {
+                val extra = it
+                when (result.type) {
+                    SRC_ANCHOR_TYPE -> {
+                        setupMenu(extra.getDomain(), extra, result.type, menu)
+                    }
+                    SRC_IMAGE_ANCHOR_TYPE -> {
+                        val handlerThread = HandlerThread("HandlerThread")
+                        handlerThread.start()
+                        val handler = Handler(handlerThread.looper)
+                        val message = handler.obtainMessage()
+                        requestFocusNodeHref(message)
+                        val url = message.data["url"] as String?
+                        setupMenu(url?.getDomain().toString(), url.toString(), result.type, menu)
+                    }
+                    IMAGE_TYPE -> {
+                        setupMenu(extra.getDomain(), extra, result.type, menu)
+                    }
+                    PHONE_TYPE -> context.openPhone(extra)
+                    EMAIL_TYPE -> context.openEmail(extra)
+                    GEO_TYPE -> context.openMaps(extra)
+                    else -> {
+                        setupMenu(extra.getDomain(), extra, 0, menu)
+                    }
                 }
             }
         }
@@ -324,13 +324,6 @@ class BrowserView : WebView {
             }
             SRC_IMAGE_ANCHOR_TYPE -> menu.actionsForLink(listener)
             else -> menu.actionsForLink(listener)
-        }
-    }
-
-    fun isDesktop(): Boolean {
-        return when (settings.userAgentString) {
-            desktopUserAgentString -> true
-            else -> false
         }
     }
 

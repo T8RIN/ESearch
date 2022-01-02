@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private var settings: ImageButton? = null
 
     private var pagerShapHelper = PagerSnapHelper()
-    private var searchResultsFragment = SearchResultsFragment()
+    private var searchResultsFragment: SearchResultsFragment? = null
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
             args.putCharSequence("url", prefix + query)
             args.putCharSequence("prefix", prefix)
             searchResultsFragment = SearchResultsFragment()
-            searchResultsFragment.apply {
+            searchResultsFragment?.apply {
                 arguments = args
                 if (!isAdded) show(supportFragmentManager, "results")
             }
