@@ -200,6 +200,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
                 manageList!!,
                 close!!
             )
+
         toolbarRecycler!!.adapter = toolbarAdapter
 
         val selectLabelsFragment = SelectLabelsDialog(this)

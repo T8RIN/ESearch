@@ -33,6 +33,11 @@ object DataArrays {
     const val translateSite = "https://translate.yandex.ru/translate?url="
     const val faviconParser = "https://www.google.com/s2/favicons?sz=64&domain_url="
 
+    val brokenIcons = listOf(
+        "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAKzSURBVDiNpZPNTxsHEMV/tXfX9tpef6w/agN27FoJkUqqIoMQNIcoosqJGznkkI9DTvTPIYeKeyvFuTSRekGqxMEpBRuprUBQKAWTQLy2u/Zis2bXLr2Alai95Z1mpHlv3sxo4CPxyVUwP//cU7VqkZl8dsK2egt608y3jK4PQPG726GgpyS5hGfF0v56XIrWC4X75kBgfv65p23rydz1+NN253wul1FjqWxYtew+kugkk1JZXt5uHFR0TfFLL/f+qC35xNBxoXDfFACqVi3yxY2hp2dm78HntxIjmbSKV5YYHxumc2aRTipkUxH19+1j9bvvy75cLsqvuyfPgCMHwEw+O2G0u3NPHk2MZNIqAJbdZ3XjcDBrTJURRSePH06OtDrnczP57ASAA8A67y1cGwnFpr5MDQi23ce2+4QCMgAds0ezZRIKeEgNhWLdrr0wENCbZn52dlTtmL0PNnz3q+soXgEAr0fgxmcx9it/c+/eTVXXzTyAANAyTF88oqB4BbyyxHAiyHAiOCADOB1QrZ8CEI8oGIbpGzgA8MoSAFPj13hz0sSyP3RzBVF0AnBxmQtXd96v1JVENIXiFfj6do5iucLOZVE2FSERlbkzlaHe7LLzp4bid7cHDsIhubS8vN14v9PYaBKt3kart1ndOGDtt2MAIkE3r15tNsJBuTQQEEVh8aCia8Vy5X9tA7w9adL/B4rlCsfVluZyi4sATgBHYLqTTgYDP/9ymI5+qgRSyQAuyYEoimiXixsbTbKzr/Ht0uujoN/1orR59MPhzo+GE2Dy1mP7Xa2xm0go0uvVA7W0ceRw+1xys3XGiWZgnHZZWdlr/LSyexj0u17s7dWWwpJa3doq9P7zTNPj2fy5ZX+j62beOO36Li4uUPzuthqW12W3sLhW+qsceO+ZPhr/AkthE9HLdn4kAAAAAElFTkSuQmCC",
+        "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAAnSURBVHic7cEBDQAAAMKg909tDjegAAAAAAAAAAAAAAAAAAAAgHcDQEAAAY/yyVEAAAAASUVORK5CYII="
+    )
+
     val sizeSuffixes = listOf("B", "kB", "MB", "GB", "TB")
 
     val NEGATIVE_COLOR = floatArrayOf(

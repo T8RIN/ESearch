@@ -39,6 +39,7 @@ import ru.tech.easysearch.custom.view.BrowserView.Companion.SAVE_IMAGE
 import ru.tech.easysearch.custom.view.BrowserView.Companion.SHARE_LINK
 import ru.tech.easysearch.custom.view.BrowserView.Companion.VIEW_IMAGE
 import ru.tech.easysearch.data.DataArrays.NEGATIVE_COLOR
+import ru.tech.easysearch.data.DataArrays.brokenIcons
 import ru.tech.easysearch.data.DataArrays.faviconParser
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
@@ -146,17 +147,25 @@ object Extensions {
     }
 
     fun Context.fetchFavicon(url: String): Bitmap {
-        val iconUri: Uri = Uri.parse("$faviconParser${Uri.parse(url).host}")
-        val inputStream: InputStream?
-        val buffer: BufferedInputStream?
-        return try {
-            val urlConnection: URLConnection = URL(iconUri.toString()).openConnection()
+        val host = Uri.parse(url).host
+        val iconUrl = URL("$faviconParser$host")
+        try {
+            val urlConnection: URLConnection = iconUrl.openConnection()
             urlConnection.connect()
-            inputStream = urlConnection.getInputStream()
-            buffer = BufferedInputStream(inputStream, 8192)
-            BitmapFactory.decodeStream(buffer)
+            val icon = BitmapFactory.decodeStream(BufferedInputStream(urlConnection.getInputStream(), 32000))
+            if (brokenIcons.contains(icon.toByteArray().getString())) {
+                return try {
+                    val iconUrlSecond = URL("https://$host/favicon.ico")
+                    val connection: URLConnection = iconUrlSecond.openConnection()
+                    connection.connect()
+                    BitmapFactory.decodeStream(BufferedInputStream(connection.getInputStream(), 32000))
+                } catch (e: Exception) {
+                    ContextCompat.getDrawable(this, ic_earth_24)!!.toBitmap()
+                }
+            }
+            return icon
         } catch (e: Exception) {
-            ContextCompat.getDrawable(this, ic_earth_24)!!.toBitmap()
+            return ContextCompat.getDrawable(this, ic_earth_24)!!.toBitmap()
         }
     }
 
