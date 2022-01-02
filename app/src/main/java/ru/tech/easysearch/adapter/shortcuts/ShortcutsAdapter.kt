@@ -6,14 +6,25 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
+import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.application.ESearchApplication.Companion.coeff
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.COPY
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.DELETE
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.EDIT
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.SHARE
+import ru.tech.easysearch.custom.popup.simple.SimplePopupClickListener
+import ru.tech.easysearch.custom.popup.simple.SimplePopupItem
 import ru.tech.easysearch.database.shortcuts.Shortcut
 import ru.tech.easysearch.databinding.MainGridItemBinding
+import ru.tech.easysearch.extensions.Extensions.getAttrColor
+import ru.tech.easysearch.extensions.Extensions.makeClip
+import ru.tech.easysearch.extensions.Extensions.shareWith
 import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
 import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 import ru.tech.easysearch.functions.Functions.doInBackground
@@ -47,16 +58,65 @@ class ShortcutsAdapter(
             }
         }
         holder.itemView.setOnLongClickListener {
-            val menu = PopupMenu(context, it)
-            menu.setForceShowIcon(true)
-            menu.menu.add(0, 1, 0, R.string.delete).setIcon(R.drawable.ic_baseline_delete_sweep_24)
-            menu.setOnMenuItemClickListener { item ->
-                if (item.itemId == 1) {
-                    doInBackground { database.shortcutDao().delete(shortcut) }
-                }
-                true
-            }
-            menu.show()
+            SimplePopupBuilder(context, it)
+                .setMenuClickListener(SimplePopupClickListener { id ->
+                    when (id) {
+                        EDIT -> {
+                            val shortcutEdit =
+                                ShortcutCreationDialog(
+                                    shortcut.url,
+                                    shortcut.description,
+                                    true,
+                                    shortcut.id
+                                )
+                            if (!shortcutEdit.isAdded) shortcutEdit.show(
+                                (context as AppCompatActivity).supportFragmentManager,
+                                "shortcut_edition"
+                            )
+                        }
+                        SHARE -> context.shareWith(shortcut.url)
+                        COPY -> context.makeClip(shortcut.url)
+                        DELETE -> {
+                            Snackbar.make(
+                                (context as MainActivity).binding.root,
+                                shortcut.url,
+                                Snackbar.LENGTH_LONG
+                            )
+                                .setAction(R.string.undo) {
+                                    doInBackground { database.shortcutDao().insert(shortcut) }
+                                }
+                                .setActionTextColor(
+                                    context.getAttrColor(R.attr.colorSecondary)
+                                )
+                                .setAnchorView((context as MainActivity).binding.fab)
+                                .show()
+                            doInBackground { database.shortcutDao().delete(shortcut) }
+                        }
+                    }
+                })
+                .addItems(
+                    SimplePopupItem(
+                        EDIT,
+                        R.string.edit,
+                        R.drawable.ic_baseline_edit_24
+                    ),
+                    SimplePopupItem(
+                        SHARE,
+                        R.string.share,
+                        R.drawable.ic_baseline_share_24
+                    ),
+                    SimplePopupItem(
+                        COPY,
+                        R.string.copy,
+                        R.drawable.ic_baseline_content_copy_24
+                    ),
+                    SimplePopupItem(
+                        DELETE,
+                        R.string.delete,
+                        R.drawable.ic_baseline_delete_sweep_24
+                    ),
+                )
+                .show()
             true
         }
         holder.itemView.layoutParams.height =

@@ -134,7 +134,8 @@
         android:contentDescription="@string/none"
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_fast_rewind_24" />
+        android:src="@drawable/ic_baseline_fast_rewind_24"
+        app:tint="?attr/colorSecondary" />
 
     <ImageButton
         android:id="@+id/forward"
@@ -145,7 +146,8 @@
         android:contentDescription="@string/none"
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_fast_forward_24" />
+        android:src="@drawable/ic_baseline_fast_forward_24"
+        app:tint="?attr/colorSecondary" />
 
     <ImageButton
         android:id="@+id/manageList"
@@ -156,7 +158,8 @@
         android:contentDescription="@string/none"
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
-        android:src="@drawable/ic_manage" />
+        android:src="@drawable/ic_manage"
+        app:tint="?attr/colorSecondary" />
 
     <ImageButton
         android:id="@+id/closeButton"
@@ -167,7 +170,8 @@
         android:contentDescription="@string/none"
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
-        android:src="@drawable/ic_baseline_close_24" />
+        android:src="@drawable/ic_baseline_close_24"
+        app:tint="?attr/colorSecondary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

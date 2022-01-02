@@ -49,10 +49,10 @@ import java.io.ByteArrayInputStream
 import java.text.DateFormatSymbols
 import java.util.*
 
-
 class WebClient(
     private val context: Context,
-    private val progressBar: LinearProgressIndicator?
+    private val progressBar: LinearProgressIndicator?,
+    private var notSkipFirst: Boolean = false
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -63,7 +63,7 @@ class WebClient(
         headers["Sec-GPC"] = "1"
         headers["X-Requested-With"] = "com.duckduckgo.mobile.android"
 
-        if (context is MainActivity) {
+        if (context is MainActivity && !notSkipFirst) {
             val intent = Intent(context, BrowserActivity::class.java)
             intent.putExtra("url", url)
             context.startActivity(intent)
@@ -133,7 +133,7 @@ class WebClient(
             }
         }
 
-        if (!isReload && getSetting(context, SAVE_HISTORY)) {
+        if (!isReload && getSetting(context, SAVE_HISTORY) && !notSkipFirst) {
 
             view.url?.let {
                 if (context is BrowserActivity) {
@@ -194,6 +194,8 @@ class WebClient(
                 }
             }
         }
+
+        notSkipFirst = true
 
         super.doUpdateVisitedHistory(view, url, isReload)
     }

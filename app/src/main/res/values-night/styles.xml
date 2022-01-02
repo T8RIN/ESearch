@@ -5,11 +5,6 @@
         <item name="colorControlNormal">?attr/mainColor</item>
     </style>
 
-    <style name="EditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/edit_text_selector</item>
-        <item name="hintTextColor">@color/edit_text_selector</item>
-    </style>
-
     <style name="modeAlert" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/buttonSecAlert1</item>
         <item name="buttonBarNegativeButtonStyle">@style/buttonSecAlert2</item>

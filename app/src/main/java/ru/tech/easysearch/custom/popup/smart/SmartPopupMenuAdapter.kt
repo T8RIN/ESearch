@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom.popup
+package ru.tech.easysearch.custom.popup.smart
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -16,15 +16,15 @@ import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.extensions.Extensions.isDesktop
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
 
-class PopupMenuAdapter(
+class SmartPopupMenuAdapter(
     private val context: Context,
     private val desktopInterface: DesktopInterface?
 ) :
-    RecyclerView.Adapter<PopupMenuAdapter.PopupViewHolder>() {
+    RecyclerView.Adapter<SmartPopupMenuAdapter.PopupViewHolder>() {
 
-    private var menuList: ArrayList<PopupMenuItem> = ArrayList()
-    private var popupMenuItemClickListener: PopupMenuItemClickListener =
-        PopupMenuItemClickListener {}
+    private var menuList: ArrayList<SmartPopupMenuItem> = ArrayList()
+    private var smartPopupMenuItemClickListener: SmartPopupMenuItemClickListener =
+        SmartPopupMenuItemClickListener {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopupViewHolder {
         return PopupViewHolder(
@@ -65,11 +65,11 @@ class PopupMenuAdapter(
         return menuList.size
     }
 
-    fun reattachListener(popupMenuItemClickListener: PopupMenuItemClickListener) {
-        this.popupMenuItemClickListener = popupMenuItemClickListener
+    fun reattachListener(smartPopupMenuItemClickListener: SmartPopupMenuItemClickListener) {
+        this.smartPopupMenuItemClickListener = smartPopupMenuItemClickListener
     }
 
-    fun attachList(menuList: Array<out PopupMenuItem>) {
+    fun attachList(menuList: Array<out SmartPopupMenuItem>) {
         for (i in menuList) this.menuList.add(i)
     }
 
@@ -80,9 +80,9 @@ class PopupMenuAdapter(
         val switcher: SwitchMaterial = view.findViewById(R.id.switcher)
         val divider: MaterialDivider = view.findViewById(R.id.divider)
 
-        fun bind(popupMenuItem: PopupMenuItem) {
+        fun bind(smartPopupMenuItem: SmartPopupMenuItem) {
             itemView.setOnClickListener {
-                popupMenuItemClickListener.onClick(popupMenuItem)
+                smartPopupMenuItemClickListener.onClick(smartPopupMenuItem)
             }
         }
     }

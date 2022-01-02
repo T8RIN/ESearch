@@ -10,9 +10,9 @@
         <item name="android:windowExitAnimation">@anim/exit_slide_down</item>
     </style>
 
-    <style name="EditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/edit_text_selector</item>
-        <item name="hintTextColor">@color/edit_text_selector</item>
+    <style name="EditTextStyle">
+        <item name="colorOnSurface">@color/ddgreen</item>
+        <item name="colorPrimary">@color/dgreen</item>
     </style>
 
     <style name="modeAlert" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">

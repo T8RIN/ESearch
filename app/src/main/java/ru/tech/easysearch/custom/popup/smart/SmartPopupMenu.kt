@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom.popup
+package ru.tech.easysearch.custom.popup.smart
 
 import android.content.Context
 import android.content.res.Configuration
@@ -33,7 +33,7 @@ class SmartPopupMenu(
     private var popupDismissTint: View
     private var cardView: MaterialCardView
 
-    private var adapter: PopupMenuAdapter = PopupMenuAdapter(context, desktopInterface)
+    private var adapter: SmartPopupMenuAdapter = SmartPopupMenuAdapter(context, desktopInterface)
 
     init {
         displayOffsetX = when (context.resources.configuration.orientation) {
@@ -101,16 +101,16 @@ class SmartPopupMenu(
         return this
     }
 
-    fun setMenuItemClickListener(onClick: (PopupMenuItem) -> Unit): SmartPopupMenu {
-        adapter.reattachListener(PopupMenuItemClickListener { popupMenuItem ->
+    fun setMenuItemClickListener(onClick: (SmartPopupMenuItem) -> Unit): SmartPopupMenu {
+        adapter.reattachListener(SmartPopupMenuItemClickListener { popupMenuItem ->
             onClick(popupMenuItem)
-            adapter.reattachListener(PopupMenuItemClickListener {})
+            adapter.reattachListener(SmartPopupMenuItemClickListener {})
         })
         return this
     }
 
-    fun addItems(vararg popupMenuItem: PopupMenuItem): SmartPopupMenu {
-        adapter.attachList(popupMenuItem)
+    fun addItems(vararg smartPopupMenuItem: SmartPopupMenuItem): SmartPopupMenu {
+        adapter.attachList(smartPopupMenuItem)
         return this
     }
 

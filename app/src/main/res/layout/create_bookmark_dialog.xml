@@ -41,31 +41,33 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/description"
-        style="@style/EditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:hint="@string/description"
+        android:theme="@style/EditTextStyle"
+        app:endIconMode="clear_text"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:hint="@string/description" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/url"
-        style="@style/EditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:hint="@string/address"
+        android:theme="@style/EditTextStyle"
+        app:endIconMode="clear_text"
         app:layout_constraintTop_toBottomOf="@id/description">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:hint="@string/address" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

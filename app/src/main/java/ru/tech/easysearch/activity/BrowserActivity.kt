@@ -29,8 +29,8 @@ import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.ScreenshotAnim
-import ru.tech.easysearch.custom.popup.PopupMenuItem
-import ru.tech.easysearch.custom.popup.SmartPopupMenu
+import ru.tech.easysearch.custom.popup.smart.SmartPopupMenu
+import ru.tech.easysearch.custom.popup.smart.SmartPopupMenuItem
 import ru.tech.easysearch.custom.sidemenu.SideMenu
 import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.custom.view.BrowserView
@@ -172,7 +172,10 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     }
                 }
             }
-            if (!focused && !clickedGo) searchView?.setText(lastUrl)
+            if (!focused && !clickedGo) {
+                if (lastUrl == "") lastUrl = browser?.url!!
+                searchView?.setText(lastUrl)
+            }
         }
 
         searchView?.setOnKeyListener { _, _, keyEvent ->
@@ -246,65 +249,65 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     private fun showMore() {
         popupMenu = SmartPopupMenu(binding.root.parent as ViewGroup, this, this)
             .addItems(
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_refresh_24,
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_refresh_24),
                     getString(R.string.refresh)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_share_24,
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_share_24),
                     getString(R.string.share)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_translate_24,
                     ContextCompat.getDrawable(this, R.drawable.ic_baseline_translate_24),
                     getString(R.string.translate)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_find_in_page_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_find_in_page_24
                     ), getString(R.string.findInPage)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_download_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_download_24
                     ), getString(R.string.saveAsPDF)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_screenshot_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_screenshot_24
                     ), getString(R.string.makeScreenshot)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_desktop_mac_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_desktop_mac_24
                     ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
                 ),
-                PopupMenuItem(null, null, getString(R.string.addTo)),
-                PopupMenuItem(
+                SmartPopupMenuItem(null, null, getString(R.string.addTo)),
+                SmartPopupMenuItem(
                     R.drawable.ic_start_panel,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_start_panel
                     ), getString(R.string.shortcuts)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_bookmark_border_24,
                     ContextCompat.getDrawable(
                         this,
                         R.drawable.ic_baseline_bookmark_border_24
                     ), getString(R.string.bookmarks)
                 ),
-                PopupMenuItem(
+                SmartPopupMenuItem(
                     R.drawable.ic_baseline_add_to_home_screen_24,
                     ContextCompat.getDrawable(
                         this,
@@ -343,7 +346,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         ScreenshotAnim(binding.root.parent as ViewGroup, bitmap, this)
                     }
                     R.drawable.ic_start_panel -> {
-                        if(lastUrl == "") lastUrl = browser?.url!!
+                        if (lastUrl == "") lastUrl = browser?.url!!
                         val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
                         if (!shortcutDialog.isAdded) shortcutDialog.show(
                             supportFragmentManager,
@@ -351,7 +354,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                         )
                     }
                     R.drawable.ic_baseline_bookmark_border_24 -> {
-                        if(lastUrl == "") lastUrl = browser?.url!!
+                        if (lastUrl == "") lastUrl = browser?.url!!
                         val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
                         if (!bookmarkDialog.isAdded) bookmarkDialog.show(
                             supportFragmentManager,

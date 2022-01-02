@@ -148,19 +148,33 @@ object Extensions {
         )
     }
 
-    fun Context.fetchFavicon(url: String): Bitmap {
+    fun Context.fetchFavicon(tempUrl: String): Bitmap {
+        val url = when {
+            !tempUrl.contains("https://") && !tempUrl.contains("http://") -> "https://$tempUrl"
+            else -> tempUrl
+        }
         val host = Uri.parse(url).host
         val iconUrl = URL("$faviconParser$host")
         try {
             val urlConnection: URLConnection = iconUrl.openConnection()
             urlConnection.connect()
-            val icon = BitmapFactory.decodeStream(BufferedInputStream(urlConnection.getInputStream(), 32000))
+            val icon = BitmapFactory.decodeStream(
+                BufferedInputStream(
+                    urlConnection.getInputStream(),
+                    32000
+                )
+            )
             if (brokenIcons.contains(icon.toByteArray().getString())) {
                 return try {
                     val iconUrlSecond = URL("https://$host/favicon.ico")
                     val connection: URLConnection = iconUrlSecond.openConnection()
                     connection.connect()
-                    BitmapFactory.decodeStream(BufferedInputStream(connection.getInputStream(), 32000))
+                    BitmapFactory.decodeStream(
+                        BufferedInputStream(
+                            connection.getInputStream(),
+                            32000
+                        )
+                    )
                 } catch (e: Exception) {
                     ContextCompat.getDrawable(this, ic_earth_24)!!.toBitmap()
                 }

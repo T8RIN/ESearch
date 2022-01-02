@@ -8,11 +8,16 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
-import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.application.ESearchApplication.Companion.database
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.COPY
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.DELETE
+import ru.tech.easysearch.custom.popup.simple.SimplePopupBuilder.Companion.SHARE
+import ru.tech.easysearch.custom.popup.simple.SimplePopupClickListener
+import ru.tech.easysearch.custom.popup.simple.SimplePopupItem
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderAdapter
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration.Companion.HEADER
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration.Companion.ITEM
@@ -20,6 +25,8 @@ import ru.tech.easysearch.data.BrowserTabs.createNewTab
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HeaderLayoutBinding
 import ru.tech.easysearch.databinding.HistItemBinding
+import ru.tech.easysearch.extensions.Extensions.makeClip
+import ru.tech.easysearch.extensions.Extensions.shareWith
 import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
@@ -76,18 +83,36 @@ class HistoryAdapter(
                 fragment.dismiss()
             }
             holder.itemView.setOnLongClickListener {
-                val menu = PopupMenu(fragment.requireContext(), it)
-                menu.setForceShowIcon(true)
-                menu.menu.add(0, 1, 0, R.string.delete).setIcon(R.drawable.ic_baseline_delete_sweep_24)
-                menu.setOnMenuItemClickListener { item ->
-                    if (item.itemId == 1) {
-                        Functions.doInBackground {
-                            ESearchApplication.database.historyDao().delete(history)
+                SimplePopupBuilder(fragment.requireContext(), it)
+                    .setMenuClickListener(SimplePopupClickListener { id ->
+                        when (id) {
+                            SHARE -> fragment.requireContext()
+                                .shareWith(history.url)
+                            COPY -> fragment.requireContext()
+                                .makeClip(history.url)
+                            DELETE -> Functions.doInBackground {
+                                database.historyDao().delete(history)
+                            }
                         }
-                    }
-                    true
-                }
-                menu.show()
+                    })
+                    .addItems(
+                        SimplePopupItem(
+                            SHARE,
+                            R.string.share,
+                            R.drawable.ic_baseline_share_24
+                        ),
+                        SimplePopupItem(
+                            COPY,
+                            R.string.copy,
+                            R.drawable.ic_baseline_content_copy_24
+                        ),
+                        SimplePopupItem(
+                            DELETE,
+                            R.string.delete,
+                            R.drawable.ic_baseline_delete_sweep_24
+                        ),
+                    )
+                    .show()
                 true
             }
         } else if (holder is HeaderViewHolder) {

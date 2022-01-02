@@ -53,7 +53,8 @@
                 android:contentDescription="@string/none"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:src="@drawable/ic_baseline_more_vert_24" />
+                android:src="@drawable/ic_baseline_more_vert_24"
+                app:tint="?attr/colorSecondary" />
 
             <ImageView
                 android:id="@+id/go"
@@ -62,7 +63,8 @@
                 android:contentDescription="@string/none"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:src="@drawable/ic_baseline_search_24" />
+                android:src="@drawable/ic_baseline_search_24"
+                app:tint="?attr/colorSecondary" />
         </ImageSwitcher>
 
     </LinearLayout>

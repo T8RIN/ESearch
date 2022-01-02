@@ -14,8 +14,12 @@ import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions.doInBackground
 
-class BookmarkCreationDialog(private val url: String, private val description: String) :
-    DialogFragment() {
+class BookmarkCreationDialog(
+    private val url: String,
+    private val description: String,
+    private val editing: Boolean = false,
+    private val uid: Int? = 0
+) : DialogFragment() {
 
     private var _binding: CreateBookmarkDialogBinding? = null
     private val binding get() = _binding!!
@@ -61,11 +65,21 @@ class BookmarkCreationDialog(private val url: String, private val description: S
             val newUrl = binding.url.editText!!.text.toString().trim()
             val title = binding.description.editText!!.text.toString().trim()
             if (title != "" && newUrl != "") {
-                doInBackground {
-                    val icon = requireContext().fetchFavicon(newUrl).toByteArray()
-                    dao.insert(Bookmark(title, newUrl, icon))
+                if (!editing) {
+                    doInBackground {
+                        val icon = requireContext().fetchFavicon(newUrl).toByteArray()
+                        dao.insert(Bookmark(title, newUrl, icon))
+                    }
+                    Toast.makeText(requireContext(), R.string.bookmarkAdded, Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    doInBackground {
+                        val icon = requireContext().fetchFavicon(newUrl).toByteArray()
+                        dao.update(Bookmark(title, newUrl, icon, uid))
+                    }
+                    Toast.makeText(requireContext(), R.string.bookmarkSaved, Toast.LENGTH_SHORT)
+                        .show()
                 }
-                Toast.makeText(requireContext(), R.string.bookmarkAdded, Toast.LENGTH_SHORT).show()
                 dismiss()
             } else {
                 Toast.makeText(requireContext(), R.string.fillAllFields, Toast.LENGTH_SHORT).show()

@@ -14,8 +14,12 @@ import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions.doInBackground
 
-class ShortcutCreationDialog(private val url: String = "", private val description: String = "") :
-    DialogFragment() {
+class ShortcutCreationDialog(
+    private val url: String = "",
+    private val description: String = "",
+    private val editing: Boolean = false,
+    private val uid: Int? = 0
+) : DialogFragment() {
 
     private var _binding: CreateShortcutDialogBinding? = null
     private val binding get() = _binding!!
@@ -61,15 +65,21 @@ class ShortcutCreationDialog(private val url: String = "", private val descripti
             val newUrl = binding.url.editText!!.text.toString().trim()
             val title = binding.description.editText!!.text.toString().trim()
             if (title != "" && newUrl != "") {
-                doInBackground {
-                    val icon = if (!newUrl.contains("https://")) {
-                        requireContext().fetchFavicon("https://$newUrl").toByteArray()
-                    } else {
-                        requireContext().fetchFavicon(newUrl).toByteArray()
+                if (!editing) {
+                    doInBackground {
+                        val icon = requireContext().fetchFavicon(newUrl).toByteArray()
+                        dao.insert(Shortcut(title, newUrl, icon))
                     }
-                    dao.insert(Shortcut(title, newUrl, icon))
+                    Toast.makeText(requireContext(), R.string.shortcutAdded, Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    doInBackground {
+                        val icon = requireContext().fetchFavicon(newUrl).toByteArray()
+                        dao.update(Shortcut(title, newUrl, icon, uid))
+                    }
+                    Toast.makeText(requireContext(), R.string.shortcutSaved, Toast.LENGTH_SHORT)
+                        .show()
                 }
-                Toast.makeText(requireContext(), R.string.shortcutAdded, Toast.LENGTH_SHORT).show()
                 dismiss()
             } else {
                 Toast.makeText(requireContext(), R.string.fillAllFields, Toast.LENGTH_SHORT).show()

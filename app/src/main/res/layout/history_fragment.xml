@@ -19,7 +19,8 @@
             android:layout_height="48dp"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_close_24" />
+            android:src="@drawable/ic_baseline_close_24"
+            app:tint="?attr/colorSecondary" />
 
         <TextView
             android:layout_width="0dp"
@@ -35,7 +36,8 @@
             android:layout_height="48dp"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
-            android:src="@drawable/ic_baseline_delete_sweep_24" />
+            android:src="@drawable/ic_baseline_delete_sweep_24"
+            app:tint="?attr/colorSecondary" />
 
     </LinearLayout>
 

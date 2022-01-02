@@ -159,7 +159,7 @@ object BrowserTabs {
                 val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
                 val tempArray: ArrayList<String> = ArrayList()
                 for (i in openedTabs.indices) {
-                    if(i > openedTabs.lastIndex) break
+                    if (i > openedTabs.lastIndex) break
                     val item = openedTabs[i]
                     val fullSnap = when (val snap = item.fullSnap?.toByteArray()) {
                         null -> ContextCompat.getDrawable(this, R.drawable.skeleton)!!.getBitmap()!!
@@ -196,7 +196,7 @@ object BrowserTabs {
 
                 val tab = BrowserView(this)
                 tab.webChromeClient = ChromeClient(this, progressBar, tab)
-                tab.webViewClient = WebClient(this, progressBar)
+                tab.webViewClient = WebClient(this, progressBar, true)
                 tab.loadUrl(url)
                 tempArr.add(
                     Pair(

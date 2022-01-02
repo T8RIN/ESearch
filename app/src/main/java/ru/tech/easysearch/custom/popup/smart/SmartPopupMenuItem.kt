@@ -1,8 +1,8 @@
-package ru.tech.easysearch.custom.popup
+package ru.tech.easysearch.custom.popup.smart
 
 import android.graphics.drawable.Drawable
 
-data class PopupMenuItem(
+data class SmartPopupMenuItem(
     val id: Int?,
     val icon: Drawable?,
     val title: String,

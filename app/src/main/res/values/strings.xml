@@ -83,4 +83,7 @@
     <string name="advanced">Advanced</string>
     <string name="permissions">Permissions</string>
     <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="bookmarkSaved">Bookmark saved</string>
+    <string name="shortcutSaved">Shortcut saved</string>
 </resources>

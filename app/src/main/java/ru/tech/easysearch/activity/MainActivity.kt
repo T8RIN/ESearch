@@ -50,7 +50,7 @@ import java.util.*
 @SuppressLint("NotifyDataSetChanged")
 class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     private var searchView: SearchView? = null
     private var toolbarAdapter: ToolbarAdapter? = null

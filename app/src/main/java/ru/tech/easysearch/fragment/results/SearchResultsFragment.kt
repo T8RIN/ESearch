@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.webkit.*
+import android.webkit.URLUtil
 import android.widget.ImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SearchView
