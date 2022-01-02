@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
@@ -82,6 +83,12 @@ class ShortcutsAdapter(
                                 shortcut.url,
                                 Snackbar.LENGTH_LONG
                             )
+                                .setBackgroundTint(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.materialGray
+                                    )
+                                )
                                 .setAction(R.string.undo) {
                                     doInBackground { database.shortcutDao().insert(shortcut) }
                                 }
@@ -89,6 +96,7 @@ class ShortcutsAdapter(
                                     context.getAttrColor(R.attr.colorSecondary)
                                 )
                                 .setAnchorView((context as MainActivity).binding.fab)
+                                .setTextColor(ContextCompat.getColor(context, R.color.white))
                                 .show()
                             doInBackground { database.shortcutDao().delete(shortcut) }
                         }

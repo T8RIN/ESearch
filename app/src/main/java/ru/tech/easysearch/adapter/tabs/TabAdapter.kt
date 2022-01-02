@@ -121,6 +121,13 @@ class TabAdapter(
                     openedTabs.add(removed)
                     updateState()
                 }
+                .setBackgroundTint(
+                    ContextCompat.getColor(
+                        fragment.requireContext(),
+                        R.color.materialGray
+                    )
+                )
+                .setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.white))
                 .setActionTextColor(context.getAttrColor(R.attr.colorSecondary))
                 .setAnchorView(fragment.binding.addTab)
                 .show()

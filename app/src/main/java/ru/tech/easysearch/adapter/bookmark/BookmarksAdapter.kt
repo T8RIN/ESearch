@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
@@ -83,9 +84,16 @@ class BookmarksAdapter(
                                 bookmark.url,
                                 Snackbar.LENGTH_LONG
                             )
+                                .setBackgroundTint(ContextCompat.getColor(fragment.requireContext(), R.color.materialGray))
                                 .setAction(R.string.undo) {
                                     doInBackground { database.bookmarkDao().insert(bookmark) }
                                 }
+                                .setTextColor(
+                                    ContextCompat.getColor(
+                                        fragment.requireContext(),
+                                        R.color.white
+                                    )
+                                )
                                 .setActionTextColor(
                                     fragment.requireContext().getAttrColor(R.attr.colorSecondary)
                                 )

@@ -37,6 +37,7 @@
     <color name="violet">#F076FD</color>
     <color name="dviolet">#9F05B0</color>
 
+    <color name="materialGray">#383838</color>
     <color name="manualBackground">#FFFFFF</color>
     <color name="manualText">#000000</color>
 </resources>
