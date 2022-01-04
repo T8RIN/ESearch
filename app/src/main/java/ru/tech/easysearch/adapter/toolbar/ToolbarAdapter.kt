@@ -41,6 +41,7 @@ class ToolbarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Glide.with(context).load(labelList[position].getResId()).into(holder.label)
+
         holder.itemView.setOnClickListener {
             when (card.translationY) {
                 displayOffsetY -> {
