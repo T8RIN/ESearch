@@ -343,7 +343,7 @@ class BrowserView : WebView {
         }
     }
 
-    override fun goBack(){
+    override fun goBack() {
         super.goBack()
         goBack = true
     }

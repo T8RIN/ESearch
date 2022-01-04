@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
@@ -116,7 +117,7 @@ object BrowserTabs {
             Functions.doInIoThreadWithObservingOnMain({
                 fetchFavicon(url)
             }, {
-                iconView?.setImageBitmap(it as Bitmap)
+                iconView?.let { imageView -> Glide.with(this).load(it as Bitmap).into(imageView) }
             })
         }
     }

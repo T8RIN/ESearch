@@ -28,7 +28,7 @@ class SideMenu(private var root: ViewGroup, context: Context) {
     private var tintView: View
     private var cardView: MaterialCardView
 
-    private var adapter: SideMenuAdapter = SideMenuAdapter()
+    private var adapter: SideMenuAdapter = SideMenuAdapter(context)
 
     init {
         displayOffsetX = when (context.resources.configuration.orientation) {

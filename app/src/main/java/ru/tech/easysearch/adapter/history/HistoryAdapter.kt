@@ -9,6 +9,7 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
@@ -66,7 +67,8 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val history = historyList[position]
         if (holder is HistoryViewHolder) {
-            holder.icon.setImageBitmap(history.icon?.let { byteArrayToBitmap(it) })
+            Glide.with(fragment.requireContext()).load(byteArrayToBitmap(history.icon!!))
+                .into(holder.icon)
             holder.description.text = history.description
             holder.url.text = history.url
             holder.time.text = history.time

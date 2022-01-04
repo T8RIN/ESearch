@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
@@ -43,7 +44,8 @@ class ShortcutsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val shortcut = newList[position]
-        holder.icon.setImageBitmap(byteArrayToBitmap(shortcut.icon!!))
+        Glide.with(context).load(byteArrayToBitmap(shortcut.icon!!)).into(holder.icon)
+
         holder.description.text = shortcut.description
         holder.itemView.setOnClickListener {
             if (position != newList.size - 1 || !isLast) {

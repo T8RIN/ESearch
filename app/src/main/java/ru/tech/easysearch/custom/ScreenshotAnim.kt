@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetY
 
@@ -20,7 +21,7 @@ class ScreenshotAnim(rootGroup: ViewGroup, bitmap: Bitmap, context: Context) {
         rootGroup.addView(image)
         tint.animate().alpha(0.8f).setDuration(duration / 2)
             .withStartAction {
-                (image as ImageView).setImageBitmap(bitmap)
+                Glide.with(context).load(bitmap).into(image as ImageView)
                 image.animate()
                     .y(-displayOffsetY)
                     .setDuration(duration)

@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.tech.easysearch.R
 import ru.tech.easysearch.databinding.SelectableLabelItemBinding
 import ru.tech.easysearch.extensions.Extensions.getResId
@@ -37,8 +38,9 @@ class DeSelectedLabelsAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.label.setImageResource(labelList[position].getResId())
-        holder.icon.setImageResource(R.drawable.ic_baseline_add_circle_24)
+        Glide.with(context).load(labelList[position].getResId()).into(holder.label)
+        Glide.with(context).load(R.drawable.ic_baseline_add_circle_24).into(holder.icon)
+
         holder.icon.setTint(ContextCompat.getColor(context, R.color.dgreen))
         holder.dragger.visibility = GONE
         holder.icon.setOnClickListener {

@@ -358,7 +358,8 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         super.onNewIntent(intent)
         setIntent(intent)
         intent?.let { createNewTab(dispatchIntent(it)) }
-        for(i in supportFragmentManager.fragments) supportFragmentManager.beginTransaction().remove(i).commit()
+        for (i in supportFragmentManager.fragments) supportFragmentManager.beginTransaction()
+            .remove(i).commit()
     }
 
 }

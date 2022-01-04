@@ -11,6 +11,7 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -94,7 +95,7 @@ class WebClient(
             context.iconView?.visibility = VISIBLE
             CoroutineScope(Dispatchers.Main).launch {
                 val icon = getIcon(view.url!!)
-                context.iconView?.setImageBitmap(icon)
+                context.iconView?.let { Glide.with(context).load(icon).into(it) }
             }
         }
         super.onPageStarted(view, url, favicon)

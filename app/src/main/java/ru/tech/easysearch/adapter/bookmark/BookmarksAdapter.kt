@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
@@ -45,7 +46,8 @@ class BookmarksAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val bookmark = bookmarkList[position]
-        holder.icon.setImageBitmap(byteArrayToBitmap(bookmark.icon!!))
+        Glide.with(fragment.requireContext()).load(byteArrayToBitmap(bookmark.icon!!))
+            .into(holder.icon)
         holder.description.text = bookmark.description
         holder.url.text = bookmark.url
         holder.itemView.setOnClickListener {
@@ -84,7 +86,12 @@ class BookmarksAdapter(
                                 bookmark.url,
                                 Snackbar.LENGTH_LONG
                             )
-                                .setBackgroundTint(ContextCompat.getColor(fragment.requireContext(), R.color.materialGray))
+                                .setBackgroundTint(
+                                    ContextCompat.getColor(
+                                        fragment.requireContext(),
+                                        R.color.materialGray
+                                    )
+                                )
                                 .setAction(R.string.undo) {
                                     doInBackground { database.bookmarkDao().insert(bookmark) }
                                 }

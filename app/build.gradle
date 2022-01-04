@@ -57,7 +57,6 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     implementation "com.airbnb.android:lottie:3.7.0"
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
 
@@ -65,12 +64,9 @@ dependencies {
 
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:2.9.0"
 
     implementation "com.squareup.okhttp3:okhttp:4.9.2"
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
-
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
 
     implementation 'com.github.beksomega:loopinglayout:0.4.1'
 
@@ -79,8 +75,6 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-common-java8:2.4.0"
     implementation "androidx.room:room-runtime:2.4.0"
     kapt "androidx.room:room-compiler:2.4.0"
-
-    implementation "org.jsoup:jsoup:1.13.1"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.6"

@@ -15,9 +15,9 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/backgroundColor"
-            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scaleType="centerCrop"
             app:shapeAppearanceOverlay="@style/corners14dp" />
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -68,11 +68,11 @@
 
         <ImageButton
             android:id="@+id/close"
-            android:elevation="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
             android:contentDescription="@string/none"
+            android:elevation="3dp"
             android:paddingStart="10dp"
             android:paddingTop="10dp"
             android:paddingEnd="10dp"

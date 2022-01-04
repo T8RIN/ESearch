@@ -1,14 +1,17 @@
 package ru.tech.easysearch.custom.sidemenu
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.tech.easysearch.R
 
-class SideMenuAdapter : RecyclerView.Adapter<SideMenuAdapter.SideMenuViewHolder>() {
+class SideMenuAdapter(private val context: Context) :
+    RecyclerView.Adapter<SideMenuAdapter.SideMenuViewHolder>() {
 
     private var menuList: ArrayList<SideMenuItem> = ArrayList()
     private var sideMenuItemClickListener: SideMenuItemClickListener = SideMenuItemClickListener {}
@@ -20,7 +23,7 @@ class SideMenuAdapter : RecyclerView.Adapter<SideMenuAdapter.SideMenuViewHolder>
     }
 
     override fun onBindViewHolder(holder: SideMenuViewHolder, position: Int) {
-        holder.image.setImageDrawable(menuList[position].icon)
+        Glide.with(context).load(menuList[position].icon).into(holder.image)
         holder.text.text = menuList[position].title
         holder.bind(menuList[position])
     }

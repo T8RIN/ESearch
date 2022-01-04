@@ -15,6 +15,7 @@ import androidx.core.graphics.luminance
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import ru.tech.easysearch.R
@@ -69,16 +70,19 @@ class TabAdapter(
                 holder.shadow.visibility = VISIBLE
             }
         }
-        holder.snap.setImageBitmap(adapterTabs[position].fullSnap?.getCutSnap())
+        Glide.with(context).load(adapterTabs[position].fullSnap?.getCutSnap()).into(holder.snap)
+
         holder.title.text = adapterTabs[position].title
         holder.url.text = URL(adapterTabs[position].url).host
 
         adapterTabs[position].fullSnap?.let { bitmap ->
             Palette.from(bitmap).generate { palette ->
                 var vibrant = palette!!.getDominantColor(white)
-                if (vibrant == white || vibrant == black) holder.snap.setImageResource(R.drawable.skeleton)
+                if (vibrant == white || vibrant == black) {
+                    Glide.with(context).load(R.drawable.skeleton).into(holder.snap)
+                }
 
-                if(vibrant.luminance < 0.1) vibrant = vibrant.lightenColor(0.25f)
+                if (vibrant.luminance < 0.1) vibrant = vibrant.lightenColor(0.25f)
 
                 val titleColor: Int
                 val urlColor: Int
