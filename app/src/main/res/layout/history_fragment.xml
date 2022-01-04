@@ -82,4 +82,9 @@
         android:visibility="gone"
         app:constraint_referenced_ids="text, image" />
 
+    <include
+        android:visibility="gone"
+        android:id="@+id/indicator"
+        layout="@layout/progress_indicator"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

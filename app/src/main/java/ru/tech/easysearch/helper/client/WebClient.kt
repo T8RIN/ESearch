@@ -176,9 +176,9 @@ class WebClient(
                 Handler(context.mainLooper).postDelayed({
                     title = view.title!!
                     if (title.isEmpty()) title = it
-                }, 900)
+                }, 400)
 
-                Functions.delayedDoInBackground(1000) {
+                Functions.delayedDoInBackground(500) {
                     val icon = context.fetchFavicon(it).toByteArray()
                     val dao = database.historyDao()
                     dao.insert(

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.tech.easysearch.R
@@ -38,7 +37,7 @@ class SmartPopupMenuAdapter(
         if (popupMenuItem.icon != null) {
             holder.bind(popupMenuItem)
 
-            Glide.with(context).load(popupMenuItem.icon).into(holder.image)
+            holder.image.setImageDrawable(popupMenuItem.icon)
             holder.text.text = popupMenuItem.title
 
             if (popupMenuItem.showSwitcher) {

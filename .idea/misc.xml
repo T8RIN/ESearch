@@ -63,7 +63,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/grid_pager_item.xml" value="0.2012820512820513" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/header_layout.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/hist_item.xml" value="0.1" />
-        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/history_fragment.xml" value="0.20213675213675214" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/history_fragment.xml" value="0.176" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/history_item.xml" value="0.2012820512820513" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/label_item.xml" value="0.264" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/main_grid_item.xml" value="0.4" />
@@ -71,6 +71,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_dismiss_tint.xml" value="0.2012820512820513" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_item.xml" value="0.2012820512820513" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_menu.xml" value="0.4" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/progress_indicator.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/recent_fragment.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/recycler_view_item.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/screenshot_image.xml" value="0.20213675213675214" />

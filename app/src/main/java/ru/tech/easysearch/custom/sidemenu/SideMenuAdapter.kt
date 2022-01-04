@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import ru.tech.easysearch.R
 
 class SideMenuAdapter(private val context: Context) :
@@ -23,7 +22,7 @@ class SideMenuAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: SideMenuViewHolder, position: Int) {
-        Glide.with(context).load(menuList[position].icon).into(holder.image)
+        holder.image.setImageDrawable(menuList[position].icon)
         holder.text.text = menuList[position].title
         holder.bind(menuList[position])
     }

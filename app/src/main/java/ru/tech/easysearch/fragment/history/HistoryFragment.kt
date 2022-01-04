@@ -3,11 +3,17 @@ package ru.tech.easysearch.fragment.history
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.history.HistoryAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
@@ -64,38 +70,19 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
         }
         database.historyDao().getHistory().observe(this) { liveList ->
             if (liveList.isNotEmpty()) {
-                val booleanArray: ArrayList<Boolean> = ArrayList()
-                val historyList: ArrayList<History> = ArrayList()
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.indicator.root.visibility = VISIBLE
+                    computeList(liveList)
+                    adapter =
+                        HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
+                    binding.indicator.root.visibility = GONE
+                    binding.historyRecycler.adapter = adapter!!
+                    binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter!!))
 
-                val sortedList = ArrayList(liveList)
-                sortedList.sortByDescending {
-                    LocalDateTime.parse(
-                        it.sortingString,
-                        DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm")
-                    )
                 }
-
-                var prev = ""
-                for (i in sortedList) {
-                    var needToAddMore = false
-                    if (i.date != prev) {
-                        booleanArray.add(true)
-                        historyList.add(i)
-                        prev = i.date
-                        needToAddMore = true
-                    } else {
-                        booleanArray.add(false)
-                    }
-                    historyList.add(i)
-                    if (needToAddMore) booleanArray.add(false)
-                }
-                adapter =
-                    HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
-                binding.historyRecycler.adapter = adapter!!
-                binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter!!))
             } else {
-                binding.errorMessage.visibility = View.VISIBLE
-                binding.historyRecycler.visibility = View.GONE
+                binding.errorMessage.visibility = VISIBLE
+                binding.historyRecycler.visibility = GONE
             }
         }
 
@@ -123,6 +110,37 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
 
         }
 
+    }
+
+    val booleanArray: ArrayList<Boolean> = ArrayList()
+    val historyList: ArrayList<History> = ArrayList()
+
+    private suspend fun computeList(liveList: List<History>) = withContext(Dispatchers.IO) {
+        booleanArray.clear()
+        historyList.clear()
+
+        val sortedList = ArrayList(liveList)
+        sortedList.sortByDescending {
+            LocalDateTime.parse(
+                it.sortingString,
+                DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm")
+            )
+        }
+
+        var prev = ""
+        for (i in sortedList) {
+            var needToAddMore = false
+            if (i.date != prev) {
+                booleanArray.add(true)
+                historyList.add(i)
+                prev = i.date
+                needToAddMore = true
+            } else {
+                booleanArray.add(false)
+            }
+            historyList.add(i)
+            if (needToAddMore) booleanArray.add(false)
+        }
     }
 
 
