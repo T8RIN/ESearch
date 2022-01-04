@@ -34,6 +34,7 @@ import ru.tech.easysearch.functions.Functions.delayedDoInForeground
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
+import java.net.URL
 
 class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
 
@@ -72,11 +73,14 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
         )
     }
 
+    private var startUrl: String = ""
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireActivity(), theme) {
             override fun onBackPressed() {
                 if (card?.translationY == 0f) hideSearchSelectionCard()
-                else if (browser?.canGoBack() == true) browser?.goBack()
+                else if (browser?.canGoBack() == true && URL(startUrl).host == URL(browser?.url).host)
+                    browser?.goBack()
                 else requireDialog().dismiss()
             }
         }
@@ -113,7 +117,8 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
         browser!!.webViewClient = WebClient(requireActivity(), progressBar!!)
         browser!!.webChromeClient = ChromeClient(requireActivity(), progressBar!!, browser!!)
 
-        prefix = arguments?.get("prefix").toString()
+        startUrl = arguments?.get("prefix").toString()
+        prefix = startUrl
         val query = arguments?.get("url").toString().removePrefix(prefix)
         onGetUri(query)
 
@@ -204,7 +209,7 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
                     hideSearchSelectionCard()
                     Handler(activity.mainLooper).postDelayed({ animating = false }, 350)
                 }
-                delayedDoInForeground(300) {
+                delayedDoInForeground(200) {
                     val key =
                         layoutManager?.findLastCompletelyVisibleItemPosition()
                             ?.let { toolbarAdapter?.labelList?.get(it) }

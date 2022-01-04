@@ -63,4 +63,10 @@ object DataArrays {
         0f
     )
 
+    val headers: Map<String, String> = mapOf(
+        Pair("DNT", "1"),
+        Pair("Sec-GPC", "1"),
+        Pair("X-Requested-With", "com.duckduckgo.mobile.android")
+    )
+
 }

@@ -8,8 +8,6 @@ import android.app.SearchManager
 import android.content.Intent
 import android.content.Intent.*
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -23,16 +21,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
-import ru.tech.easysearch.custom.ScreenshotAnim
 import ru.tech.easysearch.custom.popup.smart.SmartPopupMenu
-import ru.tech.easysearch.custom.popup.smart.SmartPopupMenuItem
 import ru.tech.easysearch.custom.sidemenu.SideMenu
-import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
 import ru.tech.easysearch.data.BrowserTabs.loadOpenedTabs
@@ -44,10 +38,12 @@ import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
+import ru.tech.easysearch.extensions.Extensions.generatePopupMenu
+import ru.tech.easysearch.extensions.Extensions.generateSideMenu
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
+import ru.tech.easysearch.extensions.Extensions.makeScreenshot
 import ru.tech.easysearch.extensions.Extensions.setCoeff
 import ru.tech.easysearch.extensions.Extensions.shareWith
-import ru.tech.easysearch.extensions.Extensions.writeBitmap
 import ru.tech.easysearch.fragment.bookmarks.BookmarksFragment
 import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
 import ru.tech.easysearch.fragment.dialog.ShortcutCreationDialog
@@ -201,7 +197,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         binding.goMoreButton.setOnClickListener { showMore() }
 
         profileBrowser?.setOnClickListener {
-            sideMenu = SideMenu(binding.root.parent as ViewGroup, this)
+            sideMenu = generateSideMenu(binding.root.parent as ViewGroup)
                 .setMenuItemClickListener { menuItem ->
                     when (menuItem.id) {
                         R.drawable.ic_baseline_history_24 -> {
@@ -219,154 +215,57 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     }
                     sideMenu?.dismiss()
                 }
-                .addItems(
-                    SideMenuItem(
-                        R.drawable.ic_baseline_history_24,
-                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24)!!,
-                        getString(R.string.history)
-                    ),
-                    SideMenuItem(
-                        R.drawable.ic_baseline_bookmarks_24,
-                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_bookmarks_24)!!,
-                        getString(R.string.bookmarks)
-                    ),
-                    SideMenuItem(
-                        R.drawable.ic_baseline_download_24,
-                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_download_24)!!,
-                        getString(R.string.downloads)
-                    ),
-                    SideMenuItem(
-                        R.drawable.ic_baseline_settings_24,
-                        ContextCompat.getDrawable(this, R.drawable.ic_baseline_settings_24)!!,
-                        getString(R.string.settings)
-                    )
-                )
             sideMenu!!.show()
         }
 
     }
 
     private fun showMore() {
-        popupMenu = SmartPopupMenu(binding.root.parent as ViewGroup, this, this)
-            .addItems(
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_refresh_24,
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_refresh_24),
-                    getString(R.string.refresh)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_share_24,
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_share_24),
-                    getString(R.string.share)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_translate_24,
-                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_translate_24),
-                    getString(R.string.translate)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_find_in_page_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_baseline_find_in_page_24
-                    ), getString(R.string.findInPage)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_download_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_baseline_download_24
-                    ), getString(R.string.saveAsPDF)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_screenshot_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_baseline_screenshot_24
-                    ), getString(R.string.makeScreenshot)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_desktop_mac_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_baseline_desktop_mac_24
-                    ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
-                ),
-                SmartPopupMenuItem(null, null, getString(R.string.addTo)),
-                SmartPopupMenuItem(
-                    R.drawable.ic_start_panel,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_start_panel
-                    ), getString(R.string.shortcuts)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_bookmark_border_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_baseline_bookmark_border_24
-                    ), getString(R.string.bookmarks)
-                ),
-                SmartPopupMenuItem(
-                    R.drawable.ic_baseline_add_to_home_screen_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_baseline_add_to_home_screen_24
-                    ), getString(R.string.homeScreen)
-                ),
-            )
-            .setMenuItemClickListener { popupMenuItem ->
-                when (popupMenuItem.id) {
-                    R.drawable.ic_baseline_refresh_24 -> {
-                        browser?.reload()
-                    }
-                    R.drawable.ic_baseline_share_24 -> {
-                        shareWith(browser?.url.toString())
-                    }
-                    R.drawable.ic_baseline_translate_24 -> {
-                        browser?.loadUrl("$translateSite${browser?.url}")
-                    }
-                    R.drawable.ic_baseline_find_in_page_24 -> {
-                        browser?.prepareFinding(binding.root.parent as ViewGroup)
-                    }
-                    R.drawable.ic_baseline_download_24 -> {
-                        browser?.saveAsPDF(this)
-                    }
-                    R.drawable.ic_baseline_screenshot_24 -> {
-                        val browserContainer = binding.webViewContainer
-                        val bitmap =
-                            Bitmap.createBitmap(
-                                browserContainer.width,
-                                browserContainer.height,
-                                Bitmap.Config.ARGB_8888
-                            )
-                        val canvas = Canvas(bitmap)
-                        browserContainer.draw(canvas)
-                        writeBitmap(bitmap)
-                        ScreenshotAnim(binding.root.parent as ViewGroup, bitmap, this)
-                    }
-                    R.drawable.ic_start_panel -> {
-                        if (lastUrl == "") lastUrl = browser?.url!!
-                        val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
-                        if (!shortcutDialog.isAdded) shortcutDialog.show(
-                            supportFragmentManager,
-                            "shortcutDialog"
-                        )
-                    }
-                    R.drawable.ic_baseline_bookmark_border_24 -> {
-                        if (lastUrl == "") lastUrl = browser?.url!!
-                        val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
-                        if (!bookmarkDialog.isAdded) bookmarkDialog.show(
-                            supportFragmentManager,
-                            "bookDialog"
-                        )
-                    }
-                    R.drawable.ic_baseline_add_to_home_screen_24 -> {
-                        browser?.addToHomeScreen(this)
-                    }
+        popupMenu = generatePopupMenu(
+            binding.root.parent as ViewGroup,
+            this
+        ).setMenuItemClickListener { popupMenuItem ->
+            when (popupMenuItem.id) {
+                R.drawable.ic_baseline_refresh_24 -> {
+                    browser?.reload()
                 }
-                popupMenu!!.dismiss()
+                R.drawable.ic_baseline_share_24 -> {
+                    shareWith(browser?.url.toString())
+                }
+                R.drawable.ic_baseline_translate_24 -> {
+                    browser?.loadUrl("$translateSite${browser?.url}")
+                }
+                R.drawable.ic_baseline_find_in_page_24 -> {
+                    browser?.prepareFinding(binding.root.parent as ViewGroup)
+                }
+                R.drawable.ic_baseline_download_24 -> {
+                    browser?.saveAsPDF(this)
+                }
+                R.drawable.ic_baseline_screenshot_24 -> {
+                    binding.webViewContainer.makeScreenshot(this, binding.root.parent as ViewGroup)
+                }
+                R.drawable.ic_start_panel -> {
+                    if (lastUrl == "") lastUrl = browser?.url!!
+                    val shortcutDialog = ShortcutCreationDialog(lastUrl, browser?.title!!)
+                    if (!shortcutDialog.isAdded) shortcutDialog.show(
+                        supportFragmentManager,
+                        "shortcutDialog"
+                    )
+                }
+                R.drawable.ic_baseline_bookmark_border_24 -> {
+                    if (lastUrl == "") lastUrl = browser?.url!!
+                    val bookmarkDialog = BookmarkCreationDialog(lastUrl, browser?.title!!)
+                    if (!bookmarkDialog.isAdded) bookmarkDialog.show(
+                        supportFragmentManager,
+                        "bookDialog"
+                    )
+                }
+                R.drawable.ic_baseline_add_to_home_screen_24 -> {
+                    browser?.addToHomeScreen(this)
+                }
             }
+            popupMenu!!.dismiss()
+        }
         popupMenu!!.show()
     }
 
@@ -453,6 +352,13 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     override fun onStop() {
         updateTabs()
         super.onStop()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        intent?.let { createNewTab(dispatchIntent(it)) }
+        for(i in supportFragmentManager.fragments) supportFragmentManager.beginTransaction().remove(i).commit()
     }
 
 }

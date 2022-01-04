@@ -16,6 +16,7 @@ import android.util.TypedValue
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebResourceError
 import android.webkit.WebView
@@ -34,6 +35,11 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.settings.BrowserSettingsAdapter.Companion.HEADER
 import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.custom.ScreenshotAnim
+import ru.tech.easysearch.custom.popup.smart.SmartPopupMenu
+import ru.tech.easysearch.custom.popup.smart.SmartPopupMenuItem
+import ru.tech.easysearch.custom.sidemenu.SideMenu
+import ru.tech.easysearch.custom.sidemenu.SideMenuItem
 import ru.tech.easysearch.custom.view.BrowserView.Companion.COPY_LINK
 import ru.tech.easysearch.custom.view.BrowserView.Companion.NEW_TAB
 import ru.tech.easysearch.custom.view.BrowserView.Companion.SAVE_IMAGE
@@ -56,6 +62,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.POPUPS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_HISTORY
 import ru.tech.easysearch.data.SharedPreferencesAccess.SAVE_TABS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.helper.interfaces.DesktopInterface
 import ru.tech.easysearch.helper.utils.permissions.PermissionUtils.grantPermissionsStorage
 import ru.tech.easysearch.model.SettingsItem
 import java.io.*
@@ -465,6 +472,118 @@ object Extensions {
             DataArrays.desktopUserAgentString -> true
             else -> false
         }
+    }
+
+    fun View.makeScreenshot(activity: AppCompatActivity, root: ViewGroup) {
+        val bitmap =
+            Bitmap.createBitmap(
+                width,
+                height,
+                Bitmap.Config.ARGB_8888
+            )
+        val canvas = Canvas(bitmap)
+        draw(canvas)
+        activity.writeBitmap(bitmap)
+        ScreenshotAnim(root, bitmap, activity)
+    }
+
+    fun Context.generateSideMenu(root: ViewGroup): SideMenu {
+        return SideMenu(root, this).addItems(
+            SideMenuItem(
+                ic_baseline_history_24,
+                ContextCompat.getDrawable(this, ic_baseline_history_24)!!,
+                getString(R.string.history)
+            ),
+            SideMenuItem(
+                ic_baseline_bookmarks_24,
+                ContextCompat.getDrawable(this, ic_baseline_bookmarks_24)!!,
+                getString(R.string.bookmarks)
+            ),
+            SideMenuItem(
+                ic_baseline_download_24,
+                ContextCompat.getDrawable(this, ic_baseline_download_24)!!,
+                getString(R.string.downloads)
+            ),
+            SideMenuItem(
+                ic_baseline_settings_24,
+                ContextCompat.getDrawable(this, ic_baseline_settings_24)!!,
+                getString(R.string.settings)
+            )
+        )
+    }
+
+    fun Context.generatePopupMenu(
+        root: ViewGroup,
+        desktopInterface: DesktopInterface
+    ): SmartPopupMenu {
+        return SmartPopupMenu(root, this, desktopInterface)
+            .addItems(
+                SmartPopupMenuItem(
+                    ic_baseline_refresh_24,
+                    ContextCompat.getDrawable(this, ic_baseline_refresh_24),
+                    getString(R.string.refresh)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_share_24,
+                    ContextCompat.getDrawable(this, ic_baseline_share_24),
+                    getString(R.string.share)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_translate_24,
+                    ContextCompat.getDrawable(this, ic_baseline_translate_24),
+                    getString(R.string.translate)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_find_in_page_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_baseline_find_in_page_24
+                    ), getString(R.string.findInPage)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_download_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_baseline_download_24
+                    ), getString(R.string.saveAsPDF)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_screenshot_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_baseline_screenshot_24
+                    ), getString(R.string.makeScreenshot)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_desktop_mac_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_baseline_desktop_mac_24
+                    ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
+                ),
+                SmartPopupMenuItem(null, null, getString(R.string.addTo)),
+                SmartPopupMenuItem(
+                    ic_start_panel,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_start_panel
+                    ), getString(R.string.shortcuts)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_bookmark_border_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_baseline_bookmark_border_24
+                    ), getString(R.string.bookmarks)
+                ),
+                SmartPopupMenuItem(
+                    ic_baseline_add_to_home_screen_24,
+                    ContextCompat.getDrawable(
+                        this,
+                        ic_baseline_add_to_home_screen_24
+                    ), getString(R.string.homeScreen)
+                ),
+            )
     }
 
 }

@@ -86,4 +86,7 @@
     <string name="edit">Edit</string>
     <string name="bookmarkSaved">Bookmark saved</string>
     <string name="shortcutSaved">Shortcut saved</string>
+    <string name="downloadFinished">Download finished</string>
+    <string name="openDownloadFolder">Download completed. Open it in download folder?</string>
+    <string name="openDownloads">Open downloads</string>
 </resources>

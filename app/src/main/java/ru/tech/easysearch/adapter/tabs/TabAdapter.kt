@@ -104,13 +104,13 @@ class TabAdapter(
                 context.binding.webViewContainer.removeView(context.findViewById(R.id.webBrowser))
                 context.binding.webViewContainer.removeAllViews()
                 context.loadTab(position)
-                fragment.dismiss()
             } else {
                 val intent = Intent(context, BrowserActivity::class.java)
                 intent.putExtra("position", position)
                 intent.putExtra("loadTab", true)
                 context.startActivity(intent)
             }
+            fragment.dismiss()
         }
 
         holder.close.setOnClickListener {

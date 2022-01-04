@@ -2,7 +2,10 @@ package ru.tech.easysearch.custom.view
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -70,6 +73,7 @@ class BrowserView : WebView {
     private var down: ImageButton? = null
     private var numMatches: TextView? = null
     private var searchView: TextInputEditText? = null
+    var goBack = false
 
     init {
         val manager = CookieManager.getInstance()
@@ -156,6 +160,19 @@ class BrowserView : WebView {
                 numMatches?.setTextColor(ContextCompat.getColor(context, R.color.red))
             }
         }
+
+        context.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.openDownloads)
+                    .setMessage(R.string.openDownloadFolder)
+                    .setPositiveButton(R.string.ok_ok) { _, _ ->
+                        context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            }
+        }, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     private var color = 0
@@ -324,6 +341,11 @@ class BrowserView : WebView {
             SRC_IMAGE_ANCHOR_TYPE -> menu.actionsForLink(listener)
             else -> menu.actionsForLink(listener)
         }
+    }
+
+    override fun goBack(){
+        super.goBack()
+        goBack = true
     }
 
     companion object {

@@ -20,7 +20,9 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.activity.MainActivity
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
+import ru.tech.easysearch.custom.view.BrowserView
 import ru.tech.easysearch.data.BrowserTabs.updateBottomNav
+import ru.tech.easysearch.data.DataArrays.headers
 import ru.tech.easysearch.data.SharedPreferencesAccess.AD_BLOCK
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
@@ -55,12 +57,10 @@ class WebClient(
 ) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-        val url = request.url.toString()
 
-        val headers: HashMap<String, String> = HashMap()
-        headers["DNT"] = "1"
-        headers["Sec-GPC"] = "1"
-        headers["X-Requested-With"] = "com.duckduckgo.mobile.android"
+        if ((view as? BrowserView)?.goBack == true) return false
+
+        val url = request.url.toString()
 
         if (context is MainActivity) {
             val intent = Intent(context, BrowserActivity::class.java)
@@ -211,11 +211,19 @@ class WebClient(
         }
     }
 
+    override fun onPageFinished(view: WebView?, url: String?) {
+        super.onPageFinished(view, url)
+        (view as? BrowserView)?.goBack = false
+    }
+
     override fun shouldInterceptRequest(
         view: WebView?,
         request: WebResourceRequest
     ): WebResourceResponse? {
-        if (request.url.toString().areAD() && getSetting(context, AD_BLOCK)) {
+        if (request.url.toString().areAD() &&
+            getSetting(context, AD_BLOCK) &&
+            !request.url.toString().contains("pagead")
+        ) {
             return WebResourceResponse(
                 "text/plain",
                 "utf-8",
