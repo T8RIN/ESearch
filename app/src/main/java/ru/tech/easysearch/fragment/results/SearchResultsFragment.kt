@@ -72,17 +72,12 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
         )
     }
 
-    var backpressed = false
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireActivity(), theme) {
             override fun onBackPressed() {
-                if (backpressed) {
-                    backpressed = false
-                    requireDialog().dismiss()
-                } else if (card?.translationY == 0f) {
-                    hideSearchSelectionCard()
-                } else requireDialog().dismiss()
+                if (card?.translationY == 0f) hideSearchSelectionCard()
+                else if (browser?.canGoBack() == true) browser?.goBack()
+                else requireDialog().dismiss()
             }
         }
     }
@@ -108,6 +103,7 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
             activity.onStartList(
                 ArrayList(SharedPreferencesAccess.loadLabelList(activity)!!.split("+"))
             )
+            this.dismiss()
         }
 
         searchView = binding.searchView
@@ -225,7 +221,6 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
         }
 
         backButton!!.setOnClickListener {
-            backpressed = true
             requireDialog().onBackPressed()
         }
 

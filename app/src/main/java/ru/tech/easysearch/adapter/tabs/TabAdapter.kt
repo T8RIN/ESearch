@@ -75,8 +75,10 @@ class TabAdapter(
 
         adapterTabs[position].fullSnap?.let { bitmap ->
             Palette.from(bitmap).generate { palette ->
-                val vibrant = palette!!.getDominantColor(white)
-                if (vibrant == white) holder.snap.setImageResource(R.drawable.skeleton)
+                var vibrant = palette!!.getDominantColor(white)
+                if (vibrant == white || vibrant == black) holder.snap.setImageResource(R.drawable.skeleton)
+
+                if(vibrant.luminance < 0.1) vibrant = vibrant.lightenColor(0.25f)
 
                 val titleColor: Int
                 val urlColor: Int

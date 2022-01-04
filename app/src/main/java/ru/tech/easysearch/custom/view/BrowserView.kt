@@ -73,8 +73,7 @@ class BrowserView : WebView {
 
     init {
         val manager = CookieManager.getInstance()
-        if (getSetting(context, COOKIES)) manager.setAcceptCookie(true)
-        else manager.setAcceptCookie(false)
+        manager.setAcceptCookie(getSetting(context, COOKIES))
 
         settings.apply {
             javaScriptEnabled = getSetting(context, JS)
@@ -222,7 +221,7 @@ class BrowserView : WebView {
     }
 
     override fun onCreateContextMenu(menu: ContextMenu) {
-        if (context is BrowserActivity) {
+        if (context is AppCompatActivity) {
             val result = hitTestResult
             result.extra?.let {
                 val extra = it

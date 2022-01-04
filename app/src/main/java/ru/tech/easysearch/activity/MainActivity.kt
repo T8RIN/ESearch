@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     private var bookmarks: ImageButton? = null
     private var settings: ImageButton? = null
 
-    private var pagerShapHelper = PagerSnapHelper()
+    private var pagerSnapHelper = PagerSnapHelper()
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -276,8 +276,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
                 binding.recyclerInclude.mainRecycler.adapter =
                     ShortcutsPagerRecyclerAdapter(this, newList)
 
-                pagerShapHelper.attachToRecyclerView(null)
-                pagerShapHelper.attachToRecyclerView(binding.recyclerInclude.mainRecycler)
+                pagerSnapHelper.attachToRecyclerView(null)
+                pagerSnapHelper.attachToRecyclerView(binding.recyclerInclude.mainRecycler)
             } else {
                 tempList.add(plusShortcut)
                 newList.add(tempList)
@@ -379,10 +379,6 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
     }
 
     override fun onStop() {
-        for (frag in supportFragmentManager.fragments) {
-            if (frag.tag != "results") supportFragmentManager.beginTransaction().remove(frag)
-                .commit()
-        }
         updateTabs()
         super.onStop()
     }

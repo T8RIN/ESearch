@@ -29,7 +29,7 @@ import ru.tech.easysearch.helper.client.WebClient
 
 object BrowserTabs {
 
-    private const val N = "~)_~~#*!>/"
+    private const val splitter = "~)_~~#*!>/"
 
     val openedTabs: ArrayList<BrowserTabItem> = ArrayList()
 
@@ -166,7 +166,7 @@ object BrowserTabs {
                             .toByteArray()
                         else -> snap
                     }
-                    tempArray.add("$i$N${item.title}$N${item.url}$N${fullSnap.getString()}")
+                    tempArray.add("$i$splitter${item.title}$splitter${item.url}$splitter${fullSnap.getString()}")
                 }
 
                 sp.setTabs(tempArray.toMutableSet())
@@ -187,7 +187,7 @@ object BrowserTabs {
             val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
             val tempArr: ArrayList<Pair<Int, BrowserTabItem>> = ArrayList()
             for (data in sp.getTabs()) {
-                val dataArr = data.split(N)
+                val dataArr = data.split(splitter)
 
                 val id = dataArr[0]
                 val title = dataArr[1]
@@ -196,7 +196,7 @@ object BrowserTabs {
 
                 val tab = BrowserView(this)
                 tab.webChromeClient = ChromeClient(this, progressBar, tab)
-                tab.webViewClient = WebClient(this, progressBar, true)
+                tab.webViewClient = WebClient(this, progressBar)
                 tab.loadUrl(url)
                 tempArr.add(
                     Pair(

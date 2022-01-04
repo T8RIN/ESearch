@@ -76,6 +76,7 @@
         android:layout_gravity="bottom"
         android:indeterminate="false"
         android:progress="0"
+        android:elevation="6dp"
         android:visibility="gone"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/appBar" />
@@ -85,7 +86,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/bottomAppBar"
-        app:layout_constraintTop_toBottomOf="@id/progressIndicator">
+        app:layout_constraintTop_toBottomOf="@id/appBar">
 
         <ru.tech.easysearch.custom.view.BrowserView
             android:id="@+id/webBrowser"

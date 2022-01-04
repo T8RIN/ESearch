@@ -70,6 +70,7 @@ class TabsFragment : DialogFragment() {
             if (openedTabs.isEmpty()) (activity as? BrowserActivity)?.finish()
             else if (needToLoad) (activity as? BrowserActivity)?.loadTab(position, false)
             activity.updateTabs()
+            this.dismiss()
         }
         (activity as? BrowserActivity)?.saveLastTab()
 

@@ -451,9 +451,6 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     }
 
     override fun onStop() {
-        for (frag in supportFragmentManager.fragments) {
-            supportFragmentManager.beginTransaction().remove(frag).commit()
-        }
         updateTabs()
         super.onStop()
     }
