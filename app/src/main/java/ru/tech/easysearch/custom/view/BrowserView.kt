@@ -54,7 +54,7 @@ import ru.tech.easysearch.extensions.Extensions.writeBitmap
 import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
-import ru.tech.easysearch.helper.adblock.AdBlocker.Companion.getDomain
+import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
 import java.net.URL
 import java.net.URLConnection
 

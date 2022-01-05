@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.tech.easysearch.activity.MainActivity.Companion.displayOffsetX
@@ -40,8 +39,7 @@ class ToolbarAdapter(
     var labelListAdapter: LabelListAdapter? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Glide.with(context).load(labelList[position].getResId()).into(holder.label)
-
+        holder.label.setImageResource(labelList[position].getResId())
         holder.itemView.setOnClickListener {
             when (card.translationY) {
                 displayOffsetY -> {

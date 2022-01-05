@@ -10,6 +10,7 @@ import android.util.Patterns
 import android.view.View.GONE
 import android.webkit.URLUtil
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -42,10 +43,11 @@ import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.results.SearchResultsFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.tabs.TabsFragment
-import ru.tech.easysearch.functions.Functions
+import ru.tech.easysearch.functions.Functions.doInBackground
 import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
 import java.util.*
+import kotlin.system.exitProcess
 
 @SuppressLint("NotifyDataSetChanged")
 class MainActivity : AppCompatActivity(), LabelListChangedInterface {
@@ -125,8 +127,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
         displayOffsetX = -resources.displayMetrics.widthPixels.toFloat()
 
-        Functions.doInBackground {
-            AdBlocker().createAdList(this)
+        doInBackground {
+            AdBlocker.createAdList(this)
         }
     }
 
@@ -360,12 +362,24 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         var displayOffsetX = -1000f
     }
 
+    private var doubleBackToExitPressedOnce = false
     override fun onBackPressed() {
         if (card?.translationY == 0f) {
             hideSearchSelectionCard(endAction = {
                 labelRecycler?.adapter = null
                 fab?.show()
             })
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                finishAffinity()
+                exitProcess(0)
+            }
+            this.doubleBackToExitPressedOnce = true
+            Toast.makeText(this, getString(R.string.exitConfirm), Toast.LENGTH_SHORT).show()
+            Handler(mainLooper).postDelayed(
+                { doubleBackToExitPressedOnce = false },
+                2000
+            )
         }
     }
 

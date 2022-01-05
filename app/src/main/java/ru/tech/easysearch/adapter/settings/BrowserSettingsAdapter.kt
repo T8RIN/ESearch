@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.tech.easysearch.data.SharedPreferencesAccess.SET
@@ -52,13 +51,13 @@ class BrowserSettingsAdapter(
                 if (position == 0) holder.divider.visibility = GONE
                 else holder.divider.visibility = VISIBLE
 
-                Glide.with(context).load(settingsItem.icon).into(holder.icon)
+                holder.icon.setImageDrawable(settingsList[position].icon)
                 holder.label.text = settingsItem.label
             }
             else -> {
                 val holder = mainHolder as ItemViewHolder
 
-                Glide.with(context).load(settingsItem.icon).into(holder.icon)
+                holder.icon.setImageDrawable(settingsItem.icon)
                 holder.label.text = settingsItem.label
                 holder.switcher.isChecked = settingsItem.checked
                 holder.switcher.setOnCheckedChangeListener { _, isChecked ->

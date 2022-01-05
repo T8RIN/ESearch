@@ -8,6 +8,7 @@ import android.app.SearchManager
 import android.content.Intent
 import android.content.Intent.*
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -38,6 +39,7 @@ import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.databinding.ActivityBrowserBinding
+import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.generatePopupMenu
 import ru.tech.easysearch.extensions.Extensions.generateSideMenu
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
@@ -51,6 +53,7 @@ import ru.tech.easysearch.fragment.history.HistoryFragment
 import ru.tech.easysearch.fragment.settings.SettingsFragment
 import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.functions.Functions
+import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
@@ -88,7 +91,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     override fun onStart() {
         super.onStart()
         Functions.doInBackground {
-            AdBlocker().createAdList(this)
+            AdBlocker.createAdList(this)
         }
         if (openedTabs.isEmpty()) loadOpenedTabs(progressBar)
     }
@@ -136,8 +139,16 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     createNewTab(tempUrl)
                     lastUrl = tempUrl
                 } else {
-                    createNewTab(prefix + url)
+                    lastUrl = prefix + url
+                    createNewTab(lastUrl)
                 }
+                searchView!!.setText(lastUrl)
+
+                doInIoThreadWithObservingOnMain({
+                    fetchFavicon(lastUrl)
+                }, {
+                    iconView?.setImageBitmap(it as Bitmap)
+                })
 
                 browser?.hideKeyboard(this)
                 searchView!!.clearFocus()

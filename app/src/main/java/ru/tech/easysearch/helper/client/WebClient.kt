@@ -43,11 +43,13 @@ import ru.tech.easysearch.extensions.Extensions.isDesktop
 import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.ScriptsJS.desktopScript
+import ru.tech.easysearch.functions.ScriptsJS.disBugsnag
+import ru.tech.easysearch.functions.ScriptsJS.disSentry
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript1
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript2
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript3
 import ru.tech.easysearch.functions.ScriptsJS.privacyScript
-import ru.tech.easysearch.helper.adblock.AdBlocker.Companion.areAD
+import ru.tech.easysearch.helper.adblock.AdBlocker.areAD
 import java.io.ByteArrayInputStream
 import java.text.DateFormatSymbols
 import java.util.*
@@ -103,6 +105,9 @@ class WebClient(
 
 
     override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
+
+        val ctx = context
+        if(ctx is BrowserActivity) ctx.updateBottomNav()
 
         if (needToChangeBrowserSettings(context, GET)) {
             val manager = CookieManager.getInstance()
@@ -209,6 +214,8 @@ class WebClient(
             evaluateJavascript(doNotTrackScript1, null)
             evaluateJavascript(doNotTrackScript2, null)
             evaluateJavascript(doNotTrackScript3, null)
+            evaluateJavascript(disSentry, null)
+            evaluateJavascript(disBugsnag, null)
         }
     }
 
@@ -222,8 +229,7 @@ class WebClient(
         request: WebResourceRequest
     ): WebResourceResponse? {
         if (request.url.toString().areAD() &&
-            getSetting(context, AD_BLOCK) &&
-            !request.url.toString().contains("pagead")
+            getSetting(context, AD_BLOCK)
         ) {
             return WebResourceResponse(
                 "text/plain",

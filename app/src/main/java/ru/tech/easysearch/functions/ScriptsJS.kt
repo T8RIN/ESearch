@@ -16,4 +16,9 @@ object ScriptsJS {
 
     const val doNotTrackScript3 =
         "if (navigator.msDoNotTrack === undefined) { Object.defineProperty(navigator, 'msDoNotTrack', { value: 1, writable: false,configurable: false});} else {try { navigator.msDoNotTrack = 1;} catch (e) { console.error('msDoNotTrack is not writable: ', e); }};"
+
+    const val disSentry = "Sentry.init({ beforeSend(event) { return null; }});"
+
+    const val disBugsnag = "Bugsnag::setNotifyReleaseStages(['development', 'production']);"
+
 }
