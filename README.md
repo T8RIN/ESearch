@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">  
-ESearch is a lightweight beatufull web browser based on android webview.<br>You can easily change the search engine during your query to find everything you need <br>Project includes DuckDuckGo seclusion scripts, DNT header, JavaScript disabling and another privacy settings
+ESearch is a lightweight beatufull web browser based on android webview.<br>You can easily change the search engine during your query to find everything you need <br>Project includes DuckDuckGo seclusion scripts, DNT header, JavaScript disabling and another privacy settings. <br> Smart autoupdated built-in adblock silently removes all ads on the pages
 </p>
 </br>
 
