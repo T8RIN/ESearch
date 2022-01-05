@@ -107,7 +107,7 @@ class WebClient(
     override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
 
         val ctx = context
-        if(ctx is BrowserActivity) ctx.updateBottomNav()
+        if (ctx is BrowserActivity) ctx.updateBottomNav()
 
         if (needToChangeBrowserSettings(context, GET)) {
             val manager = CookieManager.getInstance()
