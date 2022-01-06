@@ -107,6 +107,7 @@ object BrowserTabs {
             browser = tabToLoad
             browser?.webChromeClient = ChromeClient(this, progressBar!!, tabToLoad)
             browser?.webViewClient = WebClient(this, progressBar!!)
+            if(browser?.url == null) browser?.loadUrl(temp.url)
             this.updateBottomNav()
             val url = when (val rll = tabToLoad.url) {
                 null -> openedTabs[position].url

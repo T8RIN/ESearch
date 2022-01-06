@@ -41,7 +41,7 @@ import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.forceNightMode
 import ru.tech.easysearch.extensions.Extensions.isDesktop
 import ru.tech.easysearch.extensions.Extensions.toByteArray
-import ru.tech.easysearch.functions.Functions
+import ru.tech.easysearch.functions.Functions.delayedDoInBackground
 import ru.tech.easysearch.functions.ScriptsJS.desktopScript
 import ru.tech.easysearch.functions.ScriptsJS.disBugsnag
 import ru.tech.easysearch.functions.ScriptsJS.disSentry
@@ -66,9 +66,14 @@ class WebClient(
         val url = request.url.toString()
 
         if (context is MainActivity) {
-            val intent = Intent(context, BrowserActivity::class.java)
-            intent.putExtra("url", url)
-            context.startActivity(intent)
+            for (i in context.supportFragmentManager.fragments) {
+                if (i.tag == "results") {
+                    val intent = Intent(context, BrowserActivity::class.java)
+                    intent.putExtra("url", url)
+                    context.startActivity(intent)
+                    break
+                }
+            }
         } else {
             if (URLUtil.isNetworkUrl(url)) view.loadUrl(url, headers)
             else if (url.startsWith("intent://")) {
@@ -183,19 +188,29 @@ class WebClient(
                     if (title.isEmpty()) title = it
                 }, 400)
 
-                Functions.delayedDoInBackground(500) {
+                delayedDoInBackground(500) {
                     val icon = context.fetchFavicon(it).toByteArray()
                     val dao = database.historyDao()
-                    dao.insert(
-                        History(
-                            title,
-                            it,
-                            icon,
-                            "${hour}:${minute}",
-                            "$strDay $stringMonth $year",
-                            sortingString
-                        )
+
+                    val item = History(
+                        title,
+                        it,
+                        icon,
+                        "${hour}:${minute}",
+                        "$strDay $stringMonth $year",
+                        sortingString
                     )
+
+                    if (context is MainActivity) {
+                        for (i in context.supportFragmentManager.fragments) {
+                            if (i.tag == "results") {
+                                dao.insert(item)
+                                break
+                            }
+                        }
+                    } else {
+                        dao.insert(item)
+                    }
                 }
             }
         }

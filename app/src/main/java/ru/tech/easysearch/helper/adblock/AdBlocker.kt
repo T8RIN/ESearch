@@ -43,10 +43,12 @@ object AdBlocker {
                     listAsset.delete()
 
                 val reader = BufferedReader(FileReader(listAsset))
-                while (reader.readLine() != null) {
-                    adList.add(reader.readLine())
+
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
+                    line?.let { adList.add(it) }
                 }
-                adList.add("mc.yandex.ru")
+
             } catch (e: Exception) {
                 downloadAdList(context)
             }
@@ -61,7 +63,7 @@ object AdBlocker {
             val urlConnection = URL(adListUrl).openConnection()
             val urlConnection2 = URL(noTrackUrl).openConnection()
 
-            val inputStream = BufferedInputStream(urlConnection.getInputStream(), 1024 * 10)
+            val inputStream = BufferedInputStream(urlConnection.getInputStream(), 1024 * 30)
 
             val tempFile = File(tempPath)
 
@@ -69,7 +71,7 @@ object AdBlocker {
             tempFile.createNewFile()
 
             val outStream = FileOutputStream(tempFile)
-            val buff = ByteArray(10 * 1024)
+            val buff = ByteArray(30 * 1024)
 
             var len: Int
             while (inputStream.read(buff).also { len = it } != -1) {
@@ -78,9 +80,9 @@ object AdBlocker {
 
             inputStream.close()
 
-            val inputStream2 = BufferedInputStream(urlConnection2.getInputStream(), 1024 * 10)
+            val inputStream2 = BufferedInputStream(urlConnection2.getInputStream(), 1024 * 30)
 
-            val buff2 = ByteArray(10 * 1024)
+            val buff2 = ByteArray(30 * 1024)
 
             var len2: Int
             while (inputStream2.read(buff2).also { len2 = it } != -1) {
@@ -93,12 +95,15 @@ object AdBlocker {
 
             val reader = BufferedReader(FileReader(tempFile))
             val out = FileWriter(File(path))
-            while (reader.readLine() != null) {
-                val line = reader.readLine()
-                if (line.startsWith("||"))
-                    out.write("${line.removePrefix("||").removeSuffix("^").lowercase()}\n")
-                else if (line.startsWith("0.0.0.0 "))
-                    out.write("${line.removePrefix("0.0.0.0 ").lowercase()}\n")
+
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                line?.let {
+                    if (it.startsWith("||"))
+                        out.write("${it.removePrefix("||").removeSuffix("^").lowercase()}\n")
+                    else if (it.startsWith("0.0.0.0 "))
+                        out.write("${it.removePrefix("0.0.0.0 ").lowercase()}\n")
+                }
             }
             out.close()
             tempFile.delete()

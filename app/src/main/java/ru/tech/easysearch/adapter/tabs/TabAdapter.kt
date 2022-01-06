@@ -122,7 +122,7 @@ class TabAdapter(
             val removed = adapterTabs[holder.layoutPosition]
 
             openedTabs.remove(removed)
-            Snackbar.make(fragment.requireView(), "${lastTab.url}", Snackbar.LENGTH_LONG)
+            Snackbar.make(fragment.requireView(), removed.url, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo) {
                     openedTabs.add(removed)
                     updateState()
