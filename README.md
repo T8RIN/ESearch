@@ -20,7 +20,7 @@ ESearch is a lightweight beatufull web browser based on android webview.<br>You 
 Go to the [Releases](https://github.com/t8rin/ESearch/releases) to download the latest APK.
 
 
-<img src="blob/preview/preview.gif" align="right" width="32%"/>
+
 
 
 ## Tech stack & Open-source libraries
