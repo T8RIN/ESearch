@@ -36,7 +36,7 @@ object SharedPreferencesAccess {
 
     fun getSetting(context: Context, key: String): Boolean {
         return context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
-            .getBoolean(key, true)
+            .getBoolean(key, !(key == HIDE_PANELS || key == EYE_PROTECTION))
     }
 
     fun setSetting(context: Context, key: String, value: Boolean) {

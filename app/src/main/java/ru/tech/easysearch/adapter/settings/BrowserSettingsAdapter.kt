@@ -65,7 +65,12 @@ class BrowserSettingsAdapter(
                 holder.switcher.isChecked = settingsItem.checked
                 holder.switcher.setOnCheckedChangeListener { _, isChecked ->
                     setSetting(context, settingsItem.key, isChecked)
-                    if(settingsItem.key == HIDE_PANELS) Toast.makeText(context, R.string.restartBrowser, Toast.LENGTH_LONG).show()
+                    if (settingsItem.key == HIDE_PANELS)
+                        Toast.makeText(
+                            context,
+                            R.string.restartBrowser,
+                            Toast.LENGTH_LONG
+                        ).show()
                     needToChangeBrowserSettings(context, SET)
                 }
             }

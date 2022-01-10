@@ -44,7 +44,8 @@ class ShortcutsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val shortcut = newList[position]
-        Glide.with(context.applicationContext).load(byteArrayToBitmap(shortcut.icon!!)).into(holder.icon)
+        Glide.with(context.applicationContext).load(byteArrayToBitmap(shortcut.icon!!))
+            .into(holder.icon)
 
         holder.description.text = shortcut.description
         holder.itemView.setOnClickListener {

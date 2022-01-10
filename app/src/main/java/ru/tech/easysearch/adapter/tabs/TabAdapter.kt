@@ -70,7 +70,8 @@ class TabAdapter(
                 holder.shadow.visibility = VISIBLE
             }
         }
-        Glide.with(context.applicationContext).load(adapterTabs[position].fullSnap?.getCutSnap()).into(holder.snap)
+        Glide.with(context.applicationContext).load(adapterTabs[position].fullSnap?.getCutSnap())
+            .into(holder.snap)
 
         holder.title.text = adapterTabs[position].title
         holder.url.text = URL(adapterTabs[position].url).host
@@ -79,7 +80,8 @@ class TabAdapter(
             Palette.from(bitmap).generate { palette ->
                 var vibrant = palette!!.getDominantColor(white)
                 if (vibrant == white || vibrant == black) {
-                    Glide.with(context.applicationContext).load(R.drawable.skeleton).into(holder.snap)
+                    Glide.with(context.applicationContext).load(R.drawable.skeleton)
+                        .into(holder.snap)
                 }
 
                 if (vibrant.luminance < 0.1) vibrant = vibrant.lightenColor(0.25f)
