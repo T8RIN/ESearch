@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import ru.tech.easysearch.R
+import ru.tech.easysearch.extensions.Extensions.dipToPixels
 
 class SideMenu(private var root: ViewGroup, context: Context) {
 
@@ -39,6 +41,13 @@ class SideMenu(private var root: ViewGroup, context: Context) {
         tintView = LayoutInflater.from(context).inflate(R.layout.side_menu_tint, root, false)
         cardView = sideView.findViewById(R.id.card)
         sideView.translationX = displayOffsetX
+
+        if (root.getChildAt(0) is CoordinatorLayout) {
+            (cardView.layoutParams as FrameLayout.LayoutParams).apply {
+                bottomMargin =
+                    context.dipToPixels(100f).toInt()
+            }
+        }
 
         val layoutParams = cardView.layoutParams as FrameLayout.LayoutParams
         layoutParams.apply {

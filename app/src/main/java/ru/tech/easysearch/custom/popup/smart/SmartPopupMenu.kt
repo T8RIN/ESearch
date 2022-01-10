@@ -2,13 +2,19 @@ package ru.tech.easysearch.custom.popup.smart
 
 import android.content.Context
 import android.content.res.Configuration
+import android.view.Gravity.BOTTOM
+import android.view.Gravity.END
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import ru.tech.easysearch.R
+import ru.tech.easysearch.extensions.Extensions.dipToPixels
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
 import ru.tech.easysearch.helper.utils.anim.AnimUtils.slideViewHorizontally
 import ru.tech.easysearch.helper.utils.anim.AnimUtils.slideViewVertically
@@ -16,7 +22,7 @@ import ru.tech.easysearch.helper.utils.anim.AnimUtils.slideViewVertically
 
 class SmartPopupMenu(
     private var root: ViewGroup,
-    context: Context,
+    private val context: Context,
     desktopInterface: DesktopInterface? = null
 ) {
 
@@ -32,6 +38,7 @@ class SmartPopupMenu(
     private var popupView: View
     private var popupDismissTint: View
     private var cardView: MaterialCardView
+    private var recyclerView: RecyclerView
 
     private var adapter: SmartPopupMenuAdapter = SmartPopupMenuAdapter(context, desktopInterface)
 
@@ -45,8 +52,8 @@ class SmartPopupMenu(
             LayoutInflater.from(context).inflate(R.layout.popup_dismiss_tint, root, false)
         cardView = popupView.findViewById(R.id.card)
 
-        val recycler: RecyclerView = popupView.findViewById(R.id.popupRecycler)
-        recycler.adapter = adapter
+        recyclerView = popupView.findViewById(R.id.popupRecycler)
+        recyclerView.adapter = adapter
     }
 
     fun show() {
@@ -64,6 +71,13 @@ class SmartPopupMenu(
             }
         }
         isHidden = false
+
+        if (root.getChildAt(0) is CoordinatorLayout) {
+            (popupView.layoutParams as FrameLayout.LayoutParams).apply {
+                gravity = BOTTOM or END
+                bottomMargin = context.dipToPixels(56f).toInt()
+            }
+        }
 
         cardView.slideViewVertically(
             0,

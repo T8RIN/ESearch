@@ -46,7 +46,7 @@ class BookmarksAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val bookmark = bookmarkList[position]
-        Glide.with(fragment.requireContext()).load(byteArrayToBitmap(bookmark.icon!!))
+        Glide.with(fragment.requireContext().applicationContext).load(byteArrayToBitmap(bookmark.icon!!))
             .into(holder.icon)
         holder.description.text = bookmark.description
         holder.url.text = bookmark.url

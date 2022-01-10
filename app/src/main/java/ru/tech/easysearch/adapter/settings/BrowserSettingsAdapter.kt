@@ -7,9 +7,12 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.switchmaterial.SwitchMaterial
+import ru.tech.easysearch.R
+import ru.tech.easysearch.data.SharedPreferencesAccess.HIDE_PANELS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SET
 import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
 import ru.tech.easysearch.data.SharedPreferencesAccess.setSetting
@@ -62,6 +65,7 @@ class BrowserSettingsAdapter(
                 holder.switcher.isChecked = settingsItem.checked
                 holder.switcher.setOnCheckedChangeListener { _, isChecked ->
                     setSetting(context, settingsItem.key, isChecked)
+                    if(settingsItem.key == HIDE_PANELS) Toast.makeText(context, R.string.restartBrowser, Toast.LENGTH_LONG).show()
                     needToChangeBrowserSettings(context, SET)
                 }
             }

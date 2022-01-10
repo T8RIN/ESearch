@@ -25,10 +25,10 @@ object DataArrays {
     )
 
     const val userAgentString =
-        "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36"
+        "Mozilla/5.0 (Linux; Android 12; Pixel 6 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.104 Mobile Safari/537.36"
 
     const val desktopUserAgentString =
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_1; rv:61.0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
 
     const val translateSite = "https://translate.yandex.ru/translate?url="
     const val faviconParser = "https://www.google.com/s2/favicons?sz=64&domain_url="

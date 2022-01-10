@@ -25,6 +25,7 @@ import ru.tech.easysearch.extensions.Extensions.toByteArray
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 import ru.tech.easysearch.functions.Functions.doInBackground
+import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 
@@ -35,7 +36,7 @@ object BrowserTabs {
     val openedTabs: ArrayList<BrowserTabItem> = ArrayList()
 
     fun BrowserActivity.createNewTab(url: String = "https://google.com") {
-        val container = binding.webViewContainer
+        val container = webViewContainer!!
         val newTab = layoutInflater.inflate(R.layout.browser_tab, container, false) as BrowserView
         container.removeView(findViewById(R.id.webBrowser))
         container.addView(newTab)
@@ -52,7 +53,7 @@ object BrowserTabs {
     }
 
     fun BrowserActivity.saveLastTab() {
-        val container = binding.webViewContainer
+        val container = webViewContainer!!
         val lastTab: BrowserView = openedTabs[openedTabs.lastIndex].tab
 
         var width = container.width
@@ -98,7 +99,7 @@ object BrowserTabs {
         } else {
             val tabToLoad = openedTabs[position].tab
             val temp = openedTabs[position]
-            val container = binding.webViewContainer
+            val container = webViewContainer!!
             openedTabs.remove(temp)
             openedTabs.add(temp)
             if (save) this.saveLastTab()
@@ -107,13 +108,14 @@ object BrowserTabs {
             browser = tabToLoad
             browser?.webChromeClient = ChromeClient(this, progressBar!!, tabToLoad)
             browser?.webViewClient = WebClient(this, progressBar!!)
-            if(browser?.url == null) browser?.loadUrl(temp.url)
+            if (browser?.url == null) browser?.loadUrl(temp.url)
             this.updateBottomNav()
             val url = when (val rll = tabToLoad.url) {
                 null -> openedTabs[position].url
                 else -> rll
             }
-            searchView?.setText(url)
+            lastUrl = url
+            searchView?.setText(url.getDomain())
             while (searchView?.isFocused == true) searchView?.clearFocus()
             Functions.doInIoThreadWithObservingOnMain({
                 fetchFavicon(url)

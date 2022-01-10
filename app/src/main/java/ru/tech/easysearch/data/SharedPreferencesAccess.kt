@@ -11,6 +11,7 @@ object SharedPreferencesAccess {
     const val EYE_PROTECTION = "eye"
     const val AD_BLOCK = "adblock"
     const val IMAGE_LOADING = "imgload"
+    const val HIDE_PANELS = "hdpnls"
     const val LOCATION_ACCESS = "location"
     const val CAMERA_ACCESS = "camera"
     const val MIC_ACCESS = "mic"

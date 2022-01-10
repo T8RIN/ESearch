@@ -36,7 +36,7 @@ class LabelListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Glide.with(context).load(labelList[position].getResId()).into(holder.label)
+        holder.label.setImageResource(labelList[position].getResId())
 
         holder.card.isChecked =
             position == (toolbarRecycler.layoutManager as LoopingLayoutManager).findLastCompletelyVisibleItemPosition()

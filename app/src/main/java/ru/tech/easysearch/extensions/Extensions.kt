@@ -54,6 +54,7 @@ import ru.tech.easysearch.data.SharedPreferencesAccess.CAMERA_ACCESS
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
 import ru.tech.easysearch.data.SharedPreferencesAccess.EYE_PROTECTION
+import ru.tech.easysearch.data.SharedPreferencesAccess.HIDE_PANELS
 import ru.tech.easysearch.data.SharedPreferencesAccess.IMAGE_LOADING
 import ru.tech.easysearch.data.SharedPreferencesAccess.JS
 import ru.tech.easysearch.data.SharedPreferencesAccess.LOCATION_ACCESS
@@ -227,6 +228,12 @@ object Extensions {
                 getString(R.string.imageLoading),
                 getSetting(this, IMAGE_LOADING),
                 IMAGE_LOADING
+            ),
+            SettingsItem(
+                ContextCompat.getDrawable(this, ic_transition_24),
+                getString(R.string.hidePanels),
+                getSetting(this, HIDE_PANELS),
+                HIDE_PANELS
             ),
             SettingsItem(
                 ContextCompat.getDrawable(this, ic_baseline_view_in_ar_24),

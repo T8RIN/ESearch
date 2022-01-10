@@ -14,14 +14,18 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.view.KeyEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.webkit.URLUtil
 import android.webkit.ValueCallback
+import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageSwitcher
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import ru.tech.easysearch.R
@@ -37,8 +41,9 @@ import ru.tech.easysearch.data.BrowserTabs.saveLastTab
 import ru.tech.easysearch.data.BrowserTabs.updateTabs
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
+import ru.tech.easysearch.data.SharedPreferencesAccess.HIDE_PANELS
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.database.ESearchDatabase
-import ru.tech.easysearch.databinding.ActivityBrowserBinding
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.generatePopupMenu
 import ru.tech.easysearch.extensions.Extensions.generateSideMenu
@@ -55,6 +60,7 @@ import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.functions.Functions
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.helper.adblock.AdBlocker
+import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
@@ -73,17 +79,19 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             }
         }
 
-    lateinit var binding: ActivityBrowserBinding
-
     var searchView: TextInputEditText? = null
     var progressBar: LinearProgressIndicator? = null
     var iconView: ImageView? = null
 
     var backwardBrowser: ImageButton? = null
     var forwardBrowser: ImageButton? = null
+    private var goMoreButton: ImageSwitcher? = null
+    var webViewContainer: FrameLayout? = null
     private var homeBrowser: ImageButton? = null
     private var currentWindows: ImageButton? = null
     private var profileBrowser: ImageButton? = null
+    private var bottomAppBar: AppBarLayout? = null
+    private var root: View? = null
 
     var lastUrl = ""
     var clickedGo = false
@@ -102,23 +110,27 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
         setTheme(R.style.Theme_ESearch)
 
-        binding = ActivityBrowserBinding.inflate(layoutInflater)
         database = ESearchDatabase.getInstance(this)
         setCoeff()
 
-        setContentView(binding.root)
+        if (getSetting(this, HIDE_PANELS)) setContentView(R.layout.activity_browser_hide_panels)
+        else setContentView(R.layout.activity_browser)
 
         overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
 
-        searchView = binding.searchView
-        progressBar = binding.progressIndicator
-        iconView = binding.icon
-        homeBrowser = binding.homeBrowser
-        backwardBrowser = binding.backwardBrowser
-        forwardBrowser = binding.forwardBrowser
-        profileBrowser = binding.profileBrowser
-        currentWindows = binding.windowsBrowser
-        browser = binding.webBrowser
+        searchView = findViewById(R.id.searchView)
+        bottomAppBar = findViewById(R.id.bottomAppBar)
+        webViewContainer = findViewById(R.id.webViewContainer)
+        goMoreButton = findViewById(R.id.goMoreButton)
+        progressBar = findViewById(R.id.progressIndicator)
+        iconView = findViewById(R.id.icon)
+        homeBrowser = findViewById(R.id.homeBrowser)
+        backwardBrowser = findViewById(R.id.backwardBrowser)
+        forwardBrowser = findViewById(R.id.forwardBrowser)
+        profileBrowser = findViewById(R.id.profileBrowser)
+        currentWindows = findViewById(R.id.windowsBrowser)
+        root = findViewById(R.id.main_root)
+        browser = findViewById(R.id.webBrowser)
 
         val chromeClient = ChromeClient(this, progressBar!!, browser!!)
         browser!!.webViewClient = WebClient(this, progressBar!!)
@@ -142,7 +154,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     lastUrl = prefix + url
                     createNewTab(lastUrl)
                 }
-                searchView!!.setText(lastUrl)
+                searchView!!.setText(lastUrl.getDomain())
 
                 doInIoThreadWithObservingOnMain({
                     fetchFavicon(lastUrl)
@@ -155,33 +167,37 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             }
         }
 
-        binding.goMoreButton.inAnimation = AnimationUtils.loadAnimation(
+        goMoreButton?.inAnimation = AnimationUtils.loadAnimation(
             this,
             R.anim.fade_in
         )
-        binding.goMoreButton.outAnimation = AnimationUtils.loadAnimation(
+        goMoreButton?.outAnimation = AnimationUtils.loadAnimation(
             this,
             R.anim.fade_out
         )
 
         searchView?.setOnFocusChangeListener { _, focused ->
+            if (lastUrl == "") lastUrl = browser?.url!!
             when (focused) {
                 true -> {
-                    binding.goMoreButton.showNext()
-                    binding.goMoreButton.setOnClickListener {
+                    goMoreButton?.showNext()
+                    goMoreButton?.setOnClickListener {
                         onGetUri(searchView!!, searchView!!.text.toString())
                     }
+                    if (!clickedGo) {
+                        searchView?.setText(lastUrl)
+                    }
+                    searchView?.selectAll()
                 }
                 false -> {
-                    binding.goMoreButton.showPrevious()
-                    binding.goMoreButton.setOnClickListener {
+                    goMoreButton?.showPrevious()
+                    goMoreButton?.setOnClickListener {
                         showMore()
                     }
+                    if (!clickedGo) {
+                        searchView?.setText(lastUrl.getDomain())
+                    }
                 }
-            }
-            if (!focused && !clickedGo) {
-                if (lastUrl == "") lastUrl = browser?.url!!
-                searchView?.setText(lastUrl)
             }
         }
 
@@ -196,7 +212,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
         homeBrowser?.setOnClickListener {
             saveLastTab()
-            binding.webViewContainer.removeAllViews()
+            webViewContainer?.removeAllViews()
             finish()
             startActivity(Intent(this, MainActivity::class.java))
         }
@@ -205,10 +221,10 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             TabsFragment().show(supportFragmentManager, "custom")
         }
 
-        binding.goMoreButton.setOnClickListener { showMore() }
+        goMoreButton?.setOnClickListener { showMore() }
 
         profileBrowser?.setOnClickListener {
-            sideMenu = generateSideMenu(binding.root.parent as ViewGroup)
+            sideMenu = generateSideMenu(root!!.parent as ViewGroup)
                 .setMenuItemClickListener { menuItem ->
                     when (menuItem.id) {
                         R.drawable.ic_baseline_history_24 -> {
@@ -233,7 +249,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
     private fun showMore() {
         popupMenu = generatePopupMenu(
-            binding.root.parent as ViewGroup,
+            root!!.parent as ViewGroup,
             this
         ).setMenuItemClickListener { popupMenuItem ->
             when (popupMenuItem.id) {
@@ -247,13 +263,16 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     browser?.loadUrl("$translateSite${browser?.url}")
                 }
                 R.drawable.ic_baseline_find_in_page_24 -> {
-                    browser?.prepareFinding(binding.root.parent as ViewGroup)
+                    browser?.prepareFinding(root!!.parent as ViewGroup)
                 }
                 R.drawable.ic_baseline_download_24 -> {
                     browser?.saveAsPDF(this)
                 }
                 R.drawable.ic_baseline_screenshot_24 -> {
-                    binding.webViewContainer.makeScreenshot(this, binding.root.parent as ViewGroup)
+                    webViewContainer?.makeScreenshot(
+                        this,
+                        root!!.parent as ViewGroup
+                    )
                 }
                 R.drawable.ic_start_panel -> {
                     if (lastUrl == "") lastUrl = browser?.url!!
@@ -312,8 +331,9 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                 browser?.cancelFinding()
             }
             else -> {
+                openedTabs.removeLastOrNull()
+                updateTabs()
                 super.onBackPressed()
-                openedTabs.removeAt(openedTabs.lastIndex)
                 overridePendingTransition(R.anim.enter_slide_up, R.anim.exit_slide_down)
             }
         }

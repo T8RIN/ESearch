@@ -90,4 +90,6 @@
     <string name="openDownloadFolder">Download completed. Open it in download folder?</string>
     <string name="openDownloads">Open downloads</string>
     <string name="exitConfirm">Tap back again to exit</string>
+    <string name="hidePanels">Hide panels</string>
+    <string name="restartBrowser">Restart browser to see the changes</string>
 </resources>

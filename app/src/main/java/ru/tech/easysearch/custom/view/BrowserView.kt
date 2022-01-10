@@ -2,10 +2,7 @@ package ru.tech.easysearch.custom.view
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -16,7 +13,6 @@ import android.view.*
 import android.webkit.CookieManager
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
-import android.webkit.WebView
 import android.webkit.WebView.HitTestResult.*
 import android.widget.ImageButton
 import android.widget.TextView
@@ -32,6 +28,7 @@ import okhttp3.internal.userAgent
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
+import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.data.SharedPreferencesAccess.COOKIES
 import ru.tech.easysearch.data.SharedPreferencesAccess.DOM_STORAGE
@@ -58,9 +55,8 @@ import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
 import java.net.URL
 import java.net.URLConnection
 
-
 @SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
-class BrowserView : WebView {
+class BrowserView : NestedWebView {
 
     constructor(context: Context) : super(context)
 
@@ -87,7 +83,7 @@ class BrowserView : WebView {
             blockNetworkImage = !getSetting(context, IMAGE_LOADING)
             allowFileAccess = true
             allowContentAccess = true
-            userAgentString = userAgentString
+            userAgentString = DataArrays.userAgentString
             setGeolocationEnabled(getSetting(context, LOCATION_ACCESS))
             javaScriptCanOpenWindowsAutomatically = getSetting(context, POPUPS)
             builtInZoomControls = true
@@ -161,18 +157,6 @@ class BrowserView : WebView {
             }
         }
 
-        context.registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                MaterialAlertDialogBuilder(context)
-                    .setTitle(R.string.openDownloads)
-                    .setMessage(R.string.openDownloadFolder)
-                    .setPositiveButton(R.string.ok_ok) { _, _ ->
-                        context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
-            }
-        }, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     private var color = 0

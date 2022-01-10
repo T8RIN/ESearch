@@ -21,7 +21,7 @@ class ScreenshotAnim(rootGroup: ViewGroup, bitmap: Bitmap, context: Context) {
         rootGroup.addView(image)
         tint.animate().alpha(0.8f).setDuration(duration / 2)
             .withStartAction {
-                Glide.with(context).load(bitmap).into(image as ImageView)
+                Glide.with(context.applicationContext).load(bitmap).into(image as ImageView)
                 image.animate()
                     .y(-displayOffsetY)
                     .setDuration(duration)

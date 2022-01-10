@@ -67,7 +67,7 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val history = historyList[position]
         if (holder is HistoryViewHolder) {
-            Glide.with(fragment.requireContext()).load(byteArrayToBitmap(history.icon!!))
+            Glide.with(fragment.requireContext().applicationContext).load(byteArrayToBitmap(history.icon!!))
                 .into(holder.icon)
             holder.description.text = history.description
             holder.url.text = history.url

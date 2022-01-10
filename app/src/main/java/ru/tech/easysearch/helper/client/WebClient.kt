@@ -50,6 +50,7 @@ import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript2
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript3
 import ru.tech.easysearch.functions.ScriptsJS.privacyScript
 import ru.tech.easysearch.helper.adblock.AdBlocker.areAD
+import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
 import java.io.ByteArrayInputStream
 import java.text.DateFormatSymbols
 import java.util.*
@@ -96,13 +97,13 @@ class WebClient(
         progressBar?.visibility = VISIBLE
 
         if (context is BrowserActivity) {
-            context.searchView?.setText(view?.url!!)
+            context.searchView?.setText(view?.url!!.getDomain())
             context.lastUrl = view?.url!!
             context.clickedGo = false
             context.iconView?.visibility = VISIBLE
             CoroutineScope(Dispatchers.Main).launch {
                 val icon = getIcon(view.url!!)
-                context.iconView?.let { Glide.with(context).load(icon).into(it) }
+                context.iconView?.let { Glide.with(context.applicationContext).load(icon).into(it) }
             }
         }
         super.onPageStarted(view, url, favicon)
@@ -147,7 +148,7 @@ class WebClient(
 
             view.url?.let {
                 if (context is BrowserActivity) {
-                    context.searchView?.setText(it)
+                    context.searchView?.setText(it.getDomain())
                     context.lastUrl = it
                     context.clickedGo = false
 

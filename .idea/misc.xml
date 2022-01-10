@@ -30,6 +30,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_manage.xml" value="0.2153846153846154" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_outline_keyboard_arrow_down_24.xml" value="0.2625" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_start_panel.xml" value="0.193" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_transition_24.xml" value="0.2415" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_twitter_logo.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_vk_logo.xml" value="0.13958333333333334" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/ic_wikipedia_logo.xml" value="0.8800000000000001" />
@@ -40,7 +41,8 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/drawable/rounded_rectangle.xml" value="0.2153846153846154" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout-land/content_main.xml" value="0.23974358974358975" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout-land/grid_pager_item.xml" value="0.23974358974358975" />
-        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_browser.xml" value="0.6" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_browser.xml" value="0.176" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_browser_hide_panels.xml" value="0.2" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/activity_search_results.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/app_bar_browser.xml" value="0.536" />
@@ -72,7 +74,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/more_menu.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_dismiss_tint.xml" value="0.2012820512820513" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_item.xml" value="0.2012820512820513" />
-        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_menu.xml" value="0.4" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/popup_menu.xml" value="0.2" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/progress_indicator.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/recent_fragment.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/recycler_view_item.xml" value="0.20213675213675214" />
@@ -88,6 +90,7 @@
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/side_menu.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/side_menu_tint.xml" value="0.20213675213675214" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/tab_item.xml" value="0.264" />
+        <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/tabs_fragment.xml" value="0.1" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/text_item.xml" value="0.264" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/toolbar_item.xml" value="0.264" />
         <entry key="..\:/Users/malik/AndroidStudioProjects/ESearch/app/src/main/res/layout/view_sticky_header.xml" value="0.20213675213675214" />
