@@ -519,7 +519,7 @@ object Extensions {
         )
     }
 
-    fun Context.generatePopupMenu(
+    fun Context.generateBrowserPopupMenu(
         root: ViewGroup,
         desktopInterface: DesktopInterface
     ): SmartPopupMenu {

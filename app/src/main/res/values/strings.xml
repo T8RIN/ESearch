@@ -92,4 +92,8 @@
     <string name="exitConfirm">Tap back again to exit</string>
     <string name="hidePanels">Hide panels</string>
     <string name="restartBrowser">Restart browser to see the changes</string>
+    <string name="newBookmark">New bookmark</string>
+    <string name="clearBookmarks">Clear bookmarks</string>
+    <string name="clearBookmarksMessage">This will irrevocably clear all your bookmarks</string>
+    <string name="noBookmarksClear">You have no bookmarks to clear</string>
 </resources>

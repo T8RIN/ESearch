@@ -3,6 +3,7 @@ package ru.tech.easysearch.adapter.tabs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -61,8 +62,14 @@ class TabAdapter(
         var position = holder.layoutPosition
 
         (holder.itemView.layoutParams as RecyclerView.LayoutParams).apply {
-            topMargin = if (position == 0) context.dipToPixels(6f).toInt()
-            else context.dipToPixels(-14f).toInt()
+            if(context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                topMargin = if (position == 0) context.dipToPixels(6f).toInt()
+                else context.dipToPixels(-14f).toInt()
+            }
+            else {
+                marginStart = if (position == 0) context.dipToPixels(6f).toInt()
+                else context.dipToPixels(-14f).toInt()
+            }
 
             if (position == adapterTabs.lastIndex) {
                 holder.shadow.visibility = GONE
@@ -70,7 +77,7 @@ class TabAdapter(
                 holder.shadow.visibility = VISIBLE
             }
         }
-        Glide.with(context.applicationContext).load(adapterTabs[position].fullSnap?.getCutSnap())
+        Glide.with(context.applicationContext).load(adapterTabs[position].fullSnap?.getCutSnap(context))
             .into(holder.snap)
 
         holder.title.text = adapterTabs[position].title
@@ -78,13 +85,11 @@ class TabAdapter(
 
         adapterTabs[position].fullSnap?.let { bitmap ->
             Palette.from(bitmap).generate { palette ->
-                var vibrant = palette!!.getDominantColor(white)
+                val vibrant = palette!!.getDominantColor(white)
                 if (vibrant == white || vibrant == black) {
                     Glide.with(context.applicationContext).load(R.drawable.skeleton)
                         .into(holder.snap)
                 }
-
-                if (vibrant.luminance < 0.1) vibrant = vibrant.lightenColor(0.25f)
 
                 val titleColor: Int
                 val urlColor: Int

@@ -2,8 +2,8 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_width="210dp"
+    android:layout_height="match_parent"
     android:outlineProvider="none"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="0dp"
@@ -22,29 +22,30 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/snap"
-            android:layout_width="130dp"
+            android:layout_width="170dp"
             android:layout_height="140dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:contentDescription="@string/none"
             android:elevation="3dp"
+            android:layout_marginStart="15dp"
             android:scaleType="fitXY"
             android:src="@drawable/skeleton"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/corners14dp" />
+            app:layout_constraintTop_toBottomOf="@+id/close"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.LargeComponent" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/close"
-            app:layout_constraintStart_toEndOf="@+id/snap">
+            app:layout_constraintStart_toEndOf="@+id/snap"
+            app:layout_constraintTop_toBottomOf="@+id/snap"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/title"
@@ -75,15 +76,15 @@
             android:elevation="3dp"
             android:padding="5dp"
             android:src="@drawable/ic_close_outline_24"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
+            android:background="@drawable/shadow_side"
             android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="130dp"
-            android:background="@drawable/shadow"
+            android:layout_marginStart="185dp"
             android:elevation="3dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

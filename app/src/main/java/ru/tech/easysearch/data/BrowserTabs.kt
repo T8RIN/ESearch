@@ -2,6 +2,7 @@ package ru.tech.easysearch.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
@@ -214,11 +215,16 @@ object BrowserTabs {
         }
     }
 
-    fun Bitmap.getCutSnap(): Bitmap? {
+    fun Bitmap.getCutSnap(context: Context): Bitmap? {
         return if (width < height) {
-            Bitmap.createBitmap(this, 0, 0, width, (width / 130f * 140f).toInt())
+            if(context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+                Bitmap.createBitmap(this, 0, 0, width, (width / 130f * 140f).toInt())
+            }
+            else {
+                Bitmap.createBitmap(this, 0, 0, width, (width / 170f * 140f).toInt())
+            }
         } else {
-            Bitmap.createBitmap(this, 0, 0, height, height)
+            Bitmap.createBitmap(this, 0, 0, height, (height/1.2).toInt())
         }
     }
 

@@ -94,26 +94,19 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
+    <FrameLayout
+        android:id="@+id/webViewContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/bottomAppBar"
         app:layout_constraintTop_toBottomOf="@id/appBar">
 
-        <FrameLayout
-            android:id="@+id/webViewContainer"
+        <ru.tech.easysearch.custom.view.BrowserView
+            android:id="@+id/webBrowser"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" />
 
-            <ru.tech.easysearch.custom.view.BrowserView
-                android:id="@+id/webBrowser"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </FrameLayout>
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </FrameLayout>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/bottomAppBar"
