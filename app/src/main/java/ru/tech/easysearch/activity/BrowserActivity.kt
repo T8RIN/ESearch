@@ -25,6 +25,7 @@ import android.widget.ImageSwitcher
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
@@ -47,6 +48,7 @@ import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.generatePopupMenu
 import ru.tech.easysearch.extensions.Extensions.generateSideMenu
+import ru.tech.easysearch.extensions.Extensions.getAttrColor
 import ru.tech.easysearch.extensions.Extensions.hideKeyboard
 import ru.tech.easysearch.extensions.Extensions.makeScreenshot
 import ru.tech.easysearch.extensions.Extensions.setCoeff
@@ -243,6 +245,17 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     sideMenu?.dismiss()
                 }
             sideMenu!!.show()
+        }
+
+        findViewById<SwipeRefreshLayout>(R.id.swipeRefresh).apply {
+            setOnRefreshListener {
+                browser?.reload()
+                isRefreshing = false
+            }
+            setColorSchemeColors(
+                getAttrColor(R.attr.colorSecondaryVariant),
+                getAttrColor(R.attr.colorSecondary)
+            )
         }
 
     }
