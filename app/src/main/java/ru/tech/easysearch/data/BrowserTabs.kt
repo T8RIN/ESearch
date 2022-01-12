@@ -187,6 +187,10 @@ object BrowserTabs {
         edit().putStringSet("tabsOpened", tabs).apply()
     }
 
+    fun Context.updateGestures() {
+        for (tab in openedTabs) tab.tab.updateBottomGestures(this)
+    }
+
     fun AppCompatActivity.loadOpenedTabs(progressBar: LinearProgressIndicator? = null) {
         if (getSetting(this, SAVE_TABS)) {
             val sp = getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
@@ -217,14 +221,13 @@ object BrowserTabs {
 
     fun Bitmap.getCutSnap(context: Context): Bitmap? {
         return if (width < height) {
-            if(context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 Bitmap.createBitmap(this, 0, 0, width, (width / 130f * 140f).toInt())
-            }
-            else {
+            } else {
                 Bitmap.createBitmap(this, 0, 0, width, (width / 170f * 140f).toInt())
             }
         } else {
-            Bitmap.createBitmap(this, 0, 0, height, (height/1.2).toInt())
+            Bitmap.createBitmap(this, 0, 0, height, (height / 1.2).toInt())
         }
     }
 

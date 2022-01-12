@@ -38,6 +38,7 @@ import ru.tech.easysearch.data.BrowserTabs.loadOpenedTabs
 import ru.tech.easysearch.data.BrowserTabs.loadTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.BrowserTabs.saveLastTab
+import ru.tech.easysearch.data.BrowserTabs.updateGestures
 import ru.tech.easysearch.data.BrowserTabs.updateTabs
 import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
@@ -90,8 +91,8 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
     private var homeBrowser: ImageButton? = null
     private var currentWindows: ImageButton? = null
     private var profileBrowser: ImageButton? = null
-    private var bottomAppBar: AppBarLayout? = null
-    private var root: View? = null
+    var bottomAppBar: AppBarLayout? = null
+    var root: View? = null
 
     var lastUrl = ""
     var clickedGo = false
@@ -103,8 +104,8 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         }
         if (openedTabs.isEmpty()) loadOpenedTabs(progressBar)
     }
-
-    @SuppressLint("SetJavaScriptEnabled")
+    
+    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -245,6 +246,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             sideMenu!!.show()
         }
 
+        updateGestures()
     }
 
     private fun showMore() {
@@ -359,16 +361,16 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         if (clearFocus) it.clearFocus()
     }
 
-    private var sideMenu: SideMenu? = null
-    private var popupMenu: SmartPopupMenu? = null
+    var sideMenu: SideMenu? = null
+    var popupMenu: SmartPopupMenu? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onConfigurationChanged(newConfig: Configuration) {
         sideMenu?.dismiss()
         popupMenu?.dismiss()
         super.onConfigurationChanged(newConfig)
-        for(i in supportFragmentManager.fragments){
-            if(i.tag == "windowsOp") {
+        for (i in supportFragmentManager.fragments) {
+            if (i.tag == "windowsOp") {
                 supportFragmentManager.beginTransaction().remove(i).commit()
             }
         }

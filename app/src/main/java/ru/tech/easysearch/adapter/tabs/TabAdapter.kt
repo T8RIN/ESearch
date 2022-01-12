@@ -62,11 +62,10 @@ class TabAdapter(
         var position = holder.layoutPosition
 
         (holder.itemView.layoutParams as RecyclerView.LayoutParams).apply {
-            if(context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 topMargin = if (position == 0) context.dipToPixels(6f).toInt()
                 else context.dipToPixels(-14f).toInt()
-            }
-            else {
+            } else {
                 marginStart = if (position == 0) context.dipToPixels(6f).toInt()
                 else context.dipToPixels(-14f).toInt()
             }
@@ -77,7 +76,8 @@ class TabAdapter(
                 holder.shadow.visibility = VISIBLE
             }
         }
-        Glide.with(context.applicationContext).load(adapterTabs[position].fullSnap?.getCutSnap(context))
+        Glide.with(context.applicationContext)
+            .load(adapterTabs[position].fullSnap?.getCutSnap(context))
             .into(holder.snap)
 
         holder.title.text = adapterTabs[position].title

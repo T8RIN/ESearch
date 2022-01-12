@@ -24,10 +24,10 @@
             android:id="@+id/snap"
             android:layout_width="170dp"
             android:layout_height="140dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="5dp"
             android:contentDescription="@string/none"
             android:elevation="3dp"
-            android:layout_marginStart="15dp"
             android:scaleType="fitXY"
             android:src="@drawable/skeleton"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,11 +80,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
-            android:background="@drawable/shadow_side"
             android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="185dp"
+            android:background="@drawable/shadow_side"
             android:elevation="3dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,7 +35,7 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.R.drawable.*
 import ru.tech.easysearch.adapter.settings.BrowserSettingsAdapter.Companion.HEADER
 import ru.tech.easysearch.application.ESearchApplication
-import ru.tech.easysearch.custom.ScreenshotAnim
+import ru.tech.easysearch.custom.animator.ScreenshotAnim
 import ru.tech.easysearch.custom.popup.smart.SmartPopupMenu
 import ru.tech.easysearch.custom.popup.smart.SmartPopupMenuItem
 import ru.tech.easysearch.custom.sidemenu.SideMenu

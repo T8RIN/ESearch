@@ -1,4 +1,4 @@
-package ru.tech.easysearch.custom
+package ru.tech.easysearch.custom.animator
 
 import android.content.Context
 import android.graphics.Bitmap

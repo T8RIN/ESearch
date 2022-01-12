@@ -1,5 +1,6 @@
 package ru.tech.easysearch.custom.view
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
@@ -13,15 +14,18 @@ import android.view.*
 import android.webkit.CookieManager
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
+import android.webkit.WebView
 import android.webkit.WebView.HitTestResult.*
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import okhttp3.internal.userAgent
@@ -52,11 +56,12 @@ import ru.tech.easysearch.functions.Functions.byteArrayToBitmap
 import ru.tech.easysearch.functions.Functions.doInIoThreadWithObservingOnMain
 import ru.tech.easysearch.functions.Functions.getNearestFileSize
 import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
+import ru.tech.easysearch.helper.gestures.GestureHelper
 import java.net.URL
 import java.net.URLConnection
 
 @SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
-class BrowserView : NestedWebView {
+class BrowserView : WebView {
 
     constructor(context: Context) : super(context)
 
@@ -157,7 +162,61 @@ class BrowserView : NestedWebView {
             }
         }
 
+        updateBottomGestures(context)
     }
+
+    var anim: ObjectAnimator? = null
+
+    fun updateBottomGestures(ctx: Context) {
+        val root = (ctx as? BrowserActivity)?.root
+        val bottomAppBar = (ctx as? BrowserActivity)?.bottomAppBar
+
+        gestureHelper = object : GestureHelper(ctx) {
+            override fun onSwipeTop() {
+                (ctx as? BrowserActivity)?.apply {
+                    popupMenu?.dismiss()
+                    sideMenu?.dismiss()
+                }
+                if (root is CoordinatorLayout && (anim?.isRunning == false || anim == null))
+                    showBar(bottomAppBar)
+            }
+
+            override fun onSwipeBottom() {
+                if (root is CoordinatorLayout && (anim?.isRunning == false || anim == null) && scrollY != 0)
+                    hideBar(bottomAppBar)
+            }
+        }
+        setOnTouchListener(gestureHelper)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                if (!isFinding && root is CoordinatorLayout) {
+                    if (scrollY > oldScrollY) gestureHelper?.onSwipeBottom()
+                    else if (scrollY < oldScrollY) gestureHelper?.onSwipeTop()
+                }
+                if (scrollY == 0) setOnTouchListener(gestureHelper)
+                else setOnTouchListener(null)
+            }
+        }
+    }
+
+    private fun showBar(bottomAppBar: AppBarLayout?) {
+        anim = ObjectAnimator.ofFloat(bottomAppBar, "translationY", 0f)
+            .setDuration(200L)
+        anim?.start()
+    }
+
+    private fun hideBar(bottomAppBar: AppBarLayout?) {
+        anim = ObjectAnimator.ofFloat(
+            bottomAppBar,
+            "translationY",
+            bottomAppBar!!.height.toFloat()
+        )
+            .setDuration(200L)
+        anim?.start()
+    }
+
+    private var gestureHelper: GestureHelper? = null
 
     private var color = 0
     private var findArray: List<Int> = List(0) { 0 }
