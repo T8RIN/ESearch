@@ -114,7 +114,7 @@ class BookmarksFragment(private val browser: WebView? = null) : DialogFragment()
                         )
                     }
                     R.drawable.ic_baseline_delete_sweep_24 -> {
-                        if (binding.bookmarkRecycler.adapter?.itemCount != 0) {
+                        if (binding.bookmarkRecycler.adapter?.itemCount != 0 && binding.bookmarkRecycler.adapter != null) {
                             MaterialAlertDialogBuilder(context)
                                 .setTitle(R.string.clearBookmarks)
                                 .setMessage(R.string.clearBookmarksMessage)
