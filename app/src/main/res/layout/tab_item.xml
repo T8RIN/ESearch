@@ -17,8 +17,8 @@
             android:id="@+id/backgroundColor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/manualBackground"
             android:scaleType="centerCrop"
-            android:src="@color/manualBackground"
             app:shapeAppearanceOverlay="@style/corners14dp" />
 
         <com.google.android.material.imageview.ShapeableImageView
