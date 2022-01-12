@@ -32,6 +32,9 @@ class ChromeClient(
         progressBar?.progress = newProgress
         if (newProgress == 100) {
             progressBar?.visibility = View.GONE
+            (activity as? BrowserActivity)?.apply {
+                if (reloadButton?.currentView == cancelReload) reloadButton?.showPrevious()
+            }
         }
     }
 

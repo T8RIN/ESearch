@@ -26,6 +26,7 @@ import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils.HSLToColor
 import androidx.core.graphics.ColorUtils.colorToHSL
@@ -523,74 +524,135 @@ object Extensions {
         root: ViewGroup,
         desktopInterface: DesktopInterface
     ): SmartPopupMenu {
-        return SmartPopupMenu(root, this, desktopInterface)
-            .addItems(
-                SmartPopupMenuItem(
-                    ic_baseline_refresh_24,
-                    ContextCompat.getDrawable(this, ic_baseline_refresh_24),
-                    getString(R.string.refresh)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_share_24,
-                    ContextCompat.getDrawable(this, ic_baseline_share_24),
-                    getString(R.string.share)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_translate_24,
-                    ContextCompat.getDrawable(this, ic_baseline_translate_24),
-                    getString(R.string.translate)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_find_in_page_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_baseline_find_in_page_24
-                    ), getString(R.string.findInPage)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_download_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_baseline_download_24
-                    ), getString(R.string.saveAsPDF)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_screenshot_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_baseline_screenshot_24
-                    ), getString(R.string.makeScreenshot)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_desktop_mac_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_baseline_desktop_mac_24
-                    ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
-                ),
-                SmartPopupMenuItem(null, null, getString(R.string.addTo)),
-                SmartPopupMenuItem(
-                    ic_start_panel,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_start_panel
-                    ), getString(R.string.shortcuts)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_bookmark_border_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_baseline_bookmark_border_24
-                    ), getString(R.string.bookmarks)
-                ),
-                SmartPopupMenuItem(
-                    ic_baseline_add_to_home_screen_24,
-                    ContextCompat.getDrawable(
-                        this,
-                        ic_baseline_add_to_home_screen_24
-                    ), getString(R.string.homeScreen)
-                ),
-            )
+        return if (root.findViewById<View>(R.id.main_root) is CoordinatorLayout) {
+            SmartPopupMenu(root, this, desktopInterface)
+                .addItems(
+                    SmartPopupMenuItem(null, null, getString(R.string.addTo)),
+                    SmartPopupMenuItem(
+                        ic_start_panel,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_start_panel
+                        ), getString(R.string.shortcuts)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_bookmark_border_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_bookmark_border_24
+                        ), getString(R.string.bookmarks)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_add_to_home_screen_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_add_to_home_screen_24
+                        ), getString(R.string.homeScreen)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_desktop_mac_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_desktop_mac_24
+                        ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_screenshot_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_screenshot_24
+                        ), getString(R.string.makeScreenshot)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_download_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_download_24
+                        ), getString(R.string.saveAsPDF)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_find_in_page_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_find_in_page_24
+                        ), getString(R.string.findInPage)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_translate_24,
+                        ContextCompat.getDrawable(this, ic_baseline_translate_24),
+                        getString(R.string.translate)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_share_24,
+                        ContextCompat.getDrawable(this, ic_baseline_share_24),
+                        getString(R.string.share)
+                    ),
+                )
+        } else {
+            SmartPopupMenu(root, this, desktopInterface)
+                .addItems(
+                    SmartPopupMenuItem(
+                        ic_baseline_share_24,
+                        ContextCompat.getDrawable(this, ic_baseline_share_24),
+                        getString(R.string.share)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_translate_24,
+                        ContextCompat.getDrawable(this, ic_baseline_translate_24),
+                        getString(R.string.translate)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_find_in_page_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_find_in_page_24
+                        ), getString(R.string.findInPage)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_download_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_download_24
+                        ), getString(R.string.saveAsPDF)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_screenshot_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_screenshot_24
+                        ), getString(R.string.makeScreenshot)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_desktop_mac_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_desktop_mac_24
+                        ), getString(R.string.desktopMode), showDivider = true, showSwitcher = true
+                    ),
+                    SmartPopupMenuItem(null, null, getString(R.string.addTo)),
+                    SmartPopupMenuItem(
+                        ic_start_panel,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_start_panel
+                        ), getString(R.string.shortcuts)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_bookmark_border_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_bookmark_border_24
+                        ), getString(R.string.bookmarks)
+                    ),
+                    SmartPopupMenuItem(
+                        ic_baseline_add_to_home_screen_24,
+                        ContextCompat.getDrawable(
+                            this,
+                            ic_baseline_add_to_home_screen_24
+                        ), getString(R.string.homeScreen)
+                    ),
+                )
+        }
     }
 
 }

@@ -10,17 +10,17 @@ object SharedPreferencesAccess {
 
     const val EYE_PROTECTION = "eye"
     const val AD_BLOCK = "adblock"
-    const val IMAGE_LOADING = "imgload"
-    const val HIDE_PANELS = "hdpnls"
+    const val IMAGE_LOADING = "imageLoading"
+    const val HIDE_PANELS = "hidePanels"
     const val LOCATION_ACCESS = "location"
     const val CAMERA_ACCESS = "camera"
     const val MIC_ACCESS = "mic"
-    const val SAVE_HISTORY = "svhist"
-    const val SAVE_TABS = "savetabsenbl"
+    const val SAVE_HISTORY = "saveHistory"
+    const val SAVE_TABS = "saveTabs"
     const val COOKIES = "cookies"
     const val JS = "javascript"
-    const val POPUPS = "popupmessages"
-    const val DOM_STORAGE = "domstorage"
+    const val POPUPS = "popupMessages"
+    const val DOM_STORAGE = "DOMStorage"
     const val GET = 1
     const val SET = 2
 
@@ -36,7 +36,7 @@ object SharedPreferencesAccess {
 
     fun getSetting(context: Context, key: String): Boolean {
         return context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
-            .getBoolean(key, !(key == HIDE_PANELS || key == EYE_PROTECTION))
+            .getBoolean(key, key != EYE_PROTECTION)
     }
 
     fun setSetting(context: Context, key: String, value: Boolean) {

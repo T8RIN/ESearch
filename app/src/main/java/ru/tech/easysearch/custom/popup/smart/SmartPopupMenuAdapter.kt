@@ -1,13 +1,18 @@
 package ru.tech.easysearch.custom.popup.smart
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.Gravity.BOTTOM
+import android.view.Gravity.TOP
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -37,6 +42,7 @@ class SmartPopupMenuAdapter(
         if (popupMenuItem.icon != null) {
             holder.bind(popupMenuItem)
 
+            holder.image.visibility = VISIBLE
             holder.image.setImageDrawable(popupMenuItem.icon)
             holder.text.text = popupMenuItem.title
 
@@ -50,8 +56,14 @@ class SmartPopupMenuAdapter(
                 }
             } else holder.switcher.visibility = GONE
 
-            if (popupMenuItem.showDivider) holder.divider.visibility = VISIBLE
-            else holder.divider.visibility = GONE
+            if (popupMenuItem.showDivider) {
+                (holder.divider.layoutParams as FrameLayout.LayoutParams).apply {
+                    gravity =
+                        if ((context as? BrowserActivity)?.root is CoordinatorLayout) TOP
+                        else BOTTOM
+                }
+                holder.divider.visibility = VISIBLE
+            } else holder.divider.visibility = GONE
 
         } else {
             holder.image.visibility = GONE
@@ -69,8 +81,10 @@ class SmartPopupMenuAdapter(
         this.smartPopupMenuItemClickListener = smartPopupMenuItemClickListener
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun attachList(menuList: Array<out SmartPopupMenuItem>) {
         for (i in menuList) this.menuList.add(i)
+        notifyDataSetChanged()
     }
 
     inner class PopupViewHolder(view: View) :

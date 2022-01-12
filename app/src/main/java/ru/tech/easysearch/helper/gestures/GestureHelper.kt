@@ -23,24 +23,27 @@ abstract class GestureHelper(context: Context) : OnTouchListener {
         }
 
         override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
+            e1: MotionEvent?,
+            e2: MotionEvent?,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
 
-            val diffY = e2.y - e1.y
-            val diffX = e2.x - e1.x
+            if (e1 != null && e2 != null) {
+                val diffY = e2.y - e1.y
+                val diffX = e2.x - e1.x
 
-            if (abs(diffX) > abs(diffY) && abs(diffX) > 100 && abs(velocityX) > 100) {
-                if (diffX > 0) onSwipeRight()
-                else onSwipeLeft()
-            } else if (abs(diffY) > 100 && abs(velocityY) > 100) {
-                if (diffY > 0) onSwipeBottom()
-                else onSwipeTop()
+                if (abs(diffX) > abs(diffY) && abs(diffX) > 100 && abs(velocityX) > 100) {
+                    if (diffX > 0) onSwipeRight()
+                    else onSwipeLeft()
+                } else if (abs(diffY) > 100 && abs(velocityY) > 100) {
+                    if (diffY > 0) onSwipeBottom()
+                    else onSwipeTop()
+                }
+                return true
             }
 
-            return true
+            return false
         }
     }
 

@@ -27,27 +27,63 @@
                 android:padding="12dp"
                 android:src="@drawable/ic_earth_24" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/searchView"
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="5dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/rounded_background"
-                android:focusedByDefault="false"
-                android:gravity="center"
-                android:hint="@string/searchInGoogle"
-                android:imeOptions="actionSearch"
-                android:inputType="textUri"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:textSize="14sp"
-                tools:targetApi="O" />
+                android:background="@drawable/rounded_background">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@android:color/transparent"
+                    android:focusedByDefault="false"
+                    android:gravity="center"
+                    android:hint="@string/searchInGoogle"
+                    android:imeOptions="actionSearch"
+                    android:inputType="textUri"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    tools:targetApi="O" />
+
+                <ImageSwitcher
+                    android:id="@+id/reload"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|end"
+                    android:background="@drawable/ripple"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop">
+
+                    <ImageView
+                        android:id="@+id/start"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:contentDescription="@string/none"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_refresh_24" />
+
+                    <ImageView
+                        android:id="@+id/cancel"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:contentDescription="@string/none"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_close_24" />
+
+                </ImageSwitcher>
+
+            </FrameLayout>
 
             <ImageSwitcher
                 android:id="@+id/goMoreButton"

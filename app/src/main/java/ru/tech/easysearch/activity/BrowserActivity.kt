@@ -15,8 +15,9 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.webkit.URLUtil
 import android.webkit.ValueCallback
 import android.widget.FrameLayout
@@ -65,6 +66,11 @@ import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
 import ru.tech.easysearch.helper.client.ChromeClient
 import ru.tech.easysearch.helper.client.WebClient
 import ru.tech.easysearch.helper.interfaces.DesktopInterface
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.assignAnimations
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.fadeIn
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.fadeOut
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.getAnimInstance
+import ru.tech.easysearch.helper.utils.anim.AnimUtils.setAnimListener
 import ru.tech.easysearch.helper.utils.save.SaveUtils.addToHomeScreen
 import ru.tech.easysearch.helper.utils.save.SaveUtils.saveAsPDF
 
@@ -86,6 +92,9 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
 
     var backwardBrowser: ImageButton? = null
     var forwardBrowser: ImageButton? = null
+    var reloadButton: ImageSwitcher? = null
+    var cancelReload: ImageView? = null
+    private var startReload: ImageView? = null
     private var goMoreButton: ImageSwitcher? = null
     var webViewContainer: FrameLayout? = null
     private var homeBrowser: ImageButton? = null
@@ -102,9 +111,10 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         Functions.doInBackground {
             AdBlocker.createAdList(this)
         }
+        assignAnimations()
         if (openedTabs.isEmpty()) loadOpenedTabs(progressBar)
     }
-    
+
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,6 +142,9 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         currentWindows = findViewById(R.id.windowsBrowser)
         root = findViewById(R.id.main_root)
         browser = findViewById(R.id.webBrowser)
+        reloadButton = findViewById(R.id.reload)
+        startReload = findViewById(R.id.start)
+        cancelReload = findViewById(R.id.cancel)
 
         val chromeClient = ChromeClient(this, progressBar!!, browser!!)
         browser!!.webViewClient = WebClient(this, progressBar!!)
@@ -168,36 +181,39 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
             }
         }
 
-        goMoreButton?.inAnimation = AnimationUtils.loadAnimation(
-            this,
-            R.anim.fade_in
-        )
-        goMoreButton?.outAnimation = AnimationUtils.loadAnimation(
-            this,
-            R.anim.fade_out
-        )
+        if (fadeIn == null) assignAnimations()
+
+        goMoreButton?.inAnimation = fadeIn
+        goMoreButton?.outAnimation = fadeOut
+
+        reloadButton?.inAnimation = fadeIn
+        reloadButton?.outAnimation = fadeOut
 
         searchView?.setOnFocusChangeListener { _, focused ->
             if (lastUrl == "") lastUrl = browser?.url!!
+
+            val observableAnimFadeIn = getAnimInstance(true)
+            val observableAnimFadeOut = getAnimInstance(false)
+
+            observableAnimFadeIn.setAnimListener(endAction = { reloadButton?.visibility = VISIBLE })
+
+            observableAnimFadeOut.setAnimListener(endAction = { reloadButton?.visibility = GONE })
+
             when (focused) {
                 true -> {
+                    reloadButton?.startAnimation(observableAnimFadeOut)
                     goMoreButton?.showNext()
                     goMoreButton?.setOnClickListener {
                         onGetUri(searchView!!, searchView!!.text.toString())
                     }
-                    if (!clickedGo) {
-                        searchView?.setText(lastUrl)
-                    }
+                    if (!clickedGo) searchView?.setText(lastUrl)
                     searchView?.selectAll()
                 }
                 false -> {
+                    reloadButton?.startAnimation(observableAnimFadeIn)
                     goMoreButton?.showPrevious()
-                    goMoreButton?.setOnClickListener {
-                        showMore()
-                    }
-                    if (!clickedGo) {
-                        searchView?.setText(lastUrl.getDomain())
-                    }
+                    goMoreButton?.setOnClickListener { showMore() }
+                    if (!clickedGo) searchView?.setText(lastUrl.getDomain())
                 }
             }
         }
@@ -244,6 +260,19 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                     sideMenu?.dismiss()
                 }
             sideMenu!!.show()
+        }
+
+        reloadButton?.setOnClickListener {
+            when (reloadButton?.currentView) {
+                startReload -> {
+                    browser?.reload()
+                    reloadButton?.showNext()
+                }
+                cancelReload -> {
+                    browser?.stopLoading()
+                    reloadButton?.showPrevious()
+                }
+            }
         }
 
         updateGestures()
