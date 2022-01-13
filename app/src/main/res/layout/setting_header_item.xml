@@ -3,12 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:layout_gravity="center|top"
-    android:drawablePadding="15dp"
-    android:gravity="center"
-    app:drawableStartCompat="@drawable/ic_baseline_view_in_ar_24"
-    tools:text="@string/advanced">
+    android:layout_height="40dp">
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
@@ -17,17 +12,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:layout_marginTop="10dp"
         android:id="@+id/icon"
         android:layout_width="30dp"
-        android:layout_height="match_parent"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
         android:contentDescription="@string/none"
         android:src="@drawable/ic_baseline_view_in_ar_24"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/manualText" />
 
     <TextView
         android:id="@+id/label"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

@@ -1,32 +1,42 @@
 package ru.tech.easysearch.adapter.settings
 
 import android.content.Context
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.divider.MaterialDivider
-import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.tech.easysearch.R
 import ru.tech.easysearch.data.SharedPreferencesAccess.HIDE_PANELS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SET
+import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
 import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
 import ru.tech.easysearch.data.SharedPreferencesAccess.setSetting
 import ru.tech.easysearch.databinding.BrowserSettingsItemBinding
 import ru.tech.easysearch.databinding.SettingHeaderItemBinding
+import ru.tech.easysearch.extensions.Extensions.dipToPixels
 import ru.tech.easysearch.model.SettingsItem
 
 
 class BrowserSettingsAdapter(
     private var context: Context,
-    private var settingsList: List<SettingsItem>
+    private var settingsList: List<List<SettingsItem>>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var parent: ViewGroup? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        this.parent = parent
+
         return when (viewType) {
             ITEM -> ItemViewHolder(
                 BrowserSettingsItemBinding.inflate(
@@ -46,36 +56,71 @@ class BrowserSettingsAdapter(
     }
 
     override fun onBindViewHolder(mainHolder: RecyclerView.ViewHolder, position: Int) {
-        val settingsItem = settingsList[position]
-        when (settingsItem.key) {
+        val settingsItems = settingsList[position]
+        when (settingsItems[0].key) {
             HEADER.toString() -> {
                 val holder = mainHolder as HeaderViewHolder
 
                 if (position == 0) holder.divider.visibility = GONE
                 else holder.divider.visibility = VISIBLE
 
-                holder.icon.setImageDrawable(settingsList[position].icon)
-                holder.label.text = settingsItem.label
+                holder.icon.setImageDrawable(settingsList[position][0].icon)
+                holder.label.text = settingsItems[0].label
             }
             else -> {
                 val holder = mainHolder as ItemViewHolder
 
-                holder.icon.setImageDrawable(settingsItem.icon)
-                holder.label.text = settingsItem.label
-                holder.switcher.isChecked = settingsItem.checked
-                holder.switcher.setOnCheckedChangeListener { _, isChecked ->
-                    setSetting(context, settingsItem.key, isChecked)
-                    if (settingsItem.key == HIDE_PANELS)
-                        Toast.makeText(
-                            context,
-                            R.string.restartBrowser,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    needToChangeBrowserSettings(context, SET)
+                for (item in settingsItems) {
+                    val chip: Chip = LayoutInflater.from(context)
+                        .inflate(R.layout.chip_item, parent, false) as Chip
+
+                    chip.chipIcon = item.icon
+                    chip.text = item.label
+                    chip.isChecked = getSetting(context, item.key)
+                    chip.id = Integer.parseInt(item.key)
+                    var chipSize: Int
+
+                    if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        val wid =
+                            (context.resources.displayMetrics.widthPixels - context.dipToPixels(15f))
+
+                        chipSize =
+                            if (settingsItems.indexOf(item) == settingsItems.lastIndex && settingsItems.size % 2 != 0) MATCH_PARENT
+                            else (wid / 2).toInt()
+
+                        chip.layoutParams.apply { width = chipSize }
+
+                    } else {
+                        val ampl = (settingsItems.size + 1) * 5f
+                        chip.layoutParams.apply {
+                            width = ((context.resources.displayMetrics.widthPixels -
+                                    context.dipToPixels(ampl)) / settingsItems.size).toInt()
+                        }
+                    }
+
+                    val id = chip.id.toString()
+
+                    chip.setOnCheckedChangeListener { _, isChecked ->
+                        setSetting(context, id, isChecked)
+                        if (id == HIDE_PANELS)
+                            Toast.makeText(
+                                context,
+                                R.string.restartBrowser,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        needToChangeBrowserSettings(context, SET)
+                    }
+
+                    holder.chipGroup.addView(chip)
                 }
             }
         }
 
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        (holder as? ItemViewHolder)?.chipGroup?.removeAllViews()
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {
@@ -83,15 +128,13 @@ class BrowserSettingsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (settingsList[position].key == HEADER.toString()) HEADER
+        return if (settingsList[position].size == 1) HEADER
         else ITEM
     }
 
     inner class ItemViewHolder(binding: BrowserSettingsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val icon: ImageView = binding.icon
-        val label: TextView = binding.label
-        val switcher: SwitchMaterial = binding.switcher
+        val chipGroup: ChipGroup = binding.chipGroup
     }
 
     inner class HeaderViewHolder(binding: SettingHeaderItemBinding) :

@@ -182,21 +182,19 @@ class BrowserView : WebView {
             }
 
             override fun onSwipeBottom() {
-                if (root is CoordinatorLayout && (anim?.isRunning == false || anim == null) && scrollY != 0)
+                if (root is CoordinatorLayout && (anim?.isRunning == false || anim == null))
                     hideBar(bottomAppBar)
             }
         }
         setOnTouchListener(gestureHelper)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-                if (!isFinding && root is CoordinatorLayout) {
-                    if (scrollY > oldScrollY) gestureHelper?.onSwipeBottom()
-                    else if (scrollY < oldScrollY) gestureHelper?.onSwipeTop()
-                }
-                if (scrollY == 0) setOnTouchListener(gestureHelper)
-                else setOnTouchListener(null)
+        setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            if (!isFinding && root is CoordinatorLayout) {
+                if (scrollY > oldScrollY) gestureHelper?.onSwipeBottom()
+                else if (scrollY < oldScrollY) gestureHelper?.onSwipeTop()
             }
+            if (scrollY == 0) setOnTouchListener(gestureHelper)
+            else setOnTouchListener(null)
         }
     }
 

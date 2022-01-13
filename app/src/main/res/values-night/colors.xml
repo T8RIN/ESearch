@@ -3,4 +3,5 @@
     <color name="manualBackground">#383838</color>
     <color name="manualBackgroundHeader">#272727</color>
     <color name="manualText">#FFFFFF</color>
+    <color name="manualStrokeColor">#A5A5A5</color>
 </resources>
