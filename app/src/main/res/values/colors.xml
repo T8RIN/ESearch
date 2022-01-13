@@ -39,5 +39,6 @@
 
     <color name="materialGray">#383838</color>
     <color name="manualBackground">#FFFFFF</color>
+    <color name="manualBackgroundHeader">#E1E1E1</color>
     <color name="manualText">#000000</color>
 </resources>

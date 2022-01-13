@@ -120,6 +120,7 @@ class HistoryAdapter(
             }
         } else if (holder is HeaderViewHolder) {
             holder.text.text = history.date
+            holder.itemView.setOnClickListener {}
         }
     }
 

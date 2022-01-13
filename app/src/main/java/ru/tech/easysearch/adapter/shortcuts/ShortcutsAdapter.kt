@@ -48,88 +48,94 @@ class ShortcutsAdapter(
             .into(holder.icon)
 
         holder.description.text = shortcut.description
-        holder.itemView.setOnClickListener {
-            if (position != newList.size - 1 || !isLast) {
+        if (position != newList.size - 1 || !isLast) {
+            holder.itemView.setOnClickListener {
                 val intent = Intent(context, BrowserActivity::class.java)
                 intent.putExtra("url", shortcut.url)
                 context.startActivity(intent)
-            } else if (isLast) {
+            }
+
+            holder.itemView.setOnLongClickListener {
+                SimplePopupBuilder(context, it)
+                    .setMenuClickListener(SimplePopupClickListener { id ->
+                        when (id) {
+                            EDIT -> {
+                                val shortcutEdit =
+                                    ShortcutCreationDialog(
+                                        shortcut.url,
+                                        shortcut.description,
+                                        true,
+                                        shortcut.id
+                                    )
+                                if (!shortcutEdit.isAdded) shortcutEdit.show(
+                                    (context as AppCompatActivity).supportFragmentManager,
+                                    "shortcut_edition"
+                                )
+                            }
+                            SHARE -> context.shareWith(shortcut.url)
+                            COPY -> context.makeClip(shortcut.url)
+                            DELETE -> {
+                                Snackbar.make(
+                                    (context as MainActivity).binding.root,
+                                    shortcut.url,
+                                    Snackbar.LENGTH_LONG
+                                )
+                                    .setBackgroundTint(
+                                        ContextCompat.getColor(
+                                            context,
+                                            R.color.materialGray
+                                        )
+                                    )
+                                    .setAction(R.string.undo) {
+                                        doInBackground { database.shortcutDao().insert(shortcut) }
+                                    }
+                                    .setActionTextColor(
+                                        context.getAttrColor(R.attr.colorSecondary)
+                                    )
+                                    .setAnchorView((context as MainActivity).binding.fab)
+                                    .setTextColor(ContextCompat.getColor(context, R.color.white))
+                                    .show()
+                                doInBackground { database.shortcutDao().delete(shortcut) }
+                            }
+                        }
+                    })
+                    .addItems(
+                        SimplePopupItem(
+                            EDIT,
+                            R.string.edit,
+                            R.drawable.ic_baseline_edit_24
+                        ),
+                        SimplePopupItem(
+                            SHARE,
+                            R.string.share,
+                            R.drawable.ic_baseline_share_24
+                        ),
+                        SimplePopupItem(
+                            COPY,
+                            R.string.copy,
+                            R.drawable.ic_baseline_content_copy_24
+                        ),
+                        SimplePopupItem(
+                            DELETE,
+                            R.string.delete,
+                            R.drawable.ic_baseline_delete_sweep_24
+                        ),
+                    )
+                    .show()
+                true
+            }
+
+        } else if (isLast) {
+            holder.itemView.setOnClickListener {
                 val shortcutDialog = ShortcutCreationDialog()
                 if (!shortcutDialog.isAdded) shortcutDialog.show(
                     (context as AppCompatActivity).supportFragmentManager,
                     "shortcutDialog"
                 )
             }
+            holder.itemView.setOnLongClickListener { true }
         }
-        holder.itemView.setOnLongClickListener {
-            SimplePopupBuilder(context, it)
-                .setMenuClickListener(SimplePopupClickListener { id ->
-                    when (id) {
-                        EDIT -> {
-                            val shortcutEdit =
-                                ShortcutCreationDialog(
-                                    shortcut.url,
-                                    shortcut.description,
-                                    true,
-                                    shortcut.id
-                                )
-                            if (!shortcutEdit.isAdded) shortcutEdit.show(
-                                (context as AppCompatActivity).supportFragmentManager,
-                                "shortcut_edition"
-                            )
-                        }
-                        SHARE -> context.shareWith(shortcut.url)
-                        COPY -> context.makeClip(shortcut.url)
-                        DELETE -> {
-                            Snackbar.make(
-                                (context as MainActivity).binding.root,
-                                shortcut.url,
-                                Snackbar.LENGTH_LONG
-                            )
-                                .setBackgroundTint(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.materialGray
-                                    )
-                                )
-                                .setAction(R.string.undo) {
-                                    doInBackground { database.shortcutDao().insert(shortcut) }
-                                }
-                                .setActionTextColor(
-                                    context.getAttrColor(R.attr.colorSecondary)
-                                )
-                                .setAnchorView((context as MainActivity).binding.fab)
-                                .setTextColor(ContextCompat.getColor(context, R.color.white))
-                                .show()
-                            doInBackground { database.shortcutDao().delete(shortcut) }
-                        }
-                    }
-                })
-                .addItems(
-                    SimplePopupItem(
-                        EDIT,
-                        R.string.edit,
-                        R.drawable.ic_baseline_edit_24
-                    ),
-                    SimplePopupItem(
-                        SHARE,
-                        R.string.share,
-                        R.drawable.ic_baseline_share_24
-                    ),
-                    SimplePopupItem(
-                        COPY,
-                        R.string.copy,
-                        R.drawable.ic_baseline_content_copy_24
-                    ),
-                    SimplePopupItem(
-                        DELETE,
-                        R.string.delete,
-                        R.drawable.ic_baseline_delete_sweep_24
-                    ),
-                )
-                .show()
-            true
-        }
+
         holder.itemView.layoutParams.height =
             TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
