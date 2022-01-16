@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">?attr/mainColor</item>
-    </style>
-
     <style name="modeAlert" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/buttonSecAlert1</item>
         <item name="buttonBarNegativeButtonStyle">@style/buttonSecAlert2</item>
@@ -24,11 +20,6 @@
 
     <style name="buttonSecOverlay2" parent="">
         <item name="colorPrimary">@color/red</item>
-    </style>
-
-    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <item name="android:dropDownHorizontalOffset">-16dp</item>
-        <item name="android:dropDownVerticalOffset">16dp</item>
     </style>
 
 </resources>

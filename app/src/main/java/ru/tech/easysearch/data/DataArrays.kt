@@ -1,5 +1,7 @@
 package ru.tech.easysearch.data
 
+import ru.tech.easysearch.R
+
 object DataArrays {
     val prefixDict: Map<String, String> = mapOf(
         Pair("ic_amazon_logo", "https://www.amazon.com/s?k="),
@@ -67,6 +69,38 @@ object DataArrays {
         Pair("DNT", "1"),
         Pair("Sec-GPC", "1"),
         Pair("X-Requested-With", "com.duckduckgo.mobile.android")
+    )
+
+    val colorList: ArrayList<Pair<Int, Int>> = ArrayList(
+        listOf(
+            Pair(R.color.dred2, R.color.red2),
+            Pair(R.color.dred, R.color.red),
+            Pair(R.color.dviolet, R.color.violet),
+            Pair(R.color.dblue, R.color.blue),
+            Pair(R.color.dmint, R.color.mint),
+            Pair(R.color.dgreen, R.color.green),
+            Pair(R.color.dyellow, R.color.yellow),
+            Pair(R.color.dorange, R.color.orange)
+        )
+    )
+
+    val colorNames: ArrayList<String> = ArrayList(
+        listOf(
+            "Apple", "Berry", "UV", "Sky", "Mint", "Classic", "Lemon", "Orange"
+        )
+    )
+
+    val colorListNames: ArrayList<String> = ArrayList(
+        listOf(
+            SharedPreferencesAccess.RED,
+            SharedPreferencesAccess.PINK,
+            SharedPreferencesAccess.VIOLET,
+            SharedPreferencesAccess.BLUE,
+            SharedPreferencesAccess.MINT,
+            SharedPreferencesAccess.GREEN,
+            SharedPreferencesAccess.YELLOW,
+            SharedPreferencesAccess.ORANGE
+        )
     )
 
 }

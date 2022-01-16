@@ -18,6 +18,7 @@ import ru.tech.easysearch.adapter.bookmark.BookmarksAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.popup.smart.SmartPopupMenu
 import ru.tech.easysearch.custom.popup.smart.SmartPopupMenuItem
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadTheme
 import ru.tech.easysearch.databinding.BookmarksFragmentBinding
 import ru.tech.easysearch.fragment.dialog.BookmarkCreationDialog
 import ru.tech.easysearch.functions.Functions
@@ -62,7 +63,7 @@ class BookmarksFragment(private val browser: WebView? = null) : DialogFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, loadTheme(requireContext()))
     }
 
     override fun onViewCreated(

@@ -40,7 +40,12 @@
     <color name="materialGray">#383838</color>
     <color name="manualBackground">#FFFFFF</color>
     <color name="manualBackgroundHeader">#E1E1E1</color>
+    <color name="manualBackgroundSearchBox">#FFFFFF</color>
     <color name="manualText">#000000</color>
 
     <color name="manualStrokeColor">#646464</color>
+
+    <color name="lmint">#82FFD3</color>
+    <color name="mint">#00FFA6</color>
+    <color name="dmint">#00905E</color>
 </resources>

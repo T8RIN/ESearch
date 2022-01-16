@@ -25,6 +25,7 @@ import android.widget.ImageButton
 import android.widget.ImageSwitcher
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -45,6 +46,7 @@ import ru.tech.easysearch.data.DataArrays
 import ru.tech.easysearch.data.DataArrays.translateSite
 import ru.tech.easysearch.data.SharedPreferencesAccess.HIDE_PANELS
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadTheme
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
 import ru.tech.easysearch.extensions.Extensions.generateBrowserPopupMenu
@@ -115,11 +117,12 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         if (openedTabs.isEmpty()) loadOpenedTabs(progressBar)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setTheme(R.style.Theme_ESearch)
+        setTheme(loadTheme((this)))
 
         database = ESearchDatabase.getInstance(this)
         setCoeff()
@@ -254,7 +257,7 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
                             startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
                         }
                         R.drawable.ic_baseline_settings_24 -> {
-                            SettingsFragment().show(supportFragmentManager, "custom")
+                            SettingsFragment().show(supportFragmentManager, "settings")
                         }
                     }
                     sideMenu?.dismiss()
@@ -399,8 +402,9 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         popupMenu?.dismiss()
         super.onConfigurationChanged(newConfig)
         for (i in supportFragmentManager.fragments) {
-            if (i.tag == "windowsOp") {
-                supportFragmentManager.beginTransaction().remove(i).commit()
+            when (i.tag) {
+                "windowsOp" -> supportFragmentManager.beginTransaction().remove(i).commit()
+                "settings" -> (i as SettingsFragment).adapter?.notifyDataSetChanged()
             }
         }
     }

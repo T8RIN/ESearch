@@ -88,7 +88,7 @@ class SearchResultsFragment : DialogFragment(), LabelListChangedInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, SharedPreferencesAccess.loadTheme(requireContext()))
     }
 
     override fun onViewCreated(

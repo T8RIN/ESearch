@@ -1,6 +1,7 @@
 package ru.tech.easysearch.data
 
 import android.content.Context
+import ru.tech.easysearch.R
 
 object SharedPreferencesAccess {
 
@@ -23,6 +24,15 @@ object SharedPreferencesAccess {
     const val DOM_STORAGE = "189783"
     const val GET = 1
     const val SET = 2
+
+    const val GREEN = "304902"
+    const val RED = "4586059"
+    const val BLUE = "8943439"
+    const val VIOLET = "0101049"
+    const val MINT = "3872493"
+    const val YELLOW = "3702022"
+    const val ORANGE = "9389280"
+    const val PINK = "5373772"
 
     fun loadLabelList(context: Context): String? {
         return context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
@@ -52,5 +62,30 @@ object SharedPreferencesAccess {
                 .putBoolean("needSetting", true).apply()
         }
         return false
+    }
+
+    fun loadTheme(context: Context): Int {
+        return when (context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
+            .getString("theme", GREEN)) {
+            GREEN -> R.style.Theme_ESearch
+            RED -> R.style.Theme_ESearch_Red
+            PINK -> R.style.Theme_ESearch_Pink
+            ORANGE -> R.style.Theme_ESearch_Orange
+            VIOLET -> R.style.Theme_ESearch_Violet
+            YELLOW -> R.style.Theme_ESearch_Yellow
+            MINT -> R.style.Theme_ESearch_Mint
+            BLUE -> R.style.Theme_ESearch_Blue
+            else -> 0
+        }
+    }
+
+    fun loadThemeVariant(context: Context): String? {
+        return context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE)
+            .getString("theme", GREEN)
+    }
+
+    fun saveTheme(context: Context, value: String) {
+        context.getSharedPreferences(mainSharedPrefsKey, Context.MODE_PRIVATE).edit()
+            .putString("theme", value).apply()
     }
 }

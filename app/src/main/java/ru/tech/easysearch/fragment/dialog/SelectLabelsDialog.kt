@@ -13,6 +13,7 @@ import ru.tech.easysearch.adapter.selection.DeSelectedLabelsAdapter
 import ru.tech.easysearch.adapter.selection.RecyclerItemTouchAdapter
 import ru.tech.easysearch.adapter.text.TextAdapter
 import ru.tech.easysearch.data.DataArrays.prefixDict
+import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
 import ru.tech.easysearch.data.SharedPreferencesAccess.saveLabelList
 import ru.tech.easysearch.databinding.SelectLabelsDialogBinding
@@ -45,7 +46,7 @@ class SelectLabelsDialog(private val mainInterface: LabelListChangedInterface) :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, SharedPreferencesAccess.loadTheme(requireContext()))
     }
 
     private var adapter: ConcatAdapter? = null

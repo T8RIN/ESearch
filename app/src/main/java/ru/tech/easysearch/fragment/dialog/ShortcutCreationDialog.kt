@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.database.shortcuts.Shortcut
 import ru.tech.easysearch.databinding.CreateShortcutDialogBinding
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
@@ -48,7 +49,7 @@ class ShortcutCreationDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, SharedPreferencesAccess.loadTheme(requireContext()))
     }
 
     override fun onViewCreated(

@@ -96,4 +96,6 @@
     <string name="clearBookmarks">Clear bookmarks</string>
     <string name="clearBookmarksMessage">This will irrevocably clear all your bookmarks</string>
     <string name="noBookmarksClear">You have no bookmarks to clear</string>
+    <string name="themeChooser">Choose color scheme</string>
+    <string name="colorScheme">Color scheme</string>
 </resources>

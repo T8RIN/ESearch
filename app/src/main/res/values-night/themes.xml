@@ -1,29 +1,127 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Theme.ESearch" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimaryVariant">#1A1A1A</item>
         <item name="colorPrimary">#171717</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="android:windowContentTransitions">true</item>
-
-        <item name="windowActionModeOverlay">true</item>
-
-        <item name="fontFamily">@font/comfortaa_medium</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/dgreen</item>
         <item name="colorSecondaryVariant">@color/ddgreen</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-        <item name="mainColor">#00D00A</item>
 
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
         <item name="materialAlertDialogTheme">@style/modeAlert</item>
-        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="Theme.ESearch.Launcher">
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
+
+    <style name="Theme.ESearch.Orange" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">#FF6F00</item>
+        <item name="colorSecondaryVariant">#784200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
+    <style name="Theme.ESearch.Yellow" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorSecondaryVariant">@color/dyellow</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
+    <style name="Theme.ESearch.Blue" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/dblue</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
+    <style name="Theme.ESearch.Mint" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/mint</item>
+        <item name="colorSecondaryVariant">@color/dmint</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
+    <style name="Theme.ESearch.Pink" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/red</item>
+        <item name="colorSecondaryVariant">@color/dred</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
+    <style name="Theme.ESearch.Violet" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/violet</item>
+        <item name="colorSecondaryVariant">@color/dviolet</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
+    <style name="Theme.ESearch.Red" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimaryVariant">#1A1A1A</item>
+        <item name="colorPrimary">#171717</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/red2</item>
+        <item name="colorSecondaryVariant">@color/dred2</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="fontFamily">@font/comfortaa_medium</item>
+        <item name="materialAlertDialogTheme">@style/modeAlert</item>
+    </style>
+
 </resources>

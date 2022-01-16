@@ -31,6 +31,7 @@ import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.BrowserTabs.updateTabs
 import ru.tech.easysearch.data.DataArrays.prefixDict
 import ru.tech.easysearch.data.SharedPreferencesAccess.loadLabelList
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadTheme
 import ru.tech.easysearch.database.ESearchDatabase
 import ru.tech.easysearch.database.shortcuts.Shortcut
 import ru.tech.easysearch.databinding.ActivityMainBinding
@@ -134,7 +135,8 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_ESearch)
+
+        setTheme(loadTheme((this)))
 
         super.onCreate(savedInstanceState)
 

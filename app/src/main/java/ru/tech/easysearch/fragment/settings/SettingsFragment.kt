@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.settings.BrowserSettingsAdapter
+import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.databinding.SettingsFragmentBinding
 import ru.tech.easysearch.extensions.Extensions.createSettingsList
 
@@ -14,6 +15,8 @@ class SettingsFragment : DialogFragment() {
 
     private var _binding: SettingsFragmentBinding? = null
     private val binding get() = _binding!!
+
+    var adapter: BrowserSettingsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +42,7 @@ class SettingsFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, SharedPreferencesAccess.loadTheme(requireContext()))
     }
 
     override fun onViewCreated(
@@ -49,11 +52,9 @@ class SettingsFragment : DialogFragment() {
         requireDialog().window?.setWindowAnimations(
             R.style.DialogAnimation
         )
-        binding.close.setOnClickListener {
-            dismiss()
-        }
-        binding.settingsRecycler.adapter =
-            BrowserSettingsAdapter(requireContext(), requireContext().createSettingsList())
+        binding.close.setOnClickListener { dismiss() }
+        adapter = BrowserSettingsAdapter(requireContext(), requireContext().createSettingsList())
+        binding.settingsRecycler.adapter = adapter
 
     }
 

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">?attr/mainColor</item>
-    </style>
-
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/enter_slide_up</item>
         <item name="android:windowExitAnimation">@anim/exit_slide_down</item>
@@ -34,11 +30,6 @@
 
     <style name="buttonSecOverlay2" parent="">
         <item name="colorPrimary">@color/red</item>
-    </style>
-
-    <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <item name="android:dropDownHorizontalOffset">-16dp</item>
-        <item name="android:dropDownVerticalOffset">16dp</item>
     </style>
 
     <style name="corners14dp" parent="ShapeAppearance.MaterialComponents.SmallComponent">

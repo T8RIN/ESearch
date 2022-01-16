@@ -56,4 +56,5 @@
             android:padding="10dp" />
 
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

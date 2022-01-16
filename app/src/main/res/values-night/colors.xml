@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="manualBackground">#383838</color>
+    <color name="manualBackground">#212121</color>
     <color name="manualBackgroundHeader">#272727</color>
     <color name="manualText">#FFFFFF</color>
     <color name="manualStrokeColor">#A5A5A5</color>
+    <color name="manualBackgroundSearchBox">#3F3F3F</color>
 </resources>

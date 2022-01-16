@@ -20,6 +20,7 @@ import ru.tech.easysearch.data.BrowserTabs.loadTab
 import ru.tech.easysearch.data.BrowserTabs.openedTabs
 import ru.tech.easysearch.data.BrowserTabs.saveLastTab
 import ru.tech.easysearch.data.BrowserTabs.updateTabs
+import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.databinding.TabsFragmentBinding
 
 class TabsFragment : DialogFragment() {
@@ -51,7 +52,7 @@ class TabsFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, SharedPreferencesAccess.loadTheme(requireContext()))
     }
 
     private var needToLoad = false

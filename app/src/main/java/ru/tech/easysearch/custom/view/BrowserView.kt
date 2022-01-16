@@ -19,6 +19,7 @@ import android.webkit.WebView.HitTestResult.*
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -162,11 +163,12 @@ class BrowserView : WebView {
             }
         }
 
-        updateBottomGestures(context)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) updateBottomGestures(context)
     }
 
     var anim: ObjectAnimator? = null
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun updateBottomGestures(ctx: Context) {
         val root = (ctx as? BrowserActivity)?.root
         val bottomAppBar = (ctx as? BrowserActivity)?.bottomAppBar

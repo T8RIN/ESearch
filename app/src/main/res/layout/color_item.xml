@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:checkable="true"
+    android:clickable="true"
+    android:focusable="true"
+    android:outlineProvider="none"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:checkedIcon="@drawable/ic_baseline_color_lens_24"
+    app:checkedIconMargin="12dp"
+    app:checkedIconTint="#767676">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeImage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="1dp"
+            android:src="@color/red"
+            app:layout_constraintBottom_toTopOf="@+id/text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.LargeComponent"
+            app:strokeColor="@color/dred"
+            app:strokeWidth="2dp" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shapeImage"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shapeImage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

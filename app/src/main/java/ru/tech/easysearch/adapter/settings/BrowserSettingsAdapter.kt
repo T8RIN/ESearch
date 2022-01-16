@@ -10,19 +10,27 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.divider.MaterialDivider
+import com.google.android.material.imageview.ShapeableImageView
 import ru.tech.easysearch.R
+import ru.tech.easysearch.data.DataArrays.colorList
+import ru.tech.easysearch.data.DataArrays.colorListNames
+import ru.tech.easysearch.data.SharedPreferencesAccess.EYE_PROTECTION
 import ru.tech.easysearch.data.SharedPreferencesAccess.HIDE_PANELS
 import ru.tech.easysearch.data.SharedPreferencesAccess.SET
 import ru.tech.easysearch.data.SharedPreferencesAccess.getSetting
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadThemeVariant
 import ru.tech.easysearch.data.SharedPreferencesAccess.needToChangeBrowserSettings
 import ru.tech.easysearch.data.SharedPreferencesAccess.setSetting
 import ru.tech.easysearch.databinding.BrowserSettingsItemBinding
 import ru.tech.easysearch.databinding.SettingHeaderItemBinding
 import ru.tech.easysearch.extensions.Extensions.dipToPixels
+import ru.tech.easysearch.fragment.dialog.ColorPickerDialog
 import ru.tech.easysearch.model.SettingsItem
 
 
@@ -113,6 +121,29 @@ class BrowserSettingsAdapter(
 
                     holder.chipGroup.addView(chip)
                 }
+
+                if (settingsItems[0].key == EYE_PROTECTION) {
+                    holder.card.visibility = VISIBLE
+                    holder.shapeImage.setStrokeColorResource(
+                        colorList[colorListNames.indexOf(
+                            loadThemeVariant(context)
+                        )].first
+                    )
+                    holder.shapeImage.setImageResource(
+                        colorList[colorListNames.indexOf(
+                            loadThemeVariant(context)
+                        )].second
+                    )
+                    holder.card.setOnClickListener {
+                        val fragment = ColorPickerDialog()
+                        if (!fragment.isAdded) fragment.show(
+                            (context as AppCompatActivity).supportFragmentManager,
+                            "pickColor"
+                        )
+                    }
+                } else {
+                    holder.card.visibility = GONE
+                }
             }
         }
 
@@ -135,6 +166,8 @@ class BrowserSettingsAdapter(
     inner class ItemViewHolder(binding: BrowserSettingsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val chipGroup: ChipGroup = binding.chipGroup
+        val card: MaterialCardView = binding.card
+        val shapeImage: ShapeableImageView = binding.shapeImage
     }
 
     inner class HeaderViewHolder(binding: SettingHeaderItemBinding) :

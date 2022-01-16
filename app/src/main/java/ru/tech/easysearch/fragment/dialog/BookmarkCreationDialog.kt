@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication
+import ru.tech.easysearch.data.SharedPreferencesAccess.loadTheme
 import ru.tech.easysearch.database.bookmarks.Bookmark
 import ru.tech.easysearch.databinding.CreateBookmarkDialogBinding
 import ru.tech.easysearch.extensions.Extensions.fetchFavicon
@@ -48,7 +49,7 @@ class BookmarkCreationDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, loadTheme(requireContext()))
     }
 
     override fun onViewCreated(

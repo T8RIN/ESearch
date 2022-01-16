@@ -97,13 +97,17 @@ class WebClient(
         progressBar?.visibility = VISIBLE
 
         if (context is BrowserActivity) {
-            context.searchView?.setText(view?.url!!.getDomain())
-            context.lastUrl = view?.url!!
-            context.clickedGo = false
-            context.iconView?.visibility = VISIBLE
-            CoroutineScope(Dispatchers.Main).launch {
-                val icon = getIcon(view.url!!)
-                context.iconView?.let { Glide.with(context.applicationContext).load(icon).into(it) }
+            view?.url?.let { nonNullUrl ->
+                context.searchView?.setText(nonNullUrl.getDomain())
+                context.lastUrl = nonNullUrl
+                context.clickedGo = false
+                context.iconView?.visibility = VISIBLE
+                CoroutineScope(Dispatchers.Main).launch {
+                    val icon = getIcon(nonNullUrl)
+                    context.iconView?.let {
+                        Glide.with(context.applicationContext).load(icon).into(it)
+                    }
+                }
             }
         }
         super.onPageStarted(view, url, favicon)

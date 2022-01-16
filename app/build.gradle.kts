@@ -11,8 +11,8 @@ android {
         applicationId = "ru.tech.easysearch"
         minSdk = 21
         targetSdk = 31
-        versionCode = 3
-        versionName = "1.0.5"
+        versionCode = 4
+        versionName = "1.0.6"
     }
 
     buildTypes {

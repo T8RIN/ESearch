@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -121,7 +123,9 @@ object BrowserTabs {
             Functions.doInIoThreadWithObservingOnMain({
                 fetchFavicon(url)
             }, {
-                iconView?.let { imageView -> Glide.with(this).load(it as Bitmap).into(imageView) }
+                iconView?.let { imageView ->
+                    Glide.with(applicationContext).load(it as Bitmap).into(imageView)
+                }
             })
         }
     }
@@ -187,6 +191,7 @@ object BrowserTabs {
         edit().putStringSet("tabsOpened", tabs).apply()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun Context.updateGestures() {
         for (tab in openedTabs) tab.tab.updateBottomGestures(this)
     }

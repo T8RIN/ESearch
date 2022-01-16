@@ -18,6 +18,7 @@ import ru.tech.easysearch.R
 import ru.tech.easysearch.adapter.history.HistoryAdapter
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.stickyheader.StickyHeaderDecoration
+import ru.tech.easysearch.data.SharedPreferencesAccess
 import ru.tech.easysearch.database.hist.History
 import ru.tech.easysearch.databinding.HistoryFragmentBinding
 import ru.tech.easysearch.functions.Functions.doInBackground
@@ -53,7 +54,7 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_FRAME, R.style.Theme_ESearch)
+        setStyle(STYLE_NO_FRAME, SharedPreferencesAccess.loadTheme(requireContext()))
     }
 
     private var adapter: HistoryAdapter? = null
@@ -69,20 +70,24 @@ class HistoryFragment(private val browser: WebView? = null) : DialogFragment() {
             dismiss()
         }
         database.historyDao().getHistory().observe(this) { liveList ->
-            if (liveList.isNotEmpty()) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.indicator.root.visibility = VISIBLE
-                    computeList(liveList)
-                    adapter =
-                        HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
-                    binding.indicator.root.visibility = GONE
-                    binding.historyRecycler.adapter = adapter!!
-                    binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter!!))
+            try {
+                if (liveList.isNotEmpty()) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.indicator.root.visibility = VISIBLE
+                        computeList(liveList)
+                        adapter =
+                            HistoryAdapter(this@HistoryFragment, historyList, booleanArray, browser)
+                        binding.indicator.root.visibility = GONE
+                        binding.historyRecycler.adapter = adapter!!
+                        binding.historyRecycler.addItemDecoration(StickyHeaderDecoration(adapter!!))
 
+                    }
+                } else {
+                    binding.errorMessage.visibility = VISIBLE
+                    binding.historyRecycler.visibility = GONE
                 }
-            } else {
-                binding.errorMessage.visibility = VISIBLE
-                binding.historyRecycler.visibility = GONE
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
             }
         }
 
