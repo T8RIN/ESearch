@@ -397,7 +397,7 @@ object Extensions {
             val image = File(imagesDir, "$name.png")
             FileOutputStream(image)
         }
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos!!)
         fos!!.flush()
         fos.close()
     }

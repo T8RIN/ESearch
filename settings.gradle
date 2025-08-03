@@ -3,6 +3,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven {
+            url = uri("http://maven.xdja.com:8081/nexus3/repository/aliyun/")
+            allowInsecureProtocol = true
+        }
     }
 }
 rootProject.name = "ESearch"

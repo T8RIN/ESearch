@@ -7,12 +7,18 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.view.View.VISIBLE
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.URLUtil
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import io.github.edsuns.adfilter.AdFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,16 +55,17 @@ import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript1
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript2
 import ru.tech.easysearch.functions.ScriptsJS.doNotTrackScript3
 import ru.tech.easysearch.functions.ScriptsJS.privacyScript
-import ru.tech.easysearch.helper.adblock.AdBlocker.areAD
 import ru.tech.easysearch.helper.adblock.AdBlocker.getDomain
-import java.io.ByteArrayInputStream
 import java.text.DateFormatSymbols
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class WebClient(
     private val context: Context,
     private val progressBar: LinearProgressIndicator?
 ) : WebViewClient() {
+
+    private val filter = AdFilter.get()
 
     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
 
@@ -95,6 +102,8 @@ class WebClient(
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         progressBar?.visibility = VISIBLE
+
+        filter.performScript(view, url)
 
         if (context is BrowserActivity) {
             view?.url?.let { nonNullUrl ->
@@ -248,15 +257,9 @@ class WebClient(
         view: WebView?,
         request: WebResourceRequest
     ): WebResourceResponse? {
-        if (request.url.toString().areAD() &&
-            getSetting(context, AD_BLOCK)
-        ) {
-            return WebResourceResponse(
-                "text/plain",
-                "utf-8",
-                ByteArrayInputStream("".toByteArray())
-            )
-        }
-        return super.shouldInterceptRequest(view, request)
+        if (!getSetting(context, AD_BLOCK)) return super.shouldInterceptRequest(view, request)
+
+        val result = filter.shouldIntercept(view!!, request)
+        return result.resourceResponse
     }
 }

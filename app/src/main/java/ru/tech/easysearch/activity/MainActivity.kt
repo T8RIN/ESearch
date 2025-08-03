@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.util.Patterns
 import android.view.View.GONE
 import android.webkit.URLUtil
@@ -47,7 +48,7 @@ import ru.tech.easysearch.fragment.tabs.TabsFragment
 import ru.tech.easysearch.functions.Functions.doInBackground
 import ru.tech.easysearch.helper.adblock.AdBlocker
 import ru.tech.easysearch.helper.interfaces.LabelListChangedInterface
-import java.util.*
+import java.util.Locale
 import kotlin.system.exitProcess
 
 @SuppressLint("NotifyDataSetChanged")

@@ -24,7 +24,7 @@ abstract class GestureHelper(context: Context) : OnTouchListener {
 
         override fun onFling(
             e1: MotionEvent?,
-            e2: MotionEvent?,
+            e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {

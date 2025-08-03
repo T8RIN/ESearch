@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
+import io.github.edsuns.adfilter.AdFilter
 import ru.tech.easysearch.R
 import ru.tech.easysearch.application.ESearchApplication.Companion.database
 import ru.tech.easysearch.custom.popup.smart.SmartPopupMenu
@@ -279,6 +280,34 @@ class BrowserActivity : AppCompatActivity(), DesktopInterface {
         }
 
         updateGestures()
+
+        val filter = AdFilter.get()
+        val filterViewModel = filter.viewModel
+
+        // Setup AdblockAndroid for your WebView.
+        filter.setupWebView(browser!!)
+
+        // Add filter list subscriptions on first installation.
+        if (!filter.hasInstallation) {
+            val map = mapOf(
+                "AdGuard Base" to "https://filters.adtidy.org/extension/chromium/filters/2.txt",
+                "EasyPrivacy Lite" to "https://filters.adtidy.org/extension/chromium/filters/118_optimized.txt",
+                "AdGuard Tracking Protection" to "https://filters.adtidy.org/extension/chromium/filters/3.txt",
+                "AdGuard Annoyances" to "https://filters.adtidy.org/extension/chromium/filters/14.txt",
+                "AdGuard Chinese" to "https://filters.adtidy.org/extension/chromium/filters/224.txt",
+                "NoCoin Filter List" to "https://filters.adtidy.org/extension/chromium/filters/242.txt"
+            )
+            for ((key, value) in map) {
+                val subscription = filterViewModel.addFilter(key, value)
+                filterViewModel.download(subscription.id)
+            }
+        }
+
+        filterViewModel.onDirty.observe(this) {
+            // Clear cache when there are changes to the filter.
+            // You need to refresh the page manually to make the changes take effect.
+            browser!!.clearCache(false)
+        }
     }
 
     private fun showMore() {

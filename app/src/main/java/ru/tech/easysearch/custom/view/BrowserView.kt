@@ -29,7 +29,6 @@ import androidx.webkit.WebViewFeature
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
-import okhttp3.internal.userAgent
 import ru.tech.easysearch.R
 import ru.tech.easysearch.activity.BrowserActivity
 import ru.tech.easysearch.data.BrowserTabs.createNewTab
@@ -334,7 +333,7 @@ class BrowserView : WebView {
                             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
                             .setMimeType("image/jpeg")
                             .addRequestHeader("cookie", CookieManager.getInstance().getCookie(url))
-                            .addRequestHeader("User-Agent", userAgent)
+//                            .addRequestHeader("User-Agent", userAgent)
                             .setTitle(name)
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                             .setAllowedOverMetered(true)
