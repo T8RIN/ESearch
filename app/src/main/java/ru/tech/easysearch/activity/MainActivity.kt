@@ -134,6 +134,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
         }
     }
 
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
 
