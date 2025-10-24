@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity(), LabelListChangedInterface {
 
         setCoeff()
 
+
         database = ESearchDatabase.getInstance(applicationContext)
 
         displayOffsetY = -resources.displayMetrics.heightPixels.toFloat()
